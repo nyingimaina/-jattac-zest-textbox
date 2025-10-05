@@ -1,0 +1,64 @@
+{
+  "name": "jattac.libs.web.zest-textbox",
+  "version": "0.1.2",
+  "description": "A delightful, feature-rich, and highly customizable React textbox component. Packed with features like automatic theme detection, password visibility toggle, character counters, and engaging animations.",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "rollup -c && rollup -c rollup.config.dts.js",
+    "postbuild": "rimraf dist/ZestTextbox.d.ts dist/IconEyeOpen.d.ts dist/IconEyeSlashed.d.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "react",
+    "component",
+    "textbox",
+    "input",
+    "textarea",
+    "ui",
+    "form",
+    "zest",
+    "jattac"
+  ],
+  "author": "Nyingi Maina",
+  "license": "ISC",
+  "homepage": "https://github.com/nyingimaina/-jattac-zest-textbox",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nyingimaina/-jattac-zest-textbox.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nyingimaina/-jattac-zest-textbox/issues"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "postcss": "^8.4.38",
+    "rimraf": "^6.0.1",
+    "rollup": "^4.13.0",
+    "rollup-plugin-dts": "^6.2.3",
+    "rollup-plugin-postcss": "^4.0.2",
+    "typescript": "^5.4.2"
+  },
+  "dependencies": {
+    "tslib": "^2.8.1"
+  }
+}
