@@ -113,14 +113,34 @@ var ZestTextbox = function (props) {
         .filter(Boolean)
         .join(" ");
     var handleInputChange = function (e) {
-        if (maxLength !== undefined && e.target.value.length > maxLength)
+        var newValue = e.target.value;
+        if (isNumeric) {
+            // Allow digits, a single leading hyphen, and a single decimal point
+            var parts = newValue.split('.');
+            var integerPart = parts[0].replace(/[^0-9-]/g, '');
+            var decimalPart = parts.length > 1 ? '.' + parts[1].replace(/[^0-9]/g, '') : '';
+            // Ensure only one leading hyphen
+            if (integerPart.startsWith('-')) {
+                integerPart = '-' + integerPart.substring(1).replace(/-/g, '');
+            }
+            else {
+                integerPart = integerPart.replace(/-/g, '');
+            }
+            newValue = integerPart + decimalPart;
+            // Prevent multiple decimal points
+            if (newValue.indexOf('.') !== newValue.lastIndexOf('.')) {
+                newValue = newValue.substring(0, newValue.lastIndexOf('.'));
+            }
+        }
+        if (maxLength !== undefined && newValue.length > maxLength)
             return;
-        setValue(e.target.value);
+        setValue(newValue);
         if (onChange)
             onChange(e); // cast because it could be input or textarea
     };
     var isPassword = type === "password";
-    var inputType = isPassword && isPasswordVisible ? "text" : type;
+    var isNumeric = type === "number" || type === "tel";
+    var inputType = isPassword && isPasswordVisible ? "text" : isNumeric ? "tel" : type;
     var commonProps = __assign({ className: classList, maxLength: maxLength, onChange: handleInputChange, value: value, type: inputType }, rest);
     var showCounter = typeof maxLength === "number";
     var charPercentage = showCounter ? (value.length / maxLength) * 100 : 0;

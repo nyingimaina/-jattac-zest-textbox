@@ -95,15 +95,39 @@ export const ZestTextbox: React.FC<ZestTextboxProps> = (props) => {
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    if (maxLength !== undefined && e.target.value.length > maxLength) return;
+    let newValue = e.target.value;
 
-    setValue(e.target.value);
+    if (isNumeric) {
+      // Allow digits, a single leading hyphen, and a single decimal point
+      const parts = newValue.split('.');
+      let integerPart = parts[0].replace(/[^0-9-]/g, '');
+      let decimalPart = parts.length > 1 ? '.' + parts[1].replace(/[^0-9]/g, '') : '';
+
+      // Ensure only one leading hyphen
+      if (integerPart.startsWith('-')) {
+        integerPart = '-' + integerPart.substring(1).replace(/-/g, '');
+      } else {
+        integerPart = integerPart.replace(/-/g, '');
+      }
+
+      newValue = integerPart + decimalPart;
+
+      // Prevent multiple decimal points
+      if (newValue.indexOf('.') !== newValue.lastIndexOf('.')) {
+        newValue = newValue.substring(0, newValue.lastIndexOf('.'));
+      }
+    }
+
+    if (maxLength !== undefined && newValue.length > maxLength) return;
+
+    setValue(newValue);
 
     if (onChange) onChange(e as never); // cast because it could be input or textarea
   };
 
   const isPassword = type === "password";
-  const inputType = isPassword && isPasswordVisible ? "text" : type;
+  const isNumeric = type === "number" || type === "tel";
+  const inputType = isPassword && isPasswordVisible ? "text" : isNumeric ? "tel" : type;
 
   const commonProps = {
     className: classList,

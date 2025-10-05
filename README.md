@@ -24,6 +24,7 @@ A delightful, feature-rich, and highly customizable React textbox component. Bui
 - **Light & Dark Mode:** Automatically adapts to the user's system theme, or can be forced into a specific mode.
 - **Password Visibility Toggle:** A common-sense feature for all password inputs.
 - **Character Counter:** Provides clear feedback on input length.
+- **Enhanced Numeric Input:** Smart handling for numeric inputs, allowing decimals and negatives while preventing non-numeric characters.
 - **Engaging Animations:** Subtle, delightful animations on focus and interaction.
 - **Progress Bar:** A visual indicator of the user's progress towards the `maxLength`.
 - **Accessible:** Uses `rem` units for scalability and follows accessibility best practices.
@@ -91,6 +92,16 @@ Enable the character counter by setting the `maxLength` prop. You can also enabl
   showProgressBar
   animatedCounter
 />
+```
+
+### Numeric Input
+
+For numeric inputs, set the `type` prop to `"number"`. The component will automatically handle filtering to allow only digits, a single decimal point, and a single leading negative sign.
+
+```jsx
+<ZestTextbox type="number" placeholder="Enter a number" />
+<ZestTextbox type="number" placeholder="Enter a decimal number" defaultValue="3.14" />
+<ZestTextbox type="number" placeholder="Enter a negative number" defaultValue="-100" />
 ```
 
 ### Sizing
