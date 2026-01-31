@@ -30,7 +30,7 @@ export interface HelperTextConfig {
   className?: string;
 }
 
-type SharedProps = {
+export interface ZestProps {
   /**
    * An object to configure the dynamic helper text displayed below the input.
    * @see HelperTextConfig
@@ -53,15 +53,6 @@ type SharedProps = {
    */
   stretch?: boolean;
   /**
-   * A custom CSS class to apply to the main textbox element.
-   */
-  className?: string;
-  /**
-   * The maximum number of characters allowed in the input.
-   * Enables the character counter.
-   */
-  maxLength?: number;
-  /**
    * If `true`, a progress bar indicating character count vs. `maxLength` will be displayed.
    * Requires `maxLength` to be set.
    * @default false
@@ -79,6 +70,30 @@ type SharedProps = {
    * @default 'system'
    */
   theme?: "light" | "dark" | "system";
+  /**
+   * If `true`, the component will render as a `<textarea>`.
+   * If `false` or undefined, it renders as an `<input>`.
+   * @default false
+   */
+  isMultiline?: boolean;
+}
+
+type SharedProps = {
+  /**
+   * An object containing all custom configurations and behaviors specific to the ZestTextbox component.
+   * This encapsulates all non-native HTML input/textarea props for better discoverability and DX.
+   * @see ZestProps
+   */
+  zest?: ZestProps;
+  /**
+   * A custom CSS class to apply to the main textbox element.
+   */
+  className?: string;
+  /**
+   * The maximum number of characters allowed in the input.
+   * Enables the character counter.
+   */
+  maxLength?: number;
   /**
    * The type of the input element. All standard HTML input types are supported.
    * Special handling is applied for `password` and `number`.
@@ -102,20 +117,11 @@ type SharedProps = {
 
 type InputOnlyProps = SharedProps &
   Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "onChange"> & {
-    /**
-     * If `false` or undefined, the component will render as an `<input>`.
-     * @default false
-     */
-    isMultiline?: false;
     onChange?: React.ChangeEventHandler<HTMLInputElement>;
   };
 
 type TextareaOnlyProps = SharedProps &
   Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, "onChange"> & {
-    /**
-     * If `true`, the component will render as a `<textarea>`.
-     */
-    isMultiline: true;
     onChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
   };
 
@@ -123,19 +129,25 @@ type ZestTextboxProps = InputOnlyProps | TextareaOnlyProps;
 
 export const ZestTextbox: React.FC<ZestTextboxProps> = (props) => {
   const {
-    zSize = "md",
-    stretch: fullWidth = false,
     className = "",
     maxLength,
     onChange,
-    onTextChanged,
     type,
+    zest, // Destructure the new zest prop
+    ...rest
+  } = props;
+
+  // Destructure custom props from zest, applying defaults if zest is undefined
+  const {
+    zSize = "md",
+    stretch: fullWidth = false,
     showProgressBar = false,
     animatedCounter = false,
     theme = "system",
     helperTextConfig,
-    ...rest
-  } = props;
+    onTextChanged,
+    isMultiline = false, // Default for isMultiline
+  } = zest || {}; // Provide empty object as fallback if zest is undefined
 
   const [value, setValue] = useState("");
   const [isDark, setIsDark] = useState(false);
@@ -251,7 +263,7 @@ export const ZestTextbox: React.FC<ZestTextboxProps> = (props) => {
 
   return (
     <div className={styles.wrapper}>
-      {"isMultiline" in props && props.isMultiline ? (
+      {isMultiline ? ( // Use isMultiline from zest
         <textarea
           {...(commonProps as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
         />

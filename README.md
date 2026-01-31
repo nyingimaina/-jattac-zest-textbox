@@ -60,16 +60,12 @@ export default App;
 
 The `ZestTextbox` component accepts all standard props for `<input>` and `<textarea>` elements, in addition to the following custom props:
 
-| Prop              | Type                               | Default      | Description                                                                                                                              |
-| ----------------- | ---------------------------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `isMultiline`     | `boolean`                          | `false`      | If `true`, the component will render as a `<textarea>`.                                                                                  |
-| `zSize`           | `'sm' \| 'md' \| 'lg'`              | `'md'`       | Sets the size of the textbox (padding and font size).                                                                                    |
-| `stretch`         | `boolean`                          | `false`      | If `true`, the component will stretch to the full width of its container.                                                                |
-| `maxLength`       | `number`                           | `undefined`  | The maximum number of characters allowed. Enables the character counter.                                                               |
-| `theme`           | `'light' \| 'dark' \| 'system'`   | `'system'`   | Controls the component's theme. `'system'` automatically detects the OS/browser preference.                                                |
-| `animatedCounter` | `boolean`                          | `false`      | If `true`, the character counter will change color as it approaches the `maxLength`. Requires `maxLength` to be set.                     |
-| `showProgressBar` | `boolean`                          | `false`      | If `true`, a progress bar will be displayed at the bottom of the textbox. Requires `maxLength` to be set.                                |
-| `onTextChanged`   | `(value: string) => void`          | `undefined`  | A convenient callback that receives the new string value of the input directly, triggered on change.                                     |
+| Prop        | Type                               | Default     | Description                                                                                                                              |
+| ----------- | ---------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `zest`      | `ZestProps`                        | `undefined` | An object containing all custom configurations and behaviors specific to the ZestTextbox component. See `ZestProps` interface for details. |
+| `className` | `string`                           | `""`        | A custom CSS class to apply to the main textbox element.                                                                                 |
+| `maxLength` | `number`                           | `undefined` | The maximum number of characters allowed. Enables the character counter.                                                               |
+| `type`      | `string`                           | `'text'`    | The type of the input element. All standard HTML input types are supported. Special handling is applied for `password` and `number`.     |
 
 ## Feature Examples
 
@@ -87,11 +83,13 @@ Enable the character counter by setting the `maxLength` prop. You can also enabl
 
 ```jsx
 <ZestTextbox
-  isMultiline
   maxLength={280}
   placeholder="What's on your mind?"
-  showProgressBar
-  animatedCounter
+  zest={{
+    isMultiline: true,
+    showProgressBar: true,
+    animatedCounter: true,
+  }}
 />
 ```
 
@@ -110,9 +108,9 @@ For numeric inputs, set the `type` prop to `"number"`. The component will automa
 The `zSize` prop allows you to control the size of the textbox.
 
 ```jsx
-<ZestTextbox zSize="sm" placeholder="Small" />
-<ZestTextbox zSize="md" placeholder="Medium (default)" />
-<ZestTextbox zSize="lg" placeholder="Large" />
+<ZestTextbox zest={{ zSize: "sm" }} placeholder="Small" />
+<ZestTextbox zest={{ zSize: "md" }} placeholder="Medium (default)" />
+<ZestTextbox zest={{ zSize: "lg" }} placeholder="Large" />
 ```
 
 ### Theming
@@ -121,13 +119,45 @@ Force the component into a specific theme using the `theme` prop.
 
 ```jsx
 // Force light mode
-<ZestTextbox theme="light" placeholder="Light Mode" />
+<ZestTextbox zest={{ theme: "light" }} placeholder="Light Mode" />
 
 // Force dark mode
-<ZestTextbox theme="dark" placeholder="Dark Mode" />
+<ZestTextbox zest={{ theme: "dark" }} placeholder="Dark Mode" />
 
 // Automatically adapt to system theme (default)
-<ZestTextbox theme="system" placeholder="System Theme" />
+<ZestTextbox zest={{ theme: "system" }} placeholder="System Theme" />
+```
+
+## Breaking Changes
+
+### 0.1.7 - Encapsulation of Custom Props into `zest` Object
+
+All custom props (`isMultiline`, `zSize`, `stretch`, `theme`, `animatedCounter`, `showProgressBar`, `onTextChanged`, `helperTextConfig`) have been removed as top-level props and are now encapsulated within a single `zest` object prop.
+
+**Migration Guide:**
+
+If you were previously using:
+
+```jsx
+<ZestTextbox
+  isMultiline
+  zSize="lg"
+  theme="dark"
+  onTextChanged={(value) => console.log(value)}
+/>
+```
+
+You should now update your code to:
+
+```jsx
+<ZestTextbox
+  zest={{
+    isMultiline: true,
+    zSize: "lg",
+    theme: "dark",
+    onTextChanged: (value) => console.log(value),
+  }}
+/>
 ```
 
 ## Contributing
