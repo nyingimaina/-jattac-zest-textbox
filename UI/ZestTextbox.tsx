@@ -6,6 +6,7 @@ import { IconEyeSlashed } from "./IconEyeSlashed";
 export type ZestTextboxSize = "sm" | "md" | "lg";
 
 type SharedProps = {
+  onTextChanged?: (value: string) => void;
   zSize?: ZestTextboxSize;
   stretch?: boolean;
   className?: string;
@@ -50,6 +51,7 @@ export const ZestTextbox: React.FC<ZestTextboxProps> = (props) => {
     className = "",
     maxLength,
     onChange,
+    onTextChanged,
     type,
     showProgressBar = false,
     animatedCounter = false,
@@ -123,6 +125,7 @@ export const ZestTextbox: React.FC<ZestTextboxProps> = (props) => {
     setValue(newValue);
 
     if (onChange) onChange(e as never); // cast because it could be input or textarea
+    if (onTextChanged) onTextChanged(newValue);
   };
 
   const isPassword = type === "password";
@@ -177,11 +180,11 @@ export const ZestTextbox: React.FC<ZestTextboxProps> = (props) => {
           </div>
           {isPasswordVisible ? (
             <IconEyeOpen
-              className={`${styles.eyeIcon} ${isPasswordVisible ? styles.rotate : ""}`}
+              className={styles.eyeIcon}
             />
           ) : (
             <IconEyeSlashed
-              className={`${styles.eyeIcon} ${!isPasswordVisible ? styles.rotate : ""}`}
+              className={styles.eyeIcon}
             />
           )}
         </div>

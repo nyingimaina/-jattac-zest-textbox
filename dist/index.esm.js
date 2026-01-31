@@ -82,7 +82,7 @@ var IconEyeOpen = function (props) { return (jsxs("svg", __assign({ xmlns: "http
 var IconEyeSlashed = function (props) { return (jsxs("svg", __assign({ xmlns: "http://www.w3.org/2000/svg", width: "16", height: "16", fill: "currentColor", viewBox: "0 0 16 16" }, props, { children: [jsx("path", { d: "M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7.028 7.028 0 0 0-2.79.588l.77.771A5.944 5.944 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.134 13.134 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755-.165.165-.337.328-.517.486l.708.709z" }), jsx("path", { d: "M11.297 9.176a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829l.822.822zm-2.943 1.288.822.822.073.073.026.026a3.5 3.5 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.829l.822.822zm-2.943-1.288.822.822.073.073.026.026a3.5 3.5 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.829l.822.822z" }), jsx("path", { d: "M3.35 5.47c-.18.16-.353.322-.518.487A13.134 13.134 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.88 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7.029 7.029 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 6.854-12-12 .708-.708 12 12-.708.708z" })] }))); };
 
 var ZestTextbox = function (props) {
-    var _a = props.zSize, zSize = _a === void 0 ? "md" : _a, _b = props.stretch, fullWidth = _b === void 0 ? false : _b, _c = props.className, className = _c === void 0 ? "" : _c, maxLength = props.maxLength, onChange = props.onChange, type = props.type, _d = props.showProgressBar, showProgressBar = _d === void 0 ? false : _d, _e = props.animatedCounter, animatedCounter = _e === void 0 ? false : _e, _f = props.theme, theme = _f === void 0 ? "system" : _f, rest = __rest(props, ["zSize", "stretch", "className", "maxLength", "onChange", "type", "showProgressBar", "animatedCounter", "theme"]);
+    var _a = props.zSize, zSize = _a === void 0 ? "md" : _a, _b = props.stretch, fullWidth = _b === void 0 ? false : _b, _c = props.className, className = _c === void 0 ? "" : _c, maxLength = props.maxLength, onChange = props.onChange, onTextChanged = props.onTextChanged, type = props.type, _d = props.showProgressBar, showProgressBar = _d === void 0 ? false : _d, _e = props.animatedCounter, animatedCounter = _e === void 0 ? false : _e, _f = props.theme, theme = _f === void 0 ? "system" : _f, rest = __rest(props, ["zSize", "stretch", "className", "maxLength", "onChange", "onTextChanged", "type", "showProgressBar", "animatedCounter", "theme"]);
     var _g = useState(""), value = _g[0], setValue = _g[1];
     var _h = useState(false), isDark = _h[0], setIsDark = _h[1];
     var _j = useState(false), isPasswordVisible = _j[0], setIsPasswordVisible = _j[1];
@@ -137,6 +137,8 @@ var ZestTextbox = function (props) {
         setValue(newValue);
         if (onChange)
             onChange(e); // cast because it could be input or textarea
+        if (onTextChanged)
+            onTextChanged(newValue);
     };
     var isPassword = type === "password";
     var isNumeric = type === "number" || type === "tel";
@@ -151,7 +153,7 @@ var ZestTextbox = function (props) {
                 ? styles.counterYellow
                 : ""
         : "";
-    return (jsxs("div", { className: styles.wrapper, children: ["isMultiline" in props && props.isMultiline ? (jsx("textarea", __assign({}, commonProps))) : (jsx("input", __assign({}, commonProps))), showCounter && (jsxs("div", { className: "".concat(styles.counter, " ").concat(counterColorClass), children: [value.length, " / ", maxLength] })), isPassword && (jsxs("div", { className: styles.passwordToggle, onClick: function () { return setIsPasswordVisible(!isPasswordVisible); }, children: [jsx("div", { className: styles.tooltip, children: isPasswordVisible ? "Hide password" : "Show password" }), isPasswordVisible ? (jsx(IconEyeOpen, { className: "".concat(styles.eyeIcon, " ").concat(isPasswordVisible ? styles.rotate : "") })) : (jsx(IconEyeSlashed, { className: "".concat(styles.eyeIcon, " ").concat(!isPasswordVisible ? styles.rotate : "") }))] })), showProgressBar && showCounter && (jsx("div", { className: styles.progressBarContainer, children: jsx("div", { className: "".concat(styles.progressBar, " ").concat(counterColorClass), style: { width: "".concat(charPercentage, "%") } }) }))] }));
+    return (jsxs("div", { className: styles.wrapper, children: ["isMultiline" in props && props.isMultiline ? (jsx("textarea", __assign({}, commonProps))) : (jsx("input", __assign({}, commonProps))), showCounter && (jsxs("div", { className: "".concat(styles.counter, " ").concat(counterColorClass), children: [value.length, " / ", maxLength] })), isPassword && (jsxs("div", { className: styles.passwordToggle, onClick: function () { return setIsPasswordVisible(!isPasswordVisible); }, children: [jsx("div", { className: styles.tooltip, children: isPasswordVisible ? "Hide password" : "Show password" }), isPasswordVisible ? (jsx(IconEyeOpen, { className: styles.eyeIcon })) : (jsx(IconEyeSlashed, { className: styles.eyeIcon }))] })), showProgressBar && showCounter && (jsx("div", { className: styles.progressBarContainer, children: jsx("div", { className: "".concat(styles.progressBar, " ").concat(counterColorClass), style: { width: "".concat(charPercentage, "%") } }) }))] }));
 };
 
 export { ZestTextbox as default };

@@ -69,6 +69,7 @@ The `ZestTextbox` component accepts all standard props for `<input>` and `<texta
 | `theme`           | `'light' \| 'dark' \| 'system'`   | `'system'`   | Controls the component's theme. `'system'` automatically detects the OS/browser preference.                                                |
 | `animatedCounter` | `boolean`                          | `false`      | If `true`, the character counter will change color as it approaches the `maxLength`. Requires `maxLength` to be set.                     |
 | `showProgressBar` | `boolean`                          | `false`      | If `true`, a progress bar will be displayed at the bottom of the textbox. Requires `maxLength` to be set.                                |
+| `onTextChanged`   | `(value: string) => void`          | `undefined`  | A convenient callback that receives the new string value of the input directly, triggered on change.                                     |
 
 ## Feature Examples
 

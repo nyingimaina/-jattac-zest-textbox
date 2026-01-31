@@ -2,6 +2,7 @@ import React from 'react';
 
 type ZestTextboxSize = "sm" | "md" | "lg";
 type SharedProps = {
+    onTextChanged?: (value: string) => void;
     zSize?: ZestTextboxSize;
     stretch?: boolean;
     className?: string;
