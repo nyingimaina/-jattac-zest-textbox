@@ -5,15 +5,85 @@ import { IconEyeSlashed } from "./IconEyeSlashed";
 
 export type ZestTextboxSize = "sm" | "md" | "lg";
 
-type SharedProps = {
-  onTextChanged?: (value: string) => void;
-  zSize?: ZestTextboxSize;
-  stretch?: boolean;
+export interface HelperTextConfig {
+  /**
+   * A function to process the raw input value into a new string.
+   * Ideal for formatting operations like currency conversion or sanitization.
+   * @param value The raw string value from the textbox.
+   * @returns The processed string to be used by the templater or for default rendering.
+   */
+  formatter?: (value: string) => string;
+
+  /**
+   * An optional function for advanced rendering of the helper text.
+   * It receives the processed string (from `formatter` or the raw value if no formatter is provided)
+   * and should return a ReactNode. If not provided, the processed string
+   * is rendered with default muted styling.
+   * @param formattedValue The processed string.
+   * @returns The ReactNode to be rendered as helper text.
+   */
+  templater?: (formattedValue: string) => React.ReactNode;
+
+  /**
+   * An optional CSS class to apply to the helper text container for custom styling.
+   */
   className?: string;
+}
+
+type SharedProps = {
+  /**
+   * An object to configure the dynamic helper text displayed below the input.
+   * @see HelperTextConfig
+   */
+  helperTextConfig?: HelperTextConfig;
+  /**
+   * A callback that provides the raw string value of the input on every change.
+   * This is a convenience prop to avoid using `event.target.value`.
+   * @param value The current string value of the input.
+   */
+  onTextChanged?: (value: string) => void;
+  /**
+   * Sets the size of the textbox, affecting padding and font size.
+   * @default 'md'
+   */
+  zSize?: ZestTextboxSize;
+  /**
+   * If `true`, the component will stretch to the full width of its container.
+   * @default false
+   */
+  stretch?: boolean;
+  /**
+   * A custom CSS class to apply to the main textbox element.
+   */
+  className?: string;
+  /**
+   * The maximum number of characters allowed in the input.
+   * Enables the character counter.
+   */
   maxLength?: number;
+  /**
+   * If `true`, a progress bar indicating character count vs. `maxLength` will be displayed.
+   * Requires `maxLength` to be set.
+   * @default false
+   */
   showProgressBar?: boolean;
+  /**
+   * If `true`, the character counter will change color as it approaches the `maxLength`.
+   * Requires `maxLength` to be set.
+   * @default false
+   */
   animatedCounter?: boolean;
+  /**
+   * Controls the component's color scheme.
+   * `'system'` automatically detects the OS/browser preference.
+   * @default 'system'
+   */
   theme?: "light" | "dark" | "system";
+  /**
+   * The type of the input element. All standard HTML input types are supported.
+   * Special handling is applied for `password` and `number`.
+   * @default 'text'
+   */
   type?:
     | "text"
     | "email"
@@ -32,12 +102,19 @@ type SharedProps = {
 
 type InputOnlyProps = SharedProps &
   Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "onChange"> & {
+    /**
+     * If `false` or undefined, the component will render as an `<input>`.
+     * @default false
+     */
     isMultiline?: false;
     onChange?: React.ChangeEventHandler<HTMLInputElement>;
   };
 
 type TextareaOnlyProps = SharedProps &
   Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, "onChange"> & {
+    /**
+     * If `true`, the component will render as a `<textarea>`.
+     */
     isMultiline: true;
     onChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
   };
@@ -56,14 +133,34 @@ export const ZestTextbox: React.FC<ZestTextboxProps> = (props) => {
     showProgressBar = false,
     animatedCounter = false,
     theme = "system",
+    helperTextConfig,
     ...rest
   } = props;
 
   const [value, setValue] = useState("");
   const [isDark, setIsDark] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [helperTextNode, setHelperTextNode] = useState<React.ReactNode>(null);
 
-  // === Advanced Theme Control ===
+  // Effect for Helper Text
+  useEffect(() => {
+    if (!helperTextConfig) {
+      setHelperTextNode(null);
+      return;
+    }
+
+    const formatted = helperTextConfig.formatter
+      ? helperTextConfig.formatter(value)
+      : value;
+
+    const finalNode = helperTextConfig.templater
+      ? helperTextConfig.templater(formatted)
+      : formatted;
+
+    setHelperTextNode(finalNode);
+  }, [value, helperTextConfig]);
+
+  // Effect for Theme Control
   useEffect(() => {
     if (theme === "dark") {
       setIsDark(true);
@@ -124,7 +221,7 @@ export const ZestTextbox: React.FC<ZestTextboxProps> = (props) => {
 
     setValue(newValue);
 
-    if (onChange) onChange(e as never); // cast because it could be input or textarea
+    if (onChange) onChange(e as never);
     if (onTextChanged) onTextChanged(newValue);
   };
 
@@ -164,6 +261,15 @@ export const ZestTextbox: React.FC<ZestTextboxProps> = (props) => {
         />
       )}
 
+      {helperTextNode && (
+        <div
+          key={value} // Force re-mount to trigger animation
+          className={`${styles.helperText} ${helperTextConfig?.className || ''}`}
+        >
+          {helperTextNode}
+        </div>
+      )}
+
       {showCounter && (
         <div className={`${styles.counter} ${counterColorClass}`}>
           {value.length} / {maxLength}
@@ -179,13 +285,9 @@ export const ZestTextbox: React.FC<ZestTextboxProps> = (props) => {
             {isPasswordVisible ? "Hide password" : "Show password"}
           </div>
           {isPasswordVisible ? (
-            <IconEyeOpen
-              className={styles.eyeIcon}
-            />
+            <IconEyeOpen className={styles.eyeIcon} />
           ) : (
-            <IconEyeSlashed
-              className={styles.eyeIcon}
-            />
+            <IconEyeSlashed className={styles.eyeIcon} />
           )}
         </div>
       )}
