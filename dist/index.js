@@ -397,6 +397,22 @@ var useParsedAndValidatedInput = function (_a) {
     var _c = react.useState(true), isValid = _c[0], setIsValid = _c[1];
     var _d = react.useState(undefined), validationMessage = _d[0], setValidationMessage = _d[1];
     react.useEffect(function () {
+        // --- OPTION 2 IMPLEMENTATION ---
+        // If no custom parser or validator is provided, and it's not a number type
+        // where default parsers/validators would be injected,
+        // then simply pass the raw value and bypass complex logic.
+        // This assumes that if parser/validator are undefined, the consumer expects raw string.
+        var isNumericType = inputType === "number" || inputType === "tel";
+        if (!parser && !validator && !isNumericType) {
+            setParsedValue(rawValue); // Cast raw string to T
+            setIsValid(true);
+            setValidationMessage(undefined);
+            if (onParsedAndValidatedChange) {
+                onParsedAndValidatedChange(rawValue); // Pass raw string as T
+            }
+            return; // Bypass the rest of the useEffect logic
+        }
+        // --- END OPTION 2 IMPLEMENTATION ---
         var currentParsedValue = undefined;
         var currentIsValid = true;
         var currentValidationMessage = undefined;
