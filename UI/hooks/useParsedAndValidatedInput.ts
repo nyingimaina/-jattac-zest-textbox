@@ -25,13 +25,6 @@ export const useParsedAndValidatedInput = <T>({
     let currentIsValid = true;
     let currentValidationMessage: string | undefined = undefined;
 
-    // Debugging: Log validator's state
-    console.log("useParsedAndValidatedInput: rawValue", rawValue);
-    console.log("useParsedAndValidatedInput: inputType", inputType);
-    console.log("useParsedAndValidatedInput: validator", validator);
-    console.log("useParsedAndValidatedInput: typeof validator", typeof validator);
-
-
     // 1. Parse the raw value
     if (parser) {
       currentParsedValue = parser(rawValue, inputType);
@@ -40,7 +33,6 @@ export const useParsedAndValidatedInput = <T>({
     }
 
     // 2. Validate the parsed value
-    // Robust check: ensure validator is a function before calling
     if (typeof validator === "function") {
       const validationResult = validator(currentParsedValue, inputType);
       if (typeof validationResult === "string") {
@@ -52,9 +44,6 @@ export const useParsedAndValidatedInput = <T>({
           currentValidationMessage = "Invalid input.";
         }
       }
-    } else if (validator !== undefined && validator !== null) {
-      // This case should ideally not happen if types are correct, but good for debugging
-      console.error("useParsedAndValidatedInput: 'validator' is not a function but not undefined/null:", validator);
     }
 
 

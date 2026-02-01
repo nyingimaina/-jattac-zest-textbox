@@ -312,10 +312,6 @@ var defaultResolvedZestProps = {
 };
 var useZestTextboxConfig = function (componentZestProps, inputType) {
     var contextDefaultZestProps = useZestTextboxConfig$1().defaultZestProps; // Pass generic T
-    // Debugging: Log context and component props
-    console.log("useZestTextboxConfig: contextDefaultZestProps", contextDefaultZestProps);
-    console.log("useZestTextboxConfig: componentZestProps", componentZestProps);
-    console.log("useZestTextboxConfig: inputType", inputType);
     var _a = useState(defaultResolvedZestProps), resolvedZestProps = _a[0], setResolvedZestProps = _a[1]; // Cast to generic type
     // Memoize the merged props to avoid unnecessary re-renders
     var mergedZestProps = useMemo(function () {
@@ -334,8 +330,6 @@ var useZestTextboxConfig = function (componentZestProps, inputType) {
         }
         // Apply component-level props (highest precedence)
         currentMergedProps = __assign(__assign({}, currentMergedProps), componentZestProps);
-        // Debugging: Log merged props
-        console.log("useZestTextboxConfig: mergedZestProps", currentMergedProps);
         return currentMergedProps;
     }, [contextDefaultZestProps, componentZestProps, inputType]); // Added inputType to dependencies
     useEffect(function () {
@@ -385,9 +379,6 @@ var useZestTextboxConfig = function (componentZestProps, inputType) {
                         return [4 /*yield*/, resolveZestConfigValue(mergedZestProps.validator, defaultResolvedZestProps.validator)];
                     case 9:
                         _j.validator = _k.sent();
-                        // Debugging: Log newResolvedProps before setting state
-                        console.log("useZestTextboxConfig: newResolvedProps", newResolvedProps);
-                        console.log("useZestTextboxConfig: current resolvedZestProps", resolvedZestProps);
                         setResolvedZestProps(newResolvedProps);
                         return [2 /*return*/];
                 }
@@ -407,11 +398,6 @@ var useParsedAndValidatedInput = function (_a) {
         var currentParsedValue = undefined;
         var currentIsValid = true;
         var currentValidationMessage = undefined;
-        // Debugging: Log validator's state
-        console.log("useParsedAndValidatedInput: rawValue", rawValue);
-        console.log("useParsedAndValidatedInput: inputType", inputType);
-        console.log("useParsedAndValidatedInput: validator", validator);
-        console.log("useParsedAndValidatedInput: typeof validator", typeof validator);
         // 1. Parse the raw value
         if (parser) {
             currentParsedValue = parser(rawValue, inputType);
@@ -420,7 +406,6 @@ var useParsedAndValidatedInput = function (_a) {
             currentParsedValue = rawValue;
         }
         // 2. Validate the parsed value
-        // Robust check: ensure validator is a function before calling
         if (typeof validator === "function") {
             var validationResult = validator(currentParsedValue, inputType);
             if (typeof validationResult === "string") {
@@ -433,10 +418,6 @@ var useParsedAndValidatedInput = function (_a) {
                     currentValidationMessage = "Invalid input.";
                 }
             }
-        }
-        else if (validator !== undefined && validator !== null) {
-            // This case should ideally not happen if types are correct, but good for debugging
-            console.error("useParsedAndValidatedInput: 'validator' is not a function but not undefined/null:", validator);
         }
         setParsedValue(currentParsedValue);
         setIsValid(currentIsValid);
@@ -452,12 +433,8 @@ var useParsedAndValidatedInput = function (_a) {
 var ZestTextbox = function (props) {
     var _a = props.className, className = _a === void 0 ? "" : _a, maxLength = props.maxLength, onChange = props.onChange, type = props.type, zest = props.zest, // Destructure the new zest prop
     rest = __rest(props, ["className", "maxLength", "onChange", "type", "zest"]);
-    // Debugging: Log ZestTextbox props
-    console.log("ZestTextbox Props:", { className: className, maxLength: maxLength, type: type, zest: zest, rest: rest });
     var resolvedZestProps = useZestTextboxConfig(zest, type);
     var zSize = resolvedZestProps.zSize, fullWidth = resolvedZestProps.stretch, showProgressBar = resolvedZestProps.showProgressBar, animatedCounter = resolvedZestProps.animatedCounter, theme = resolvedZestProps.theme, helperTextConfig = resolvedZestProps.helperTextConfig, onTextChanged = resolvedZestProps.onTextChanged, isMultiline = resolvedZestProps.isMultiline, parser = resolvedZestProps.parser, validator = resolvedZestProps.validator;
-    // Debugging: Log resolvedZestProps
-    console.log("ZestTextbox Resolved Zest Props:", resolvedZestProps);
     var _b = useState(""), value = _b[0], setValue = _b[1];
     var isDark = useThemeDetector(theme);
     var isPassword = type === "password";
@@ -469,9 +446,7 @@ var ZestTextbox = function (props) {
         parser: parser,
         validator: validator,
         onParsedAndValidatedChange: onTextChanged,
-    }), parsedValue = _e.parsedValue, isValid = _e.isValid, validationMessage = _e.validationMessage;
-    // Debugging: Log parsed and validated input
-    console.log("ZestTextbox Parsed/Validated:", { parsedValue: parsedValue, isValid: isValid, validationMessage: validationMessage });
+    }), isValid = _e.isValid, validationMessage = _e.validationMessage;
     // Prioritize validation message over regular helper text
     var finalHelperTextNode = validationMessage ? (jsx("span", { style: { color: "red" }, children: validationMessage })) : useHelperText(value, helperTextConfig);
     var classList = [
@@ -486,20 +461,14 @@ var ZestTextbox = function (props) {
         .join(" ");
     var handleInputChange = function (e) {
         var newValue = e.target.value;
-        // Debugging: Log new value from input change
-        console.log("ZestTextbox handleInputChange: raw newValue", newValue);
         var isNumeric = type === "number" || type === "tel";
         if (isNumeric) {
             newValue = filterNumericInput(newValue);
-            // Debugging: Log newValue after numeric filter
-            console.log("ZestTextbox handleInputChange: newValue after numeric filter", newValue);
         }
         if (maxLength !== undefined && newValue.length > maxLength) {
-            console.log("ZestTextbox handleInputChange: maxLength exceeded, not updating value");
             return;
         }
         setValue(newValue);
-        console.log("ZestTextbox handleInputChange: setValue to", newValue);
         if (onChange)
             onChange(e);
         // onTextChanged is now handled by useParsedAndValidatedInput
