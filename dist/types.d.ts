@@ -1,4 +1,6 @@
+import React from "react";
 export type ZestTextboxSize = "sm" | "md" | "lg";
+export type ZestConfigValue<T> = T | (() => T) | (() => Promise<T>);
 export interface HelperTextConfig {
     /**
      * A function to process the raw input value into a new string.
@@ -26,7 +28,7 @@ export interface ZestProps {
      * An object to configure the dynamic helper text displayed below the input.
      * @see HelperTextConfig
      */
-    helperTextConfig?: HelperTextConfig;
+    helperTextConfig?: ZestConfigValue<HelperTextConfig>;
     /**
      * A callback that provides the raw string value of the input on every change.
      * This is a convenience prop to avoid using `event.target.value`.
@@ -37,34 +39,44 @@ export interface ZestProps {
      * Sets the size of the textbox, affecting padding and font size.
      * @default 'md'
      */
-    zSize?: ZestTextboxSize;
+    zSize?: ZestConfigValue<ZestTextboxSize>;
     /**
      * If `true`, the component will stretch to the full width of its container.
      * @default false
      */
-    stretch?: boolean;
+    stretch?: ZestConfigValue<boolean>;
     /**
      * If `true`, a progress bar indicating character count vs. `maxLength` will be displayed.
      * Requires `maxLength` to be set.
      * @default false
      */
-    showProgressBar?: boolean;
+    showProgressBar?: ZestConfigValue<boolean>;
     /**
      * If `true`, the character counter will change color as it approaches the `maxLength`.
      * Requires `maxLength` to be set.
      * @default false
      */
-    animatedCounter?: boolean;
+    animatedCounter?: ZestConfigValue<boolean>;
     /**
      * Controls the component's color scheme.
      * `'system'` automatically detects the OS/browser preference.
      * @default 'system'
      */
-    theme?: "light" | "dark" | "system";
+    theme?: ZestConfigValue<"light" | "dark" | "system">;
     /**
      * If `true`, the component will render as a `<textarea>`.
      * If `false` or undefined, it renders as an `<input>`.
      * @default false
      */
-    isMultiline?: boolean;
+    isMultiline?: ZestConfigValue<boolean>;
+}
+export interface ResolvedZestProps {
+    helperTextConfig: HelperTextConfig | undefined;
+    onTextChanged: ((value: string) => void) | undefined;
+    zSize: ZestTextboxSize;
+    stretch: boolean;
+    showProgressBar: boolean;
+    animatedCounter: boolean;
+    theme: "light" | "dark" | "system";
+    isMultiline: boolean;
 }

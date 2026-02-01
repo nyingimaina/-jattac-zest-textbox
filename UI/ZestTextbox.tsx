@@ -63,6 +63,7 @@ import { PasswordToggleButton } from "./components/PasswordToggleButton";
 import { CharacterCounter } from "./components/CharacterCounter";
 import { ProgressBar } from "./components/ProgressBar";
 import { HelperTextDisplay } from "./components/HelperTextDisplay";
+import { useZestTextboxConfig } from "./hooks/useZestTextboxConfig";
 
 // ... other imports
 
@@ -76,17 +77,17 @@ export const ZestTextbox: React.FC<ZestTextboxProps> = (props) => {
     ...rest
   } = props;
 
-  // Destructure custom props from zest, applying defaults if zest is undefined
+  const resolvedZestProps = useZestTextboxConfig(zest);
   const {
-    zSize = "md",
-    stretch: fullWidth = false,
-    showProgressBar = false,
-    animatedCounter = false,
-    theme = "system",
+    zSize,
+    stretch: fullWidth,
+    showProgressBar,
+    animatedCounter,
+    theme,
     helperTextConfig,
     onTextChanged,
-    isMultiline = false, // Default for isMultiline
-  } = zest || {}; // Provide empty object as fallback if zest is undefined
+    isMultiline,
+  } = resolvedZestProps;
 
   const [value, setValue] = useState("");
 

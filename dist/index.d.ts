@@ -1,6 +1,7 @@
-import React$1, { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
 type ZestTextboxSize = "sm" | "md" | "lg";
+type ZestConfigValue<T> = T | (() => T) | (() => Promise<T>);
 interface HelperTextConfig {
     /**
      * A function to process the raw input value into a new string.
@@ -28,7 +29,7 @@ interface ZestProps {
      * An object to configure the dynamic helper text displayed below the input.
      * @see HelperTextConfig
      */
-    helperTextConfig?: HelperTextConfig;
+    helperTextConfig?: ZestConfigValue<HelperTextConfig>;
     /**
      * A callback that provides the raw string value of the input on every change.
      * This is a convenience prop to avoid using `event.target.value`.
@@ -39,36 +40,36 @@ interface ZestProps {
      * Sets the size of the textbox, affecting padding and font size.
      * @default 'md'
      */
-    zSize?: ZestTextboxSize;
+    zSize?: ZestConfigValue<ZestTextboxSize>;
     /**
      * If `true`, the component will stretch to the full width of its container.
      * @default false
      */
-    stretch?: boolean;
+    stretch?: ZestConfigValue<boolean>;
     /**
      * If `true`, a progress bar indicating character count vs. `maxLength` will be displayed.
      * Requires `maxLength` to be set.
      * @default false
      */
-    showProgressBar?: boolean;
+    showProgressBar?: ZestConfigValue<boolean>;
     /**
      * If `true`, the character counter will change color as it approaches the `maxLength`.
      * Requires `maxLength` to be set.
      * @default false
      */
-    animatedCounter?: boolean;
+    animatedCounter?: ZestConfigValue<boolean>;
     /**
      * Controls the component's color scheme.
      * `'system'` automatically detects the OS/browser preference.
      * @default 'system'
      */
-    theme?: "light" | "dark" | "system";
+    theme?: ZestConfigValue<"light" | "dark" | "system">;
     /**
      * If `true`, the component will render as a `<textarea>`.
      * If `false` or undefined, it renders as an `<input>`.
      * @default false
      */
-    isMultiline?: boolean;
+    isMultiline?: ZestConfigValue<boolean>;
 }
 
 type SharedProps = {
@@ -94,21 +95,21 @@ type SharedProps = {
      */
     type?: "text" | "email" | "password" | "number" | "tel" | "url" | "search" | "color" | "date" | "datetime-local" | "month" | "time" | "week";
 };
-type InputOnlyProps = SharedProps & Omit<React$1.InputHTMLAttributes<HTMLInputElement>, "size" | "onChange"> & {
-    onChange?: React$1.ChangeEventHandler<HTMLInputElement>;
+type InputOnlyProps = SharedProps & Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "onChange"> & {
+    onChange?: React.ChangeEventHandler<HTMLInputElement>;
 };
-type TextareaOnlyProps = SharedProps & Omit<React$1.TextareaHTMLAttributes<HTMLTextAreaElement>, "onChange"> & {
-    onChange?: React$1.ChangeEventHandler<HTMLTextAreaElement>;
+type TextareaOnlyProps = SharedProps & Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, "onChange"> & {
+    onChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
 };
 type ZestTextboxProps = InputOnlyProps | TextareaOnlyProps;
-declare const ZestTextbox: React$1.FC<ZestTextboxProps>;
+declare const ZestTextbox: React.FC<ZestTextboxProps>;
 
 interface PasswordToggleButtonProps {
     isPassword: boolean;
     isPasswordVisible: boolean;
     onToggle: () => void;
 }
-declare const PasswordToggleButton: React$1.FC<PasswordToggleButtonProps>;
+declare const PasswordToggleButton: React.FC<PasswordToggleButtonProps>;
 
 interface CharacterCounterProps {
     showCounter: boolean;
@@ -116,7 +117,7 @@ interface CharacterCounterProps {
     maxLength: number | undefined;
     counterColorClass: string;
 }
-declare const CharacterCounter: React$1.FC<CharacterCounterProps>;
+declare const CharacterCounter: React.FC<CharacterCounterProps>;
 
 interface ProgressBarProps {
     showProgressBar: boolean;
@@ -124,13 +125,19 @@ interface ProgressBarProps {
     charPercentage: number;
     counterColorClass: string;
 }
-declare const ProgressBar: React$1.FC<ProgressBarProps>;
+declare const ProgressBar: React.FC<ProgressBarProps>;
 
 interface HelperTextDisplayProps {
     helperTextNode: ReactNode;
     className?: string;
 }
-declare const HelperTextDisplay: React$1.FC<HelperTextDisplayProps>;
+declare const HelperTextDisplay: React.FC<HelperTextDisplayProps>;
 
-export { CharacterCounter, HelperTextDisplay, PasswordToggleButton, ProgressBar, ZestTextbox };
+interface ZestTextboxConfigProviderProps {
+    children: ReactNode;
+    value?: ZestProps;
+}
+declare const ZestTextboxConfigProvider: React.FC<ZestTextboxConfigProviderProps>;
+
+export { CharacterCounter, HelperTextDisplay, PasswordToggleButton, ProgressBar, ZestTextbox, ZestTextboxConfigProvider };
 export type { HelperTextConfig, ZestProps, ZestTextboxSize };
