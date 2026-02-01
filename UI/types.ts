@@ -2,11 +2,27 @@ import React from "react";
 
 export type ZestTextboxSize = "sm" | "md" | "lg";
 
+// Define the union type for HTML input types supported by ZestTextbox
+export type HtmlInputType =
+  | "text"
+  | "email"
+  | "password"
+  | "number"
+  | "tel"
+  | "url"
+  | "search"
+  | "color"
+  | "date"
+  | "datetime-local"
+  | "month"
+  | "time"
+  | "week";
+
 export type ZestConfigValue<T> = T | (() => T) | (() => Promise<T>);
 
 // Define InputParser and InputValidator types
-export type InputParser<T> = (value: string, inputType?: string) => T | undefined;
-export type InputValidator<T> = (value: T | undefined, inputType?: string) => boolean | string; // Returns boolean for valid, string for error message
+export type InputParser<T> = (value: string, inputType?: HtmlInputType) => T | undefined;
+export type InputValidator<T> = (value: T | undefined, inputType?: HtmlInputType) => boolean | string; // Returns boolean for valid, string for error message
 
 export interface HelperTextConfig {
   /**

@@ -1,7 +1,7 @@
-import { InputParser, InputValidator } from "../types";
+import { InputParser, InputValidator, HtmlInputType } from "../types";
 interface UseParsedAndValidatedInputArgs<T> {
     rawValue: string;
-    inputType?: string;
+    inputType?: HtmlInputType;
     parser: InputParser<T> | undefined;
     validator: InputValidator<T> | undefined;
     onParsedAndValidatedChange: ((value: T | undefined) => void) | undefined;

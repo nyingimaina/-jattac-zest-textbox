@@ -3,7 +3,7 @@ import styles from "../Styles/ZestTextbox.module.css";
 import { IconEyeOpen } from "./IconEyeOpen";
 import { IconEyeSlashed } from "./IconEyeSlashed";
 
-import { ZestTextboxSize, HelperTextConfig, ZestProps } from "./types";
+import { ZestTextboxSize, HelperTextConfig, ZestProps, HtmlInputType } from "./types";
 
 type SharedProps = {
   /**
@@ -26,20 +26,7 @@ type SharedProps = {
    * Special handling is applied for `password` and `number`.
    * @default 'text'
    */
-  type?:
-    | "text"
-    | "email"
-    | "password"
-    | "number"
-    | "tel"
-    | "url"
-    | "search"
-    | "color"
-    | "date"
-    | "datetime-local"
-    | "month"
-    | "time"
-    | "week";
+  type?: HtmlInputType;
 };
 
 type InputOnlyProps = SharedProps &

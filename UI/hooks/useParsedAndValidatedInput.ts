@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
-import { InputParser, InputValidator } from "../types";
+import { InputParser, InputValidator, HtmlInputType } from "../types";
 
 interface UseParsedAndValidatedInputArgs<T> {
   rawValue: string;
-  inputType?: string; // Added inputType
+  inputType?: HtmlInputType; // Updated inputType to HtmlInputType
   parser: InputParser<T> | undefined;
   validator: InputValidator<T> | undefined;
   // The onTextChanged callback should receive the parsed value

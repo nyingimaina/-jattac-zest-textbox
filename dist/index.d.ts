@@ -1,9 +1,10 @@
 import React, { ReactNode } from 'react';
 
 type ZestTextboxSize = "sm" | "md" | "lg";
+type HtmlInputType = "text" | "email" | "password" | "number" | "tel" | "url" | "search" | "color" | "date" | "datetime-local" | "month" | "time" | "week";
 type ZestConfigValue<T> = T | (() => T) | (() => Promise<T>);
-type InputParser<T> = (value: string, inputType?: string) => T | undefined;
-type InputValidator<T> = (value: T | undefined, inputType?: string) => boolean | string;
+type InputParser<T> = (value: string, inputType?: HtmlInputType) => T | undefined;
+type InputValidator<T> = (value: T | undefined, inputType?: HtmlInputType) => boolean | string;
 interface HelperTextConfig {
     /**
      * A function to process the raw input value into a new string.
@@ -105,7 +106,7 @@ type SharedProps = {
      * Special handling is applied for `password` and `number`.
      * @default 'text'
      */
-    type?: "text" | "email" | "password" | "number" | "tel" | "url" | "search" | "color" | "date" | "datetime-local" | "month" | "time" | "week";
+    type?: HtmlInputType;
 };
 type InputOnlyProps = SharedProps & Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "onChange"> & {
     onChange?: React.ChangeEventHandler<HTMLInputElement>;

@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { ZestProps, ZestConfigValue, ZestTextboxSize, HelperTextConfig, ResolvedZestProps, InputParser, InputValidator } from "../types";
+import { ZestProps, ZestConfigValue, ZestTextboxSize, HelperTextConfig, ResolvedZestProps, InputParser, InputValidator, HtmlInputType } from "../types";
 import { useZestTextboxConfig as useZestTextboxContext } from "../contexts/ZestTextboxConfigContext";
 import { defaultNumberParser, defaultNumberValidator } from "../utils/defaultParsersAndValidators"; // Import defaults
 
@@ -31,7 +31,7 @@ const defaultResolvedZestProps: ResolvedZestProps = {
   validator: undefined,
 };
 
-export const useZestTextboxConfig = (componentZestProps: ZestProps | undefined, inputType?: string) => { // Added inputType
+export const useZestTextboxConfig = (componentZestProps: ZestProps | undefined, inputType?: HtmlInputType) => { // Updated inputType to HtmlInputType
   const { defaultZestProps: contextDefaultZestProps } = useZestTextboxContext();
 
   const [resolvedZestProps, setResolvedZestProps] = useState<ResolvedZestProps>(defaultResolvedZestProps);

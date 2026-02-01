@@ -254,11 +254,19 @@ var useZestTextboxConfig$1 = function () {
     return context;
 };
 
-var defaultNumberParser = function (value) {
+var defaultNumberParser = function (value, inputType) {
+    if (inputType !== "number" && inputType !== "tel") {
+        // If not a number type, don't parse as number
+        return undefined;
+    }
     var parsed = parseFloat(value);
     return isNaN(parsed) ? undefined : parsed;
 };
-var defaultNumberValidator = function (value) {
+var defaultNumberValidator = function (value, inputType) {
+    if (inputType !== "number" && inputType !== "tel") {
+        // If not a number type, always consider valid for this validator
+        return true;
+    }
     if (value === undefined) {
         return "Invalid number format.";
     }

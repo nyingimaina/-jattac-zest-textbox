@@ -1,8 +1,9 @@
 import React from "react";
 export type ZestTextboxSize = "sm" | "md" | "lg";
+export type HtmlInputType = "text" | "email" | "password" | "number" | "tel" | "url" | "search" | "color" | "date" | "datetime-local" | "month" | "time" | "week";
 export type ZestConfigValue<T> = T | (() => T) | (() => Promise<T>);
-export type InputParser<T> = (value: string, inputType?: string) => T | undefined;
-export type InputValidator<T> = (value: T | undefined, inputType?: string) => boolean | string;
+export type InputParser<T> = (value: string, inputType?: HtmlInputType) => T | undefined;
+export type InputValidator<T> = (value: T | undefined, inputType?: HtmlInputType) => boolean | string;
 export interface HelperTextConfig {
     /**
      * A function to process the raw input value into a new string.
