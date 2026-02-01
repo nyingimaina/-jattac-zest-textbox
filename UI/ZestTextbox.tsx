@@ -68,7 +68,7 @@ import { useParsedAndValidatedInput } from "./hooks/useParsedAndValidatedInput";
 
 // ... other imports
 
-export const ZestTextbox: React.FC<ZestTextboxProps> = (props) => {
+const ZestTextbox: React.FC<ZestTextboxProps> = (props) => {
   const {
     className = "",
     maxLength,

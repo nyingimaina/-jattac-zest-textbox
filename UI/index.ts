@@ -1,4 +1,4 @@
-export { ZestTextbox } from './ZestTextbox';
+export { default as ZestTextbox } from './ZestTextbox';
 export type { ZestTextboxSize, ZestProps, HelperTextConfig } from './types';
 export { PasswordToggleButton } from './components/PasswordToggleButton';
 export { CharacterCounter } from './components/CharacterCounter';
