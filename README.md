@@ -7,36 +7,41 @@ A delightful, feature-rich, and highly customizable React textbox component. Bui
 ## Table of Contents
 
 - [Features](#features)
-- [Internal Architecture](#internal-architecture)
 - [Installation](#installation)
 - [Basic Usage](#basic-usage)
 - [Props API](#props-api)
+  - [ZestProps Interface Details](#zestprops-interface-details)
 - [Feature Examples](#feature-examples)
-  - [Password Input](#password-input)
+  - [Password Input with Visibility Toggle](#password-input-with-visibility-toggle)
   - [Character Counter & Progress Bar](#character-counter--progress-bar)
+  - [Enhanced Numeric Input](#enhanced-numeric-input)
   - [Sizing](#sizing)
-  - [Theming](#theming)
+  - [Theming (Light/Dark/System)](#theming-lightdarksystem)
+  - [Multiline Textarea](#multiline-textarea)
+  - [Helper Text with Formatting](#helper-text-with-formatting)
+  - [Full Width Stretching](#full-width-stretching)
+- [Centralized Configuration](#centralized-configuration)
+- [Internal Architecture](#internal-architecture)
+- [Breaking Changes](#breaking-changes)
 - [Contributing](#contributing)
 - [License](#license)
 
 ## Features
 
-- **Responsive and Mobile-First:** Designed to look great on any screen size.
-- **Light & Dark Mode:** Automatically adapts to the user's system theme, or can be forced into a specific mode.
-- **Password Visibility Toggle:** A common-sense feature for all password inputs.
-- **Character Counter:** Provides clear feedback on input length.
-- **Enhanced Numeric Input:** Smart handling for numeric inputs, allowing decimals and negatives while preventing non-numeric characters.
-- **Engaging Animations:** Subtle, delightful animations on focus and interaction.
-- **Progress Bar:** A visual indicator of the user's progress towards the `maxLength`.
-- **Accessible:** Uses `rem` units for scalability and follows accessibility best practices.
+`ZestTextbox` isn't just another input field; it's crafted to bring a smile to your users' faces while providing robust functionality and a seamless developer experience.
 
-## Internal Architecture
-
-The `ZestTextbox` component has been refactored internally for improved maintainability, readability, and reusability. Its core logic is now distributed across several custom React hooks and smaller, focused sub-components. This internal restructuring does **not** introduce any breaking changes to the public API.
+*   **Responsive and Mobile-First:** Adapts beautifully to any screen size, ensuring a consistent UX.
+*   **Light & Dark Mode:** Automatically respects user system preferences or can be explicitly set.
+*   **Password Visibility Toggle:** A crucial accessibility and usability feature for password fields.
+*   **Character Counter & Progress Bar:** Visual feedback on input length, with engaging animations as limits are approached.
+*   **Enhanced Numeric Input:** Intelligent filtering for numbers, decimals, and negative values.
+*   **Engaging Animations:** Subtle, delightful micro-interactions on focus and input.
+*   **Accessible:** Built with `rem` units and best practices for inclusivity.
+*   **Centralized Configuration:** Easily manage default behaviors and styles across your application using React Context.
 
 ## Installation
 
-To install the component, run the following command in your project directory:
+To install `jattac.libs.web.zest-textbox` in your project, run:
 
 ```bash
 npm install jattac.libs.web.zest-textbox
@@ -44,15 +49,16 @@ npm install jattac.libs.web.zest-textbox
 
 ## Basic Usage
 
-Here's a simple example of how to use the `ZestTextbox` in your React application:
+Get started with `ZestTextbox` in seconds. It behaves just like a standard HTML `<input>` or `<textarea>`, but with added zest!
 
 ```jsx
 import React from 'react';
-import ZestTextbox from 'jattac.libs.web.zest-textbox';
+import { ZestTextbox } from 'jattac.libs.web.zest-textbox';
 
 const App = () => {
   return (
-    <div style={{ padding: '2rem' }}>
+    <div style={{ padding: '2rem', maxWidth: '400px', margin: '0 auto' }}>
+      <h1>Basic ZestTextbox</h1>
       <ZestTextbox placeholder="Enter your name" />
     </div>
   );
@@ -63,75 +69,341 @@ export default App;
 
 ## Props API
 
-The `ZestTextbox` component accepts all standard props for `<input>` and `<textarea>` elements, in addition to the following custom props:
+`ZestTextbox` accepts all standard HTML `<input>` and `<textarea>` props. Additionally, it introduces a powerful `zest` prop for all its custom enhancements.
 
 | Prop        | Type                               | Default     | Description                                                                                                                              |
 | ----------- | ---------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `zest`      | `ZestProps`                        | `undefined` | An object containing all custom configurations and behaviors specific to the ZestTextbox component. See `ZestProps` interface for details. |
+| `zest`      | `ZestProps`                        | `undefined` | An object containing all custom configurations and behaviors specific to the ZestTextbox component. See `ZestProps` interface for details below. |
 | `className` | `string`                           | `""`        | A custom CSS class to apply to the main textbox element.                                                                                 |
-| `maxLength` | `number`                           | `undefined` | The maximum number of characters allowed. Enables the character counter.                                                               |
+| `maxLength` | `number`                           | `undefined` | The maximum number of characters allowed. Enables the character counter and progress bar.                                                               |
 | `type`      | `string`                           | `'text'`    | The type of the input element. All standard HTML input types are supported. Special handling is applied for `password` and `number`.     |
+
+### `ZestProps` Interface Details
+
+The `zest` prop is an object that encapsulates all the unique features of `ZestTextbox`. Its properties can accept primitive values, functions, or asynchronous functions (`ZestConfigValue<T>`) for dynamic configuration, especially useful with [Centralized Configuration](#centralized-configuration).
+
+```typescript
+import { ZestTextboxSize, ZestConfigValue, HelperTextConfig } from 'jattac.libs.web.zest-textbox';
+
+interface ZestProps {
+  helperTextConfig?: ZestConfigValue<HelperTextConfig>;
+  onTextChanged?: (value: string) => void; // Callback for text changes
+  zSize?: ZestConfigValue<ZestTextboxSize>; // "sm" | "md" | "lg"
+  stretch?: ZestConfigValue<boolean>; // Full width
+  showProgressBar?: ZestConfigValue<boolean>; // Display character progress bar
+  animatedCounter?: ZestConfigValue<boolean>; // Counter color changes
+  theme?: ZestConfigValue<"light" | "dark" | "system">; // Color scheme
+  isMultiline?: ZestConfigValue<boolean>; // Render as <textarea>
+}
+```
+
+| Property          | Type (`ZestConfigValue<T>`)                               | Default     | Description                                                                                                                              |
+| ----------------- | --------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `helperTextConfig`| `ZestConfigValue<HelperTextConfig>`                       | `undefined` | Configuration for dynamic helper text displayed below the input. Can be an object, a function returning an object, or a promise of an object. |
+| `onTextChanged`   | `(value: string) => void`                                 | `undefined` | A callback function that is invoked whenever the textbox's value changes. Provides the raw string value.                                 |
+| `zSize`           | `ZestConfigValue<"sm" | "md" | "lg">`                   | `'md'`      | Sets the size of the textbox, affecting padding and font size.                                                                           |
+| `stretch`         | `ZestConfigValue<boolean>`                                | `false`     | If `true`, the component will stretch to the full width of its container.                                                                |
+| `showProgressBar` | `ZestConfigValue<boolean>`                                | `false`     | If `true`, a progress bar indicating character count vs. `maxLength` will be displayed. Requires `maxLength` to be set.                  |
+| `animatedCounter` | `ZestConfigValue<boolean>`                                | `false`     | If `true`, the character counter will change color as it approaches the `maxLength`. Requires `maxLength` to be set.                     |
+| `theme`           | `ZestConfigValue<"light" | "dark" | "system">`           | `'system'`  | Controls the component's color scheme. `'system'` automatically detects the OS/browser preference.                                       |
+| `isMultiline`     | `ZestConfigValue<boolean>`                                | `false`     | If `true`, the component will render as a `<textarea>`. If `false` or undefined, it renders as an `<input>`.                           |
 
 ## Feature Examples
 
-### Password Input
+Dive into practical examples demonstrating the power and flexibility of `ZestTextbox`.
 
-To create a password input with a visibility toggle, simply set the `type` prop to `"password"`.
+### Password Input with Visibility Toggle
+
+Simply set the `type` prop to `"password"` to enable the built-in visibility toggle.
 
 ```jsx
-<ZestTextbox type="password" placeholder="Enter your password" />
+import React from 'react';
+import { ZestTextbox } from 'jattac.libs.web.zest-textbox';
+
+const PasswordExample = () => {
+  return (
+    <div style={{ padding: '2rem', maxWidth: '400px', margin: '0 auto' }}>
+      <h2>Password Input</h2>
+      <ZestTextbox type="password" placeholder="Enter your password" />
+    </div>
+  );
+};
+
+export default PasswordExample;
 ```
 
 ### Character Counter & Progress Bar
 
-Enable the character counter by setting the `maxLength` prop. You can also enable the progress bar and animated counter for a more engaging experience.
+Enable the character counter with `maxLength` and add a visual progress bar and animated counter via `zest` props.
 
 ```jsx
-<ZestTextbox
-  maxLength={280}
-  placeholder="What's on your mind?"
-  zest={{
-    isMultiline: true,
-    showProgressBar: true,
-    animatedCounter: true,
-  }}
-/>
+import React from 'react';
+import { ZestTextbox } from 'jattac.libs.web.zest-textbox';
+
+const CounterExample = () => {
+  const [text, setText] = React.useState('');
+  return (
+    <div style={{ padding: '2rem', maxWidth: '400px', margin: '0 auto' }}>
+      <h2>Character Counter & Progress Bar</h2>
+      <ZestTextbox
+        maxLength={100}
+        placeholder="What's on your mind? (max 100 chars)"
+        value={text}
+        onTextChanged={setText}
+        zest={{
+          showProgressBar: true,
+          animatedCounter: true,
+        }}
+      />
+    </div>
+  );
+};
+
+export default CounterExample;
 ```
 
-### Numeric Input
+### Enhanced Numeric Input
 
-For numeric inputs, set the `type` prop to `"number"`. The component will automatically handle filtering to allow only digits, a single decimal point, and a single leading negative sign.
+Set `type="number"` for intelligent filtering that allows only digits, a single decimal point, and a single leading negative sign.
 
 ```jsx
-<ZestTextbox type="number" placeholder="Enter a number" />
-<ZestTextbox type="number" placeholder="Enter a decimal number" defaultValue="3.14" />
-<ZestTextbox type="number" placeholder="Enter a negative number" defaultValue="-100" />
+import React from 'react';
+import { ZestTextbox } from 'jattac.libs.web.zest-textbox';
+
+const NumericExample = () => {
+  return (
+    <div style={{ padding: '2rem', maxWidth: '400px', margin: '0 auto' }}>
+      <h2>Numeric Input</h2>
+      <ZestTextbox type="number" placeholder="Enter a number" />
+      <br /><br />
+      <ZestTextbox type="number" placeholder="Enter a decimal" defaultValue="3.14" />
+      <br /><br />
+      <ZestTextbox type="number" placeholder="Enter a negative number" defaultValue="-100" />
+    </div>
+  );
+};
+
+export default NumericExample;
 ```
 
 ### Sizing
 
-The `zSize` prop allows you to control the size of the textbox.
+Control the size of the textbox with the `zSize` property within the `zest` prop. Options are `"sm"`, `"md"` (default), and `"lg"`.
 
 ```jsx
-<ZestTextbox zest={{ zSize: "sm" }} placeholder="Small" />
-<ZestTextbox zest={{ zSize: "md" }} placeholder="Medium (default)" />
-<ZestTextbox zest={{ zSize: "lg" }} placeholder="Large" />
+import React from 'react';
+import { ZestTextbox } from 'jattac.libs.web.zest-textbox';
+
+const SizingExample = () => {
+  return (
+    <div style={{ padding: '2rem', maxWidth: '400px', margin: '0 auto' }}>
+      <h2>Sizing</h2>
+      <ZestTextbox zest={{ zSize: "sm" }} placeholder="Small" />
+      <br /><br />
+      <ZestTextbox zest={{ zSize: "md" }} placeholder="Medium (default)" />
+      <br /><br />
+      <ZestTextbox zest={{ zSize: "lg" }} placeholder="Large" />
+    </div>
+  );
+};
+
+export default SizingExample;
 ```
 
-### Theming
+### Theming (Light/Dark/System)
 
-Force the component into a specific theme using the `theme` prop.
+Force the component into a specific theme or let it adapt to the user's system preference using the `theme` property.
 
 ```jsx
-// Force light mode
-<ZestTextbox zest={{ theme: "light" }} placeholder="Light Mode" />
+import React from 'react';
+import { ZestTextbox } from 'jattac.libs.web.zest-textbox';
 
-// Force dark mode
-<ZestTextbox zest={{ theme: "dark" }} placeholder="Dark Mode" />
+const ThemingExample = () => {
+  return (
+    <div style={{ padding: '2rem', maxWidth: '400px', margin: '0 auto' }}>
+      <h2>Theming</h2>
+      <ZestTextbox zest={{ theme: "light" }} placeholder="Light Mode" />
+      <br /><br />
+      <ZestTextbox zest={{ theme: "dark" }} placeholder="Dark Mode" />
+      <br /><br />
+      <ZestTextbox zest={{ theme: "system" }} placeholder="System Theme (default)" />
+    </div>
+  );
+};
 
-// Automatically adapt to system theme (default)
-<ZestTextbox zest={{ theme: "system" }} placeholder="System Theme" />
+export default ThemingExample;
 ```
+
+### Multiline Textarea
+
+Render `ZestTextbox` as a `<textarea>` by setting `isMultiline` to `true` in the `zest` prop.
+
+```jsx
+import React from 'react';
+import { ZestTextbox } from 'jattac.libs.web.zest-textbox';
+
+const MultilineExample = () => {
+  return (
+    <div style={{ padding: '2rem', maxWidth: '400px', margin: '0 auto' }}>
+      <h2>Multiline Textarea</h2>
+      <ZestTextbox
+        zest={{ isMultiline: true }}
+        placeholder="Type a longer message here..."
+        rows={4}
+      />
+    </div>
+  );
+};
+
+export default MultilineExample;
+```
+
+### Helper Text with Formatting
+
+Provide dynamic helper text below the input using `helperTextConfig`. You can format the input value and even provide a custom templater for rich rendering.
+
+```jsx
+import React from 'react';
+import { ZestTextbox } from 'jattac.libs.web.zest-textbox';
+
+const HelperTextExample = () => {
+  const [value, setValue] = React.useState('');
+
+  const currencyFormatter = (val) => {
+    const num = parseFloat(val);
+    return isNaN(num) ? '' : `$${num.toFixed(2)}`;
+  };
+
+  const customTemplater = (formattedValue) => (
+    <span>
+      Formatted: <strong>{formattedValue || 'N/A'}</strong>
+    </span>
+  );
+
+  return (
+    <div style={{ padding: '2rem', maxWidth: '400px', margin: '0 auto' }}>
+      <h2>Helper Text</h2>
+      <ZestTextbox
+        type="number"
+        placeholder="Enter amount"
+        onTextChanged={setValue}
+        zest={{
+          helperTextConfig: {
+            formatter: currencyFormatter,
+            templater: customTemplater,
+          },
+        }}
+      />
+      <br /><br />
+      <ZestTextbox
+        placeholder="Type something..."
+        onTextChanged={setValue}
+        zest={{
+          helperTextConfig: {
+            templater: (val) => (
+              <span style={{ color: val.length > 10 ? 'red' : 'green' }}>
+                Length: {val.length}
+              </span>
+            ),
+          },
+        }}
+      />
+    </div>
+  );
+};
+
+export default HelperTextExample;
+```
+
+### Full Width Stretching
+
+Make the textbox take up the full width of its parent container by setting `stretch` to `true` in the `zest` prop.
+
+```jsx
+import React from 'react';
+import { ZestTextbox } from 'jattac.libs.web.zest-textbox';
+
+const StretchExample = () => {
+  return (
+    <div style={{ padding: '2rem', maxWidth: '400px', margin: '0 auto', border: '1px dashed #ccc' }}>
+      <h2>Full Width Stretching</h2>
+      <ZestTextbox zest={{ stretch: true }} placeholder="I stretch to full width!" />
+    </div>
+  );
+};
+
+export default StretchExample;
+```
+
+## Centralized Configuration
+
+To maintain consistency and reduce boilerplate, `ZestTextbox` supports centralized configuration using React Context. This allows you to define default `ZestProps` for all `ZestTextbox` instances within a provider's scope. Component-level `zest` props will always override these global defaults.
+
+### How it Works
+
+1.  **`ZestTextboxConfigProvider`:** Wrap your application or a part of it with this provider. Pass a `value` prop containing the default `ZestProps` you want to apply.
+2.  **`ZestConfigValue<T>`:** Properties within `ZestProps` can be a primitive value (`T`), a function returning `T` (`() => T`), or an asynchronous function returning a Promise of `T` (`() => Promise<T>`). This provides immense flexibility for dynamic or async defaults.
+
+### Usage Example
+
+Here's how you can set up a global theme and size, and then override it for a specific component:
+
+```jsx
+import React from 'react';
+import { ZestTextbox, ZestTextboxConfigProvider } from 'jattac.libs.web.zest-textbox';
+
+const AppWithCentralConfig = () => {
+  // Define your global default ZestProps
+  const globalDefaultZestProps = {
+    theme: "dark", // All textboxes will be dark by default
+    zSize: () => "lg", // All textboxes will be large by default (function example)
+    animatedCounter: Promise.resolve(true), // Async example
+  };
+
+  return (
+    <ZestTextboxConfigProvider value={globalDefaultZestProps}>
+      <div style={{ padding: '2rem', maxWidth: '600px', margin: '0 auto' }}>
+        <h1>Centralized Configuration Example</h1>
+
+        <h3>Default ZestTextbox (inherits global defaults)</h3>
+        <ZestTextbox placeholder="I'm large, dark, and animated!" />
+        <br /><br />
+
+        <h3>Overridden ZestTextbox (component props take precedence)</h3>
+        <ZestTextbox
+          placeholder="I'm light, overriding the global dark theme"
+          zest={{ theme: "light" }} // Overrides the global dark theme
+        />
+        <br /><br />
+
+        <h3>Another Default ZestTextbox</h3>
+        <ZestTextbox placeholder="I'm also large, dark, and animated!" />
+      </div>
+    </ZestTextboxConfigProvider>
+  );
+};
+
+export default AppWithCentralConfig;
+```
+
+### Prioritization Rules
+
+The resolution order for `ZestProps` is as follows:
+
+1.  **Component-level `zest` prop:** Explicit props passed directly to a `ZestTextbox` instance have the highest priority.
+2.  **`ZestTextboxConfigProvider` `value` prop:** Defaults provided by the nearest `ZestTextboxConfigProvider` come next.
+3.  **Hardcoded internal defaults:** If no `zest` prop is provided on the component and no provider is found (or a specific property isn't defined in the provider), internal hardcoded defaults are used.
+
+## Internal Architecture
+
+The `ZestTextbox` component has been refactored internally for improved maintainability, readability, and reusability. Its core logic is now distributed across several custom React hooks and smaller, focused sub-components. This internal restructuring does **not** introduce any breaking changes to the public API.
+
+The internal structure now includes:
+*   `UI/hooks/`: Contains custom React hooks (e.g., `useThemeDetector`, `usePasswordVisibility`, `useCharacterCounter`, `useHelperText`, `useZestTextboxConfig`).
+*   `UI/components/`: Contains smaller, focused UI components (e.g., `PasswordToggleButton`, `CharacterCounter`, `ProgressBar`, `HelperTextDisplay`).
+*   `UI/utils/`: Contains utility functions (e.g., `numericInputFilter`).
+*   `UI/types.ts`: Defines shared TypeScript interfaces and types.
+*   `UI/contexts/`: Contains React Contexts and Providers (e.g., `ZestTextboxConfigContext`, `ZestTextboxConfigProvider`).
 
 ## Breaking Changes
 
@@ -174,7 +446,7 @@ Contributions are welcome! If you have a feature request, bug report, or pull re
 1.  Clone the repository.
 2.  Install dependencies with `npm install`.
 3.  Run the build with `npm run build`.
-4.  The internal architecture now includes `UI/hooks`, `UI/components`, and `UI/utils` directories for better organization and separation of concerns.
+4.  The internal architecture now includes `UI/hooks`, `UI/components`, `UI/utils`, and `UI/contexts` directories for better organization and separation of concerns.
 
 ## License
 
