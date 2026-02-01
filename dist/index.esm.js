@@ -312,6 +312,10 @@ var defaultResolvedZestProps = {
 };
 var useZestTextboxConfig = function (componentZestProps, inputType) {
     var contextDefaultZestProps = useZestTextboxConfig$1().defaultZestProps; // Pass generic T
+    // Debugging: Log context and component props
+    console.log("useZestTextboxConfig: contextDefaultZestProps", contextDefaultZestProps);
+    console.log("useZestTextboxConfig: componentZestProps", componentZestProps);
+    console.log("useZestTextboxConfig: inputType", inputType);
     var _a = useState(defaultResolvedZestProps), resolvedZestProps = _a[0], setResolvedZestProps = _a[1]; // Cast to generic type
     // Memoize the merged props to avoid unnecessary re-renders
     var mergedZestProps = useMemo(function () {
@@ -330,6 +334,8 @@ var useZestTextboxConfig = function (componentZestProps, inputType) {
         }
         // Apply component-level props (highest precedence)
         currentMergedProps = __assign(__assign({}, currentMergedProps), componentZestProps);
+        // Debugging: Log merged props
+        console.log("useZestTextboxConfig: mergedZestProps", currentMergedProps);
         return currentMergedProps;
     }, [contextDefaultZestProps, componentZestProps, inputType]); // Added inputType to dependencies
     useEffect(function () {
@@ -379,6 +385,9 @@ var useZestTextboxConfig = function (componentZestProps, inputType) {
                         return [4 /*yield*/, resolveZestConfigValue(mergedZestProps.validator, defaultResolvedZestProps.validator)];
                     case 9:
                         _j.validator = _k.sent();
+                        // Debugging: Log newResolvedProps before setting state
+                        console.log("useZestTextboxConfig: newResolvedProps", newResolvedProps);
+                        console.log("useZestTextboxConfig: current resolvedZestProps", resolvedZestProps);
                         setResolvedZestProps(newResolvedProps);
                         return [2 /*return*/];
                 }

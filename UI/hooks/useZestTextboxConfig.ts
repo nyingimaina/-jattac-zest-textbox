@@ -34,6 +34,12 @@ const defaultResolvedZestProps = { // Removed explicit type here, will be inferr
 export const useZestTextboxConfig = <T = string>(componentZestProps: ZestProps<T> | undefined, inputType?: HtmlInputType) => { // Made generic
   const { defaultZestProps: contextDefaultZestProps } = useZestTextboxContext<T>(); // Pass generic T
 
+  // Debugging: Log context and component props
+  console.log("useZestTextboxConfig: contextDefaultZestProps", contextDefaultZestProps);
+  console.log("useZestTextboxConfig: componentZestProps", componentZestProps);
+  console.log("useZestTextboxConfig: inputType", inputType);
+
+
   const [resolvedZestProps, setResolvedZestProps] = useState<ResolvedZestProps<T>>(defaultResolvedZestProps as ResolvedZestProps<T>); // Cast to generic type
 
   // Memoize the merged props to avoid unnecessary re-renders
@@ -56,6 +62,9 @@ export const useZestTextboxConfig = <T = string>(componentZestProps: ZestProps<T
 
     // Apply component-level props (highest precedence)
     currentMergedProps = { ...currentMergedProps, ...componentZestProps };
+
+    // Debugging: Log merged props
+    console.log("useZestTextboxConfig: mergedZestProps", currentMergedProps);
 
     return currentMergedProps;
   }, [contextDefaultZestProps, componentZestProps, inputType]); // Added inputType to dependencies
@@ -104,6 +113,11 @@ export const useZestTextboxConfig = <T = string>(componentZestProps: ZestProps<T
         mergedZestProps.validator,
         (defaultResolvedZestProps.validator as InputValidator<T> | undefined)
       );
+
+      // Debugging: Log newResolvedProps before setting state
+      console.log("useZestTextboxConfig: newResolvedProps", newResolvedProps);
+      console.log("useZestTextboxConfig: current resolvedZestProps", resolvedZestProps);
+
 
       setResolvedZestProps(newResolvedProps);
     };
