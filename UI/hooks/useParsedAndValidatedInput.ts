@@ -3,16 +3,15 @@ import { InputParser, InputValidator, HtmlInputType } from "../types";
 
 interface UseParsedAndValidatedInputArgs<T> {
   rawValue: string;
-  inputType?: HtmlInputType; // Updated inputType to HtmlInputType
+  inputType?: HtmlInputType;
   parser: InputParser<T> | undefined;
   validator: InputValidator<T> | undefined;
-  // The onTextChanged callback should receive the parsed value
   onParsedAndValidatedChange: ((value: T | undefined) => void) | undefined;
 }
 
 export const useParsedAndValidatedInput = <T>({
   rawValue,
-  inputType, // Destructure inputType
+  inputType,
   parser,
   validator,
   onParsedAndValidatedChange,
@@ -26,38 +25,47 @@ export const useParsedAndValidatedInput = <T>({
     let currentIsValid = true;
     let currentValidationMessage: string | undefined = undefined;
 
+    // Debugging: Log validator's state
+    console.log("useParsedAndValidatedInput: rawValue", rawValue);
+    console.log("useParsedAndValidatedInput: inputType", inputType);
+    console.log("useParsedAndValidatedInput: validator", validator);
+    console.log("useParsedAndValidatedInput: typeof validator", typeof validator);
+
+
     // 1. Parse the raw value
     if (parser) {
-      currentParsedValue = parser(rawValue, inputType); // Pass inputType to parser
+      currentParsedValue = parser(rawValue, inputType);
     } else {
-      // If no parser, treat rawValue as the parsed value (e.g., for text inputs)
       currentParsedValue = rawValue as unknown as T;
     }
 
     // 2. Validate the parsed value
-    if (validator) {
-      const validationResult = validator(currentParsedValue, inputType); // Pass inputType to validator
+    // Robust check: ensure validator is a function before calling
+    if (typeof validator === "function") {
+      const validationResult = validator(currentParsedValue, inputType);
       if (typeof validationResult === "string") {
         currentIsValid = false;
         currentValidationMessage = validationResult;
       } else {
         currentIsValid = validationResult;
         if (!currentIsValid) {
-          currentValidationMessage = "Invalid input."; // Generic message if validator returns false
+          currentValidationMessage = "Invalid input.";
         }
       }
+    } else if (validator !== undefined && validator !== null) {
+      // This case should ideally not happen if types are correct, but good for debugging
+      console.error("useParsedAndValidatedInput: 'validator' is not a function but not undefined/null:", validator);
     }
+
 
     setParsedValue(currentParsedValue);
     setIsValid(currentIsValid);
     setValidationMessage(currentValidationMessage);
 
-    // 3. Call the consumer's callback with the parsed and validated value
-    // Only call if a callback is provided and the input is valid
     if (onParsedAndValidatedChange && currentIsValid) {
       onParsedAndValidatedChange(currentParsedValue);
     }
-  }, [rawValue, inputType, parser, validator, onParsedAndValidatedChange]); // Add inputType to dependencies
+  }, [rawValue, inputType, parser, validator, onParsedAndValidatedChange]);
 
   return { parsedValue, isValid, validationMessage };
 };

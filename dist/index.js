@@ -392,8 +392,7 @@ var useZestTextboxConfig = function (componentZestProps, inputType) {
 };
 
 var useParsedAndValidatedInput = function (_a) {
-    var rawValue = _a.rawValue, inputType = _a.inputType, // Destructure inputType
-    parser = _a.parser, validator = _a.validator, onParsedAndValidatedChange = _a.onParsedAndValidatedChange;
+    var rawValue = _a.rawValue, inputType = _a.inputType, parser = _a.parser, validator = _a.validator, onParsedAndValidatedChange = _a.onParsedAndValidatedChange;
     var _b = react.useState(undefined), parsedValue = _b[0], setParsedValue = _b[1];
     var _c = react.useState(true), isValid = _c[0], setIsValid = _c[1];
     var _d = react.useState(undefined), validationMessage = _d[0], setValidationMessage = _d[1];
@@ -401,17 +400,22 @@ var useParsedAndValidatedInput = function (_a) {
         var currentParsedValue = undefined;
         var currentIsValid = true;
         var currentValidationMessage = undefined;
+        // Debugging: Log validator's state
+        console.log("useParsedAndValidatedInput: rawValue", rawValue);
+        console.log("useParsedAndValidatedInput: inputType", inputType);
+        console.log("useParsedAndValidatedInput: validator", validator);
+        console.log("useParsedAndValidatedInput: typeof validator", typeof validator);
         // 1. Parse the raw value
         if (parser) {
-            currentParsedValue = parser(rawValue, inputType); // Pass inputType to parser
+            currentParsedValue = parser(rawValue, inputType);
         }
         else {
-            // If no parser, treat rawValue as the parsed value (e.g., for text inputs)
             currentParsedValue = rawValue;
         }
         // 2. Validate the parsed value
-        if (validator) {
-            var validationResult = validator(currentParsedValue, inputType); // Pass inputType to validator
+        // Robust check: ensure validator is a function before calling
+        if (typeof validator === "function") {
+            var validationResult = validator(currentParsedValue, inputType);
             if (typeof validationResult === "string") {
                 currentIsValid = false;
                 currentValidationMessage = validationResult;
@@ -419,19 +423,21 @@ var useParsedAndValidatedInput = function (_a) {
             else {
                 currentIsValid = validationResult;
                 if (!currentIsValid) {
-                    currentValidationMessage = "Invalid input."; // Generic message if validator returns false
+                    currentValidationMessage = "Invalid input.";
                 }
             }
+        }
+        else if (validator !== undefined && validator !== null) {
+            // This case should ideally not happen if types are correct, but good for debugging
+            console.error("useParsedAndValidatedInput: 'validator' is not a function but not undefined/null:", validator);
         }
         setParsedValue(currentParsedValue);
         setIsValid(currentIsValid);
         setValidationMessage(currentValidationMessage);
-        // 3. Call the consumer's callback with the parsed and validated value
-        // Only call if a callback is provided and the input is valid
         if (onParsedAndValidatedChange && currentIsValid) {
             onParsedAndValidatedChange(currentParsedValue);
         }
-    }, [rawValue, inputType, parser, validator, onParsedAndValidatedChange]); // Add inputType to dependencies
+    }, [rawValue, inputType, parser, validator, onParsedAndValidatedChange]);
     return { parsedValue: parsedValue, isValid: isValid, validationMessage: validationMessage };
 };
 
