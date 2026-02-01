@@ -13,7 +13,7 @@
   box-sizing: border-box;
   resize: none;
   font-size: 1rem; /* 16px */
-  padding-bottom: 2rem; /* 32px */
+  padding-bottom: 0.5rem; /* Reduced padding to make space for progress bar */
 }
 
 .textbox:focus {
