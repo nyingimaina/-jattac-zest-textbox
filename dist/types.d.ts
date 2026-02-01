@@ -1,8 +1,8 @@
 import React from "react";
 export type ZestTextboxSize = "sm" | "md" | "lg";
 export type ZestConfigValue<T> = T | (() => T) | (() => Promise<T>);
-export type InputParser<T> = (value: string) => T | undefined;
-export type InputValidator<T> = (value: T | undefined) => boolean | string;
+export type InputParser<T> = (value: string, inputType?: string) => T | undefined;
+export type InputValidator<T> = (value: T | undefined, inputType?: string) => boolean | string;
 export interface HelperTextConfig {
     /**
      * A function to process the raw input value into a new string.
@@ -36,7 +36,7 @@ export interface ZestProps {
      * This is a convenience prop to avoid using `event.target.value` and manual parsing/validation.
      * @param value The current parsed and validated value of the input, or `undefined` if parsing failed.
      */
-    onTextChanged?: (value: any | undefined) => void;
+    onTextChanged?: <T>(value: T | undefined) => void;
     /**
      * Sets the size of the textbox, affecting padding and font size.
      * @default 'md'
@@ -84,7 +84,7 @@ export interface ZestProps {
 }
 export interface ResolvedZestProps {
     helperTextConfig: HelperTextConfig | undefined;
-    onTextChanged: ((value: any | undefined) => void) | undefined;
+    onTextChanged: (<T>(value: T | undefined) => void) | undefined;
     zSize: ZestTextboxSize;
     stretch: boolean;
     showProgressBar: boolean;

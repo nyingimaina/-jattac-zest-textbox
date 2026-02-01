@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { ZestProps, ZestConfigValue, ZestTextboxSize, HelperTextConfig, ResolvedZestProps, InputParser, InputValidator } from "../types";
 import { useZestTextboxConfig as useZestTextboxContext } from "../contexts/ZestTextboxConfigContext";
+import { defaultNumberParser, defaultNumberValidator } from "../utils/defaultParsersAndValidators"; // Import defaults
 
 // Helper function to resolve a ZestConfigValue
 async function resolveZestConfigValue<T>(
@@ -30,16 +31,34 @@ const defaultResolvedZestProps: ResolvedZestProps = {
   validator: undefined,
 };
 
-export const useZestTextboxConfig = (componentZestProps: ZestProps | undefined) => {
+export const useZestTextboxConfig = (componentZestProps: ZestProps | undefined, inputType?: string) => { // Added inputType
   const { defaultZestProps: contextDefaultZestProps } = useZestTextboxContext();
 
   const [resolvedZestProps, setResolvedZestProps] = useState<ResolvedZestProps>(defaultResolvedZestProps);
 
   // Memoize the merged props to avoid unnecessary re-renders
   const mergedZestProps = useMemo(() => {
-    // Component props take precedence over context default props, which take precedence over hardcoded defaults
-    return { ...defaultResolvedZestProps, ...contextDefaultZestProps, ...componentZestProps };
-  }, [contextDefaultZestProps, componentZestProps]);
+    // Start with hardcoded defaults
+    let currentMergedProps: ZestProps = { ...defaultResolvedZestProps };
+
+    // Apply context defaults
+    currentMergedProps = { ...currentMergedProps, ...contextDefaultZestProps };
+
+    // Apply type-specific defaults if not already overridden by context
+    if (inputType === "number") {
+      if (currentMergedProps.parser === undefined) {
+        currentMergedProps.parser = defaultNumberParser;
+      }
+      if (currentMergedProps.validator === undefined) {
+        currentMergedProps.validator = defaultNumberValidator;
+      }
+    }
+
+    // Apply component-level props (highest precedence)
+    currentMergedProps = { ...currentMergedProps, ...componentZestProps };
+
+    return currentMergedProps;
+  }, [contextDefaultZestProps, componentZestProps, inputType]); // Added inputType to dependencies
 
   useEffect(() => {
     const resolveProps = async () => {

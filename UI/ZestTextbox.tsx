@@ -78,7 +78,7 @@ const ZestTextbox: React.FC<ZestTextboxProps> = (props) => {
     ...rest
   } = props;
 
-  const resolvedZestProps = useZestTextboxConfig(zest);
+  const resolvedZestProps = useZestTextboxConfig(zest, type);
   const {
     zSize,
     stretch: fullWidth,
@@ -105,6 +105,7 @@ const ZestTextbox: React.FC<ZestTextboxProps> = (props) => {
     validationMessage,
   } = useParsedAndValidatedInput({
     rawValue: value,
+    inputType: type, // Pass the type prop here
     parser: parser,
     validator: validator,
     onParsedAndValidatedChange: onTextChanged,

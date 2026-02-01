@@ -3,6 +3,7 @@ import { InputParser, InputValidator } from "../types";
 
 interface UseParsedAndValidatedInputArgs<T> {
   rawValue: string;
+  inputType?: string; // Added inputType
   parser: InputParser<T> | undefined;
   validator: InputValidator<T> | undefined;
   // The onTextChanged callback should receive the parsed value
@@ -11,6 +12,7 @@ interface UseParsedAndValidatedInputArgs<T> {
 
 export const useParsedAndValidatedInput = <T>({
   rawValue,
+  inputType, // Destructure inputType
   parser,
   validator,
   onParsedAndValidatedChange,
@@ -26,7 +28,7 @@ export const useParsedAndValidatedInput = <T>({
 
     // 1. Parse the raw value
     if (parser) {
-      currentParsedValue = parser(rawValue);
+      currentParsedValue = parser(rawValue, inputType); // Pass inputType to parser
     } else {
       // If no parser, treat rawValue as the parsed value (e.g., for text inputs)
       currentParsedValue = rawValue as unknown as T;
@@ -34,7 +36,7 @@ export const useParsedAndValidatedInput = <T>({
 
     // 2. Validate the parsed value
     if (validator) {
-      const validationResult = validator(currentParsedValue);
+      const validationResult = validator(currentParsedValue, inputType); // Pass inputType to validator
       if (typeof validationResult === "string") {
         currentIsValid = false;
         currentValidationMessage = validationResult;
@@ -55,7 +57,7 @@ export const useParsedAndValidatedInput = <T>({
     if (onParsedAndValidatedChange && currentIsValid) {
       onParsedAndValidatedChange(currentParsedValue);
     }
-  }, [rawValue, parser, validator, onParsedAndValidatedChange]);
+  }, [rawValue, inputType, parser, validator, onParsedAndValidatedChange]); // Add inputType to dependencies
 
   return { parsedValue, isValid, validationMessage };
 };

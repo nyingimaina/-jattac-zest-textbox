@@ -2,8 +2,8 @@ import React, { ReactNode } from 'react';
 
 type ZestTextboxSize = "sm" | "md" | "lg";
 type ZestConfigValue<T> = T | (() => T) | (() => Promise<T>);
-type InputParser<T> = (value: string) => T | undefined;
-type InputValidator<T> = (value: T | undefined) => boolean | string;
+type InputParser<T> = (value: string, inputType?: string) => T | undefined;
+type InputValidator<T> = (value: T | undefined, inputType?: string) => boolean | string;
 interface HelperTextConfig {
     /**
      * A function to process the raw input value into a new string.
@@ -37,7 +37,7 @@ interface ZestProps {
      * This is a convenience prop to avoid using `event.target.value` and manual parsing/validation.
      * @param value The current parsed and validated value of the input, or `undefined` if parsing failed.
      */
-    onTextChanged?: (value: any | undefined) => void;
+    onTextChanged?: <T>(value: T | undefined) => void;
     /**
      * Sets the size of the textbox, affecting padding and font size.
      * @default 'md'

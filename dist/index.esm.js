@@ -252,6 +252,18 @@ var useZestTextboxConfig$1 = function () {
     return context;
 };
 
+var defaultNumberParser = function (value) {
+    var parsed = parseFloat(value);
+    return isNaN(parsed) ? undefined : parsed;
+};
+var defaultNumberValidator = function (value) {
+    if (value === undefined) {
+        return "Invalid number format.";
+    }
+    return true;
+};
+// You can add more default parsers/validators here for other types like 'email', 'date', etc.
+
 // Helper function to resolve a ZestConfigValue
 function resolveZestConfigValue(configValue, defaultValue) {
     return __awaiter(this, void 0, void 0, function () {
@@ -290,14 +302,28 @@ var defaultResolvedZestProps = {
     parser: undefined,
     validator: undefined,
 };
-var useZestTextboxConfig = function (componentZestProps) {
+var useZestTextboxConfig = function (componentZestProps, inputType) {
     var contextDefaultZestProps = useZestTextboxConfig$1().defaultZestProps;
     var _a = useState(defaultResolvedZestProps), resolvedZestProps = _a[0], setResolvedZestProps = _a[1];
     // Memoize the merged props to avoid unnecessary re-renders
     var mergedZestProps = useMemo(function () {
-        // Component props take precedence over context default props, which take precedence over hardcoded defaults
-        return __assign(__assign(__assign({}, defaultResolvedZestProps), contextDefaultZestProps), componentZestProps);
-    }, [contextDefaultZestProps, componentZestProps]);
+        // Start with hardcoded defaults
+        var currentMergedProps = __assign({}, defaultResolvedZestProps);
+        // Apply context defaults
+        currentMergedProps = __assign(__assign({}, currentMergedProps), contextDefaultZestProps);
+        // Apply type-specific defaults if not already overridden by context
+        if (inputType === "number") {
+            if (currentMergedProps.parser === undefined) {
+                currentMergedProps.parser = defaultNumberParser;
+            }
+            if (currentMergedProps.validator === undefined) {
+                currentMergedProps.validator = defaultNumberValidator;
+            }
+        }
+        // Apply component-level props (highest precedence)
+        currentMergedProps = __assign(__assign({}, currentMergedProps), componentZestProps);
+        return currentMergedProps;
+    }, [contextDefaultZestProps, componentZestProps, inputType]); // Added inputType to dependencies
     useEffect(function () {
         var resolveProps = function () { return __awaiter(void 0, void 0, void 0, function () {
             var newResolvedProps, _a, _b, _c, _d, _e, _f, _g, _h, _j;
@@ -356,7 +382,8 @@ var useZestTextboxConfig = function (componentZestProps) {
 };
 
 var useParsedAndValidatedInput = function (_a) {
-    var rawValue = _a.rawValue, parser = _a.parser, validator = _a.validator, onParsedAndValidatedChange = _a.onParsedAndValidatedChange;
+    var rawValue = _a.rawValue, inputType = _a.inputType, // Destructure inputType
+    parser = _a.parser, validator = _a.validator, onParsedAndValidatedChange = _a.onParsedAndValidatedChange;
     var _b = useState(undefined), parsedValue = _b[0], setParsedValue = _b[1];
     var _c = useState(true), isValid = _c[0], setIsValid = _c[1];
     var _d = useState(undefined), validationMessage = _d[0], setValidationMessage = _d[1];
@@ -366,7 +393,7 @@ var useParsedAndValidatedInput = function (_a) {
         var currentValidationMessage = undefined;
         // 1. Parse the raw value
         if (parser) {
-            currentParsedValue = parser(rawValue);
+            currentParsedValue = parser(rawValue, inputType); // Pass inputType to parser
         }
         else {
             // If no parser, treat rawValue as the parsed value (e.g., for text inputs)
@@ -374,7 +401,7 @@ var useParsedAndValidatedInput = function (_a) {
         }
         // 2. Validate the parsed value
         if (validator) {
-            var validationResult = validator(currentParsedValue);
+            var validationResult = validator(currentParsedValue, inputType); // Pass inputType to validator
             if (typeof validationResult === "string") {
                 currentIsValid = false;
                 currentValidationMessage = validationResult;
@@ -394,7 +421,7 @@ var useParsedAndValidatedInput = function (_a) {
         if (onParsedAndValidatedChange && currentIsValid) {
             onParsedAndValidatedChange(currentParsedValue);
         }
-    }, [rawValue, parser, validator, onParsedAndValidatedChange]);
+    }, [rawValue, inputType, parser, validator, onParsedAndValidatedChange]); // Add inputType to dependencies
     return { parsedValue: parsedValue, isValid: isValid, validationMessage: validationMessage };
 };
 
@@ -402,7 +429,7 @@ var useParsedAndValidatedInput = function (_a) {
 var ZestTextbox = function (props) {
     var _a = props.className, className = _a === void 0 ? "" : _a, maxLength = props.maxLength, onChange = props.onChange, type = props.type, zest = props.zest, // Destructure the new zest prop
     rest = __rest(props, ["className", "maxLength", "onChange", "type", "zest"]);
-    var resolvedZestProps = useZestTextboxConfig(zest);
+    var resolvedZestProps = useZestTextboxConfig(zest, type);
     var zSize = resolvedZestProps.zSize, fullWidth = resolvedZestProps.stretch, showProgressBar = resolvedZestProps.showProgressBar, animatedCounter = resolvedZestProps.animatedCounter, theme = resolvedZestProps.theme, helperTextConfig = resolvedZestProps.helperTextConfig, onTextChanged = resolvedZestProps.onTextChanged, isMultiline = resolvedZestProps.isMultiline, parser = resolvedZestProps.parser, validator = resolvedZestProps.validator;
     var _b = useState(""), value = _b[0], setValue = _b[1];
     var isDark = useThemeDetector(theme);
@@ -411,6 +438,7 @@ var ZestTextbox = function (props) {
     var _d = useCharacterCounter(value, maxLength, animatedCounter), currentLength = _d.currentLength, charPercentage = _d.charPercentage, counterColorClass = _d.counterColorClass, showCounter = _d.showCounter;
     var _e = useParsedAndValidatedInput({
         rawValue: value,
+        inputType: type, // Pass the type prop here
         parser: parser,
         validator: validator,
         onParsedAndValidatedChange: onTextChanged,
