@@ -29,6 +29,10 @@ const ZestTextbox = <T = string>(props: ZestTextboxProps<T>) => {
     ...rest
   } = props;
 
+  // Debugging: Log ZestTextbox props
+  console.log("ZestTextbox Props:", { className, maxLength, type, zest, rest });
+
+
   const resolvedZestProps = useZestTextboxConfig(zest, type);
   const {
     zSize,
@@ -42,6 +46,10 @@ const ZestTextbox = <T = string>(props: ZestTextboxProps<T>) => {
     parser,
     validator,
   } = resolvedZestProps;
+
+  // Debugging: Log resolvedZestProps
+  console.log("ZestTextbox Resolved Zest Props:", resolvedZestProps);
+
 
   const [value, setValue] = useState("");
 
@@ -61,6 +69,10 @@ const ZestTextbox = <T = string>(props: ZestTextboxProps<T>) => {
     validator: validator,
     onParsedAndValidatedChange: onTextChanged,
   });
+
+  // Debugging: Log parsed and validated input
+  console.log("ZestTextbox Parsed/Validated:", { parsedValue, isValid, validationMessage });
+
 
   // Prioritize validation message over regular helper text
   const finalHelperTextNode = validationMessage ? (
@@ -84,14 +96,25 @@ const ZestTextbox = <T = string>(props: ZestTextboxProps<T>) => {
   ) => {
     let newValue = e.target.value;
 
+    // Debugging: Log new value from input change
+    console.log("ZestTextbox handleInputChange: raw newValue", newValue);
+
+
     const isNumeric = type === "number" || type === "tel";
     if (isNumeric) {
       newValue = filterNumericInput(newValue);
+      // Debugging: Log newValue after numeric filter
+      console.log("ZestTextbox handleInputChange: newValue after numeric filter", newValue);
     }
 
-    if (maxLength !== undefined && newValue.length > maxLength) return;
+    if (maxLength !== undefined && newValue.length > maxLength) {
+      console.log("ZestTextbox handleInputChange: maxLength exceeded, not updating value");
+      return;
+    }
 
     setValue(newValue);
+    console.log("ZestTextbox handleInputChange: setValue to", newValue);
+
 
     if (onChange) onChange(e as never);
     // onTextChanged is now handled by useParsedAndValidatedInput

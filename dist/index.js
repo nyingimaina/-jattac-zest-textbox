@@ -445,8 +445,12 @@ var useParsedAndValidatedInput = function (_a) {
 var ZestTextbox = function (props) {
     var _a = props.className, className = _a === void 0 ? "" : _a, maxLength = props.maxLength, onChange = props.onChange, type = props.type, zest = props.zest, // Destructure the new zest prop
     rest = __rest(props, ["className", "maxLength", "onChange", "type", "zest"]);
+    // Debugging: Log ZestTextbox props
+    console.log("ZestTextbox Props:", { className: className, maxLength: maxLength, type: type, zest: zest, rest: rest });
     var resolvedZestProps = useZestTextboxConfig(zest, type);
     var zSize = resolvedZestProps.zSize, fullWidth = resolvedZestProps.stretch, showProgressBar = resolvedZestProps.showProgressBar, animatedCounter = resolvedZestProps.animatedCounter, theme = resolvedZestProps.theme, helperTextConfig = resolvedZestProps.helperTextConfig, onTextChanged = resolvedZestProps.onTextChanged, isMultiline = resolvedZestProps.isMultiline, parser = resolvedZestProps.parser, validator = resolvedZestProps.validator;
+    // Debugging: Log resolvedZestProps
+    console.log("ZestTextbox Resolved Zest Props:", resolvedZestProps);
     var _b = react.useState(""), value = _b[0], setValue = _b[1];
     var isDark = useThemeDetector(theme);
     var isPassword = type === "password";
@@ -458,7 +462,9 @@ var ZestTextbox = function (props) {
         parser: parser,
         validator: validator,
         onParsedAndValidatedChange: onTextChanged,
-    }), isValid = _e.isValid, validationMessage = _e.validationMessage;
+    }), parsedValue = _e.parsedValue, isValid = _e.isValid, validationMessage = _e.validationMessage;
+    // Debugging: Log parsed and validated input
+    console.log("ZestTextbox Parsed/Validated:", { parsedValue: parsedValue, isValid: isValid, validationMessage: validationMessage });
     // Prioritize validation message over regular helper text
     var finalHelperTextNode = validationMessage ? (jsxRuntime.jsx("span", { style: { color: "red" }, children: validationMessage })) : useHelperText(value, helperTextConfig);
     var classList = [
@@ -473,13 +479,20 @@ var ZestTextbox = function (props) {
         .join(" ");
     var handleInputChange = function (e) {
         var newValue = e.target.value;
+        // Debugging: Log new value from input change
+        console.log("ZestTextbox handleInputChange: raw newValue", newValue);
         var isNumeric = type === "number" || type === "tel";
         if (isNumeric) {
             newValue = filterNumericInput(newValue);
+            // Debugging: Log newValue after numeric filter
+            console.log("ZestTextbox handleInputChange: newValue after numeric filter", newValue);
         }
-        if (maxLength !== undefined && newValue.length > maxLength)
+        if (maxLength !== undefined && newValue.length > maxLength) {
+            console.log("ZestTextbox handleInputChange: maxLength exceeded, not updating value");
             return;
+        }
         setValue(newValue);
+        console.log("ZestTextbox handleInputChange: setValue to", newValue);
         if (onChange)
             onChange(e);
         // onTextChanged is now handled by useParsedAndValidatedInput
