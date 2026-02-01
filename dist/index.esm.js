@@ -247,9 +247,9 @@ var useZestTextboxConfig$1 = function () {
     if (context === undefined) {
         // This error will be caught by the useZestTextboxConfig hook in ZestTextbox.tsx
         // if the component is used outside of a provider.
-        return { defaultZestProps: {} };
+        return { defaultZestProps: {} }; // Cast to generic T
     }
-    return context;
+    return context; // Cast to generic T
 };
 
 var defaultNumberParser = function (value, inputType) {
@@ -311,21 +311,21 @@ var defaultResolvedZestProps = {
     validator: undefined,
 };
 var useZestTextboxConfig = function (componentZestProps, inputType) {
-    var contextDefaultZestProps = useZestTextboxConfig$1().defaultZestProps;
-    var _a = useState(defaultResolvedZestProps), resolvedZestProps = _a[0], setResolvedZestProps = _a[1];
+    var contextDefaultZestProps = useZestTextboxConfig$1().defaultZestProps; // Pass generic T
+    var _a = useState(defaultResolvedZestProps), resolvedZestProps = _a[0], setResolvedZestProps = _a[1]; // Cast to generic type
     // Memoize the merged props to avoid unnecessary re-renders
     var mergedZestProps = useMemo(function () {
         // Start with hardcoded defaults
-        var currentMergedProps = __assign({}, defaultResolvedZestProps);
+        var currentMergedProps = __assign({}, defaultResolvedZestProps); // Cast
         // Apply context defaults
-        currentMergedProps = __assign(__assign({}, currentMergedProps), contextDefaultZestProps);
+        currentMergedProps = __assign(__assign({}, currentMergedProps), contextDefaultZestProps); // No longer need cast here
         // Apply type-specific defaults if not already overridden by context
         if (inputType === "number") {
             if (currentMergedProps.parser === undefined) {
-                currentMergedProps.parser = defaultNumberParser;
+                currentMergedProps.parser = defaultNumberParser; // Cast
             }
             if (currentMergedProps.validator === undefined) {
-                currentMergedProps.validator = defaultNumberValidator;
+                currentMergedProps.validator = defaultNumberValidator; // Cast
             }
         }
         // Apply component-level props (highest precedence)

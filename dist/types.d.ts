@@ -26,7 +26,7 @@ export interface HelperTextConfig {
      */
     className?: string;
 }
-export interface ZestProps {
+export interface ZestProps<T = string> {
     /**
      * An object to configure the dynamic helper text displayed below the input.
      * @see HelperTextConfig
@@ -37,7 +37,7 @@ export interface ZestProps {
      * This is a convenience prop to avoid using `event.target.value` and manual parsing/validation.
      * @param value The current parsed and validated value of the input, or `undefined` if parsing failed.
      */
-    onTextChanged?: <T>(value: T | undefined) => void;
+    onTextChanged?: (value: T | undefined) => void;
     /**
      * Sets the size of the textbox, affecting padding and font size.
      * @default 'md'
@@ -76,22 +76,55 @@ export interface ZestProps {
      * A function to parse the raw string input into a desired type.
      * Returns `undefined` if parsing fails.
      */
-    parser?: ZestConfigValue<InputParser<any>>;
+    parser?: ZestConfigValue<InputParser<T>>;
     /**
      * A function to validate the parsed value.
      * Returns `true` for valid, or a string error message for invalid.
      */
-    validator?: ZestConfigValue<InputValidator<any>>;
+    validator?: ZestConfigValue<InputValidator<T>>;
 }
-export interface ResolvedZestProps {
+export interface ResolvedZestProps<T = string> {
     helperTextConfig: HelperTextConfig | undefined;
-    onTextChanged: (<T>(value: T | undefined) => void) | undefined;
+    onTextChanged: ((value: T | undefined) => void) | undefined;
     zSize: ZestTextboxSize;
     stretch: boolean;
     showProgressBar: boolean;
     animatedCounter: boolean;
     theme: "light" | "dark" | "system";
     isMultiline: boolean;
-    parser: InputParser<any> | undefined;
-    validator: InputValidator<any> | undefined;
+    parser: InputParser<T> | undefined;
+    validator: InputValidator<T> | undefined;
 }
+type SharedProps<T> = {
+    /**
+     * An object containing all custom configurations and behaviors specific to the ZestTextbox component.
+     * This encapsulates all non-native HTML input/textarea props for better discoverability and DX.
+     * @see ZestProps
+     */
+    zest?: ZestProps<T>;
+    /**
+     * A custom CSS class to apply to the main textbox element.
+     */
+    className?: string;
+    /**
+     * The maximum number of characters allowed in the input.
+     * Enables the character counter.
+     */
+    maxLength?: number;
+    /**
+     * The type of the input element. All standard HTML input types are supported.
+     * Special handling is applied for `password` and `number`.
+     * @default 'text'
+     */
+    type?: HtmlInputType;
+};
+type InputOnlyProps<T> = SharedProps<T> & // Made InputOnlyProps generic
+Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "onChange"> & {
+    onChange?: React.ChangeEventHandler<HTMLInputElement>;
+};
+type TextareaOnlyProps<T> = SharedProps<T> & // Made TextareaOnlyProps generic
+Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, "onChange"> & {
+    onChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
+};
+export type ZestTextboxProps<T = string> = InputOnlyProps<T> | TextareaOnlyProps<T>;
+export {};

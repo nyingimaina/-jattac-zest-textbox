@@ -1,3 +1,4 @@
+import * as react_jsx_runtime from 'react/jsx-runtime';
 import React, { ReactNode } from 'react';
 
 type ZestTextboxSize = "sm" | "md" | "lg";
@@ -27,7 +28,7 @@ interface HelperTextConfig {
      */
     className?: string;
 }
-interface ZestProps {
+interface ZestProps<T = string> {
     /**
      * An object to configure the dynamic helper text displayed below the input.
      * @see HelperTextConfig
@@ -38,7 +39,7 @@ interface ZestProps {
      * This is a convenience prop to avoid using `event.target.value` and manual parsing/validation.
      * @param value The current parsed and validated value of the input, or `undefined` if parsing failed.
      */
-    onTextChanged?: <T>(value: T | undefined) => void;
+    onTextChanged?: (value: T | undefined) => void;
     /**
      * Sets the size of the textbox, affecting padding and font size.
      * @default 'md'
@@ -77,21 +78,20 @@ interface ZestProps {
      * A function to parse the raw string input into a desired type.
      * Returns `undefined` if parsing fails.
      */
-    parser?: ZestConfigValue<InputParser<any>>;
+    parser?: ZestConfigValue<InputParser<T>>;
     /**
      * A function to validate the parsed value.
      * Returns `true` for valid, or a string error message for invalid.
      */
-    validator?: ZestConfigValue<InputValidator<any>>;
+    validator?: ZestConfigValue<InputValidator<T>>;
 }
-
-type SharedProps = {
+type SharedProps<T> = {
     /**
      * An object containing all custom configurations and behaviors specific to the ZestTextbox component.
      * This encapsulates all non-native HTML input/textarea props for better discoverability and DX.
      * @see ZestProps
      */
-    zest?: ZestProps;
+    zest?: ZestProps<T>;
     /**
      * A custom CSS class to apply to the main textbox element.
      */
@@ -108,14 +108,17 @@ type SharedProps = {
      */
     type?: HtmlInputType;
 };
-type InputOnlyProps = SharedProps & Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "onChange"> & {
+type InputOnlyProps<T> = SharedProps<T> & // Made InputOnlyProps generic
+Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "onChange"> & {
     onChange?: React.ChangeEventHandler<HTMLInputElement>;
 };
-type TextareaOnlyProps = SharedProps & Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, "onChange"> & {
+type TextareaOnlyProps<T> = SharedProps<T> & // Made TextareaOnlyProps generic
+Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, "onChange"> & {
     onChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
 };
-type ZestTextboxProps = InputOnlyProps | TextareaOnlyProps;
-declare const ZestTextbox: React.FC<ZestTextboxProps>;
+type ZestTextboxProps<T = string> = InputOnlyProps<T> | TextareaOnlyProps<T>;
+
+declare const ZestTextbox: <T = string>(props: ZestTextboxProps<T>) => react_jsx_runtime.JSX.Element;
 
 interface PasswordToggleButtonProps {
     isPassword: boolean;
@@ -146,11 +149,11 @@ interface HelperTextDisplayProps {
 }
 declare const HelperTextDisplay: React.FC<HelperTextDisplayProps>;
 
-interface ZestTextboxConfigProviderProps {
+interface ZestTextboxConfigProviderProps<T = string> {
     children: ReactNode;
-    value?: ZestProps;
+    value?: ZestProps<T>;
 }
-declare const ZestTextboxConfigProvider: React.FC<ZestTextboxConfigProviderProps>;
+declare const ZestTextboxConfigProvider: React.FC<ZestTextboxConfigProviderProps<any>>;
 
 export { CharacterCounter, HelperTextDisplay, PasswordToggleButton, ProgressBar, ZestTextbox, ZestTextboxConfigProvider };
 export type { HelperTextConfig, ZestProps, ZestTextboxSize };

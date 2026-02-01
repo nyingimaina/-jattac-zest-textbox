@@ -4,21 +4,21 @@ import { useZestTextboxConfig as useZestTextboxContext } from "../contexts/ZestT
 import { defaultNumberParser, defaultNumberValidator } from "../utils/defaultParsersAndValidators"; // Import defaults
 
 // Helper function to resolve a ZestConfigValue
-async function resolveZestConfigValue<T>(
-  configValue: ZestConfigValue<T> | undefined,
-  defaultValue: T
-): Promise<T> {
+async function resolveZestConfigValue<V>(
+  configValue: ZestConfigValue<V> | undefined,
+  defaultValue: V
+): Promise<V> {
   if (configValue === undefined) {
     return defaultValue;
   }
   if (typeof configValue === "function") {
-    const result = (configValue as () => T | Promise<T>)();
+    const result = (configValue as () => V | Promise<V>)();
     return result instanceof Promise ? await result : result;
   }
   return configValue;
 }
 
-const defaultResolvedZestProps: ResolvedZestProps = {
+const defaultResolvedZestProps = { // Removed explicit type here, will be inferred
   zSize: "md",
   stretch: false,
   showProgressBar: false,
@@ -31,26 +31,26 @@ const defaultResolvedZestProps: ResolvedZestProps = {
   validator: undefined,
 };
 
-export const useZestTextboxConfig = (componentZestProps: ZestProps | undefined, inputType?: HtmlInputType) => { // Updated inputType to HtmlInputType
-  const { defaultZestProps: contextDefaultZestProps } = useZestTextboxContext();
+export const useZestTextboxConfig = <T = string>(componentZestProps: ZestProps<T> | undefined, inputType?: HtmlInputType) => { // Made generic
+  const { defaultZestProps: contextDefaultZestProps } = useZestTextboxContext<T>(); // Pass generic T
 
-  const [resolvedZestProps, setResolvedZestProps] = useState<ResolvedZestProps>(defaultResolvedZestProps);
+  const [resolvedZestProps, setResolvedZestProps] = useState<ResolvedZestProps<T>>(defaultResolvedZestProps as ResolvedZestProps<T>); // Cast to generic type
 
   // Memoize the merged props to avoid unnecessary re-renders
   const mergedZestProps = useMemo(() => {
     // Start with hardcoded defaults
-    let currentMergedProps: ZestProps = { ...defaultResolvedZestProps };
+    let currentMergedProps: ZestProps<T> = { ...defaultResolvedZestProps as ZestProps<T> }; // Cast
 
     // Apply context defaults
-    currentMergedProps = { ...currentMergedProps, ...contextDefaultZestProps };
+    currentMergedProps = { ...currentMergedProps, ...contextDefaultZestProps }; // No longer need cast here
 
     // Apply type-specific defaults if not already overridden by context
     if (inputType === "number") {
       if (currentMergedProps.parser === undefined) {
-        currentMergedProps.parser = defaultNumberParser;
+        currentMergedProps.parser = defaultNumberParser as InputParser<T>; // Cast
       }
       if (currentMergedProps.validator === undefined) {
-        currentMergedProps.validator = defaultNumberValidator;
+        currentMergedProps.validator = defaultNumberValidator as InputValidator<T>; // Cast
       }
     }
 
@@ -62,47 +62,47 @@ export const useZestTextboxConfig = (componentZestProps: ZestProps | undefined, 
 
   useEffect(() => {
     const resolveProps = async () => {
-      const newResolvedProps: ResolvedZestProps = { ...defaultResolvedZestProps }; // Initialize with defaults
+      const newResolvedProps: ResolvedZestProps<T> = { ...defaultResolvedZestProps as ResolvedZestProps<T> }; // Initialize with defaults and cast
 
       // Resolve each property that can be a ZestConfigValue
       newResolvedProps.zSize = await resolveZestConfigValue(
         mergedZestProps.zSize,
-        defaultResolvedZestProps.zSize
+        (defaultResolvedZestProps.zSize as ZestTextboxSize)
       );
       newResolvedProps.stretch = await resolveZestConfigValue(
         mergedZestProps.stretch,
-        defaultResolvedZestProps.stretch
+        (defaultResolvedZestProps.stretch as boolean)
       );
       newResolvedProps.showProgressBar = await resolveZestConfigValue(
         mergedZestProps.showProgressBar,
-        defaultResolvedZestProps.showProgressBar
+        (defaultResolvedZestProps.showProgressBar as boolean)
       );
       newResolvedProps.animatedCounter = await resolveZestConfigValue(
         mergedZestProps.animatedCounter,
-        defaultResolvedZestProps.animatedCounter
+        (defaultResolvedZestProps.animatedCounter as boolean)
       );
       newResolvedProps.theme = await resolveZestConfigValue(
         mergedZestProps.theme,
-        defaultResolvedZestProps.theme
+        (defaultResolvedZestProps.theme as "light" | "dark" | "system")
       );
       newResolvedProps.isMultiline = await resolveZestConfigValue(
         mergedZestProps.isMultiline,
-        defaultResolvedZestProps.isMultiline
+        (defaultResolvedZestProps.isMultiline as boolean)
       );
       // onTextChanged is no longer a ZestConfigValue, so it's directly assigned
       newResolvedProps.onTextChanged = mergedZestProps.onTextChanged;
 
       newResolvedProps.helperTextConfig = await resolveZestConfigValue(
         mergedZestProps.helperTextConfig,
-        defaultResolvedZestProps.helperTextConfig
+        (defaultResolvedZestProps.helperTextConfig as HelperTextConfig | undefined)
       );
       newResolvedProps.parser = await resolveZestConfigValue(
         mergedZestProps.parser,
-        defaultResolvedZestProps.parser
+        (defaultResolvedZestProps.parser as InputParser<T> | undefined)
       );
       newResolvedProps.validator = await resolveZestConfigValue(
         mergedZestProps.validator,
-        defaultResolvedZestProps.validator
+        (defaultResolvedZestProps.validator as InputValidator<T> | undefined)
       );
 
       setResolvedZestProps(newResolvedProps);
