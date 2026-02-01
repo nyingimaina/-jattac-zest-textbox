@@ -1,7 +1,5 @@
-import React$1, { ReactNode } from 'react';
-
-type ZestTextboxSize = "sm" | "md" | "lg";
-interface HelperTextConfig {
+export type ZestTextboxSize = "sm" | "md" | "lg";
+export interface HelperTextConfig {
     /**
      * A function to process the raw input value into a new string.
      * Ideal for formatting operations like currency conversion or sanitization.
@@ -23,7 +21,7 @@ interface HelperTextConfig {
      */
     className?: string;
 }
-interface ZestProps {
+export interface ZestProps {
     /**
      * An object to configure the dynamic helper text displayed below the input.
      * @see HelperTextConfig
@@ -70,67 +68,3 @@ interface ZestProps {
      */
     isMultiline?: boolean;
 }
-
-type SharedProps = {
-    /**
-     * An object containing all custom configurations and behaviors specific to the ZestTextbox component.
-     * This encapsulates all non-native HTML input/textarea props for better discoverability and DX.
-     * @see ZestProps
-     */
-    zest?: ZestProps;
-    /**
-     * A custom CSS class to apply to the main textbox element.
-     */
-    className?: string;
-    /**
-     * The maximum number of characters allowed in the input.
-     * Enables the character counter.
-     */
-    maxLength?: number;
-    /**
-     * The type of the input element. All standard HTML input types are supported.
-     * Special handling is applied for `password` and `number`.
-     * @default 'text'
-     */
-    type?: "text" | "email" | "password" | "number" | "tel" | "url" | "search" | "color" | "date" | "datetime-local" | "month" | "time" | "week";
-};
-type InputOnlyProps = SharedProps & Omit<React$1.InputHTMLAttributes<HTMLInputElement>, "size" | "onChange"> & {
-    onChange?: React$1.ChangeEventHandler<HTMLInputElement>;
-};
-type TextareaOnlyProps = SharedProps & Omit<React$1.TextareaHTMLAttributes<HTMLTextAreaElement>, "onChange"> & {
-    onChange?: React$1.ChangeEventHandler<HTMLTextAreaElement>;
-};
-type ZestTextboxProps = InputOnlyProps | TextareaOnlyProps;
-declare const ZestTextbox: React$1.FC<ZestTextboxProps>;
-
-interface PasswordToggleButtonProps {
-    isPassword: boolean;
-    isPasswordVisible: boolean;
-    onToggle: () => void;
-}
-declare const PasswordToggleButton: React$1.FC<PasswordToggleButtonProps>;
-
-interface CharacterCounterProps {
-    showCounter: boolean;
-    currentLength: number;
-    maxLength: number | undefined;
-    counterColorClass: string;
-}
-declare const CharacterCounter: React$1.FC<CharacterCounterProps>;
-
-interface ProgressBarProps {
-    showProgressBar: boolean;
-    showCounter: boolean;
-    charPercentage: number;
-    counterColorClass: string;
-}
-declare const ProgressBar: React$1.FC<ProgressBarProps>;
-
-interface HelperTextDisplayProps {
-    helperTextNode: ReactNode;
-    className?: string;
-}
-declare const HelperTextDisplay: React$1.FC<HelperTextDisplayProps>;
-
-export { CharacterCounter, HelperTextDisplay, PasswordToggleButton, ProgressBar, ZestTextbox };
-export type { HelperTextConfig, ZestProps, ZestTextboxSize };

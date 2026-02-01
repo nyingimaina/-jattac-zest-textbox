@@ -7,6 +7,7 @@ A delightful, feature-rich, and highly customizable React textbox component. Bui
 ## Table of Contents
 
 - [Features](#features)
+- [Internal Architecture](#internal-architecture)
 - [Installation](#installation)
 - [Basic Usage](#basic-usage)
 - [Props API](#props-api)
@@ -28,6 +29,10 @@ A delightful, feature-rich, and highly customizable React textbox component. Bui
 - **Engaging Animations:** Subtle, delightful animations on focus and interaction.
 - **Progress Bar:** A visual indicator of the user's progress towards the `maxLength`.
 - **Accessible:** Uses `rem` units for scalability and follows accessibility best practices.
+
+## Internal Architecture
+
+The `ZestTextbox` component has been refactored internally for improved maintainability, readability, and reusability. Its core logic is now distributed across several custom React hooks and smaller, focused sub-components. This internal restructuring does **not** introduce any breaking changes to the public API.
 
 ## Installation
 
@@ -169,6 +174,7 @@ Contributions are welcome! If you have a feature request, bug report, or pull re
 1.  Clone the repository.
 2.  Install dependencies with `npm install`.
 3.  Run the build with `npm run build`.
+4.  The internal architecture now includes `UI/hooks`, `UI/components`, and `UI/utils` directories for better organization and separation of concerns.
 
 ## License
 
