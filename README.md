@@ -182,7 +182,7 @@ const NumericExample = () => {
 
   return (
     <div style={{ padding: '2rem', maxWidth: '400px', margin: '0 auto' }}>
-      <h2>Numeric Input</h2>
+      <h2>Enhanced Numeric Input</h2>
       <p>Age: {age === undefined ? 'N/A' : age}</p>
       <ZestTextbox
         type="number"
@@ -206,52 +206,55 @@ export default NumericExample;
 
 ### Custom Parser & Validator
 
-Define your own `parser` and `validator` functions to handle specific input requirements. The `inputType` is passed to these functions for context.
+Define your own `parser` and `validator` functions to handle specific input requirements. The `inputType` is passed to these functions for context. Here, we'll create a custom parser and validator for a "positive integer" number input.
 
 ```jsx
 import React from 'react';
-import ZestTextbox, { InputParser, InputValidator } from 'jattac.libs.web.zest-textbox';
+import ZestTextbox, { InputParser, InputValidator, HtmlInputType } from 'jattac.libs.web.zest-textbox';
 
-// Custom parser for a specific ID format (e.g., "ABC-123")
-const idParser: InputParser<string> = (value, inputType) => {
-  if (inputType === 'text' && value.match(/^[A-Z]{3}-\d{3}$/)) {
-    return value.toUpperCase();
+// Custom parser for positive integers
+const positiveIntegerParser: InputParser<number> = (value: string, inputType?: HtmlInputType) => {
+  if (inputType === 'number') {
+    const parsed = parseInt(value, 10);
+    return isNaN(parsed) ? undefined : parsed;
   }
-  return undefined; // Parsing failed
+  return undefined;
 };
 
-// Custom validator for the parsed ID
-const idValidator: InputValidator<string> = (parsedValue, inputType) => {
-  if (inputType === 'text' && parsedValue === undefined) {
-    return "Invalid ID format (e.g., ABC-123)";
+// Custom validator for positive integers
+const positiveIntegerValidator: InputValidator<number> = (parsedValue: number | undefined, inputType?: HtmlInputType) => {
+  if (inputType === 'number') {
+    if (parsedValue === undefined) {
+      return "Please enter a valid integer.";
+    }
+    if (parsedValue <= 0) {
+      return "Value must be a positive integer.";
+    }
   }
-  if (inputType === 'text' && parsedValue.length !== 7) {
-    return "ID must be 7 characters long.";
-  }
-  return true; // Valid
+  return true;
 };
 
-const CustomParserValidatorExample = () => {
-  const [customId, setCustomId] = React.useState<string | undefined>(undefined);
+const CustomNumericParserValidatorExample = () => {
+  const [quantity, setQuantity] = React.useState<number | undefined>(undefined);
 
   return (
     <div style={{ padding: '2rem', maxWidth: '400px', margin: '0 auto' }}>
-      <h2>Custom Parser & Validator</h2>
-      <p>Custom ID: {customId === undefined ? 'N/A' : customId}</p>
+      <h2>Custom Numeric Parser & Validator</h2>
+      <p>Quantity: {quantity === undefined ? 'N/A' : quantity}</p>
       <ZestTextbox
-        type="text"
-        placeholder="Enter custom ID (e.g., ABC-123)"
-        onTextChanged={setCustomId}
+        type="number"
+        placeholder="Enter positive quantity"
+        onTextChanged={setQuantity}
         zest={{
-          parser: idParser,
-          validator: idValidator,
+          parser: positiveIntegerParser,
+          validator: positiveIntegerValidator,
         }}
       />
     </div>
   );
 };
 
-export default CustomParserValidatorExample;
+export default CustomNumericParserValidatorExample;
 ```
 
 ### Sizing
@@ -414,11 +417,30 @@ To maintain consistency and reduce boilerplate, `ZestTextbox` supports centraliz
 
 ### Usage Example
 
-Here's how you can set up a global theme and size, and then override it for a specific component:
+Here's how you can set up a global theme and size, and then override it for a specific component. You can also define global default parsers and validators here.
 
 ```jsx
 import React from 'react';
-import ZestTextbox, { ZestTextboxConfigProvider } from 'jattac.libs.web.zest-textbox';
+import ZestTextbox, { ZestTextboxConfigProvider, InputParser, InputValidator, HtmlInputType } from 'jattac.libs.web.zest-textbox';
+
+// Global default parser for positive numbers
+const globalPositiveNumberParser: InputParser<number> = (value: string, inputType?: HtmlInputType) => {
+  if (inputType === 'number') {
+    const parsed = parseFloat(value);
+    return isNaN(parsed) || parsed <= 0 ? undefined : parsed;
+  }
+  return undefined;
+};
+
+// Global default validator for positive numbers
+const globalPositiveNumberValidator: InputValidator<number> = (parsedValue: number | undefined, inputType?: HtmlInputType) => {
+  if (inputType === 'number') {
+    if (parsedValue === undefined) {
+      return "Please enter a valid positive number.";
+    }
+  }
+  return true;
+};
 
 const AppWithCentralConfig = () => {
   // Define your global default ZestProps
@@ -426,9 +448,11 @@ const AppWithCentralConfig = () => {
     theme: "dark", // All textboxes will be dark by default
     zSize: () => "lg", // All textboxes will be large by default (function example)
     animatedCounter: Promise.resolve(true), // Async example
-    // You can also set default parsers/validators here
-    // parser: (value, type) => type === 'email' ? value.toLowerCase() : value,
+    parser: globalPositiveNumberParser, // Apply global positive number parser
+    validator: globalPositiveNumberValidator, // Apply global positive number validator
   };
+
+  const [amount, setAmount] = React.useState<number | undefined>(undefined);
 
   return (
     <ZestTextboxConfigProvider value={globalDefaultZestProps}>
@@ -436,7 +460,8 @@ const AppWithCentralConfig = () => {
         <h1>Centralized Configuration Example</h1>
 
         <h3>Default ZestTextbox (inherits global defaults)</h3>
-        <ZestTextbox placeholder="I'm large, dark, and animated!" />
+        <ZestTextbox placeholder="I'm large, dark, animated, and expect positive numbers!" type="number" onTextChanged={setAmount} />
+        <p>Amount: {amount === undefined ? 'N/A' : amount}</p>
         <br /><br />
 
         <h3>Overridden ZestTextbox (component props take precedence)</h3>
@@ -447,7 +472,7 @@ const AppWithCentralConfig = () => {
         <br /><br />
 
         <h3>Another Default ZestTextbox</h3>
-        <ZestTextbox placeholder="I'm also large, dark, and animated!" />
+        <ZestTextbox placeholder="I'm also large, dark, animated, and expect positive numbers!" type="number" />
       </div>
     </ZestTextboxConfigProvider>
   );
