@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { ZestProps, ZestConfigValue, ZestTextboxSize, HelperTextConfig, ResolvedZestProps } from "../types";
+import { ZestProps, ZestConfigValue, ZestTextboxSize, HelperTextConfig, ResolvedZestProps, InputParser, InputValidator } from "../types";
 import { useZestTextboxConfig as useZestTextboxContext } from "../contexts/ZestTextboxConfigContext";
 
 // Helper function to resolve a ZestConfigValue
@@ -26,6 +26,8 @@ const defaultResolvedZestProps: ResolvedZestProps = {
   isMultiline: false,
   onTextChanged: undefined,
   helperTextConfig: undefined,
+  parser: undefined,
+  validator: undefined,
 };
 
 export const useZestTextboxConfig = (componentZestProps: ZestProps | undefined) => {
@@ -74,6 +76,14 @@ export const useZestTextboxConfig = (componentZestProps: ZestProps | undefined) 
       newResolvedProps.helperTextConfig = await resolveZestConfigValue(
         mergedZestProps.helperTextConfig,
         defaultResolvedZestProps.helperTextConfig
+      );
+      newResolvedProps.parser = await resolveZestConfigValue(
+        mergedZestProps.parser,
+        defaultResolvedZestProps.parser
+      );
+      newResolvedProps.validator = await resolveZestConfigValue(
+        mergedZestProps.validator,
+        defaultResolvedZestProps.validator
       );
 
       setResolvedZestProps(newResolvedProps);

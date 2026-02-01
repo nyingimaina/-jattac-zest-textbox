@@ -1,6 +1,8 @@
 import React from "react";
 export type ZestTextboxSize = "sm" | "md" | "lg";
 export type ZestConfigValue<T> = T | (() => T) | (() => Promise<T>);
+export type InputParser<T> = (value: string) => T | undefined;
+export type InputValidator<T> = (value: T | undefined) => boolean | string;
 export interface HelperTextConfig {
     /**
      * A function to process the raw input value into a new string.
@@ -30,11 +32,11 @@ export interface ZestProps {
      */
     helperTextConfig?: ZestConfigValue<HelperTextConfig>;
     /**
-     * A callback that provides the raw string value of the input on every change.
-     * This is a convenience prop to avoid using `event.target.value`.
-     * @param value The current string value of the input.
+     * A callback that provides the parsed and validated value of the input on every valid change.
+     * This is a convenience prop to avoid using `event.target.value` and manual parsing/validation.
+     * @param value The current parsed and validated value of the input, or `undefined` if parsing failed.
      */
-    onTextChanged?: (value: string) => void;
+    onTextChanged?: (value: any | undefined) => void;
     /**
      * Sets the size of the textbox, affecting padding and font size.
      * @default 'md'
@@ -69,14 +71,26 @@ export interface ZestProps {
      * @default false
      */
     isMultiline?: ZestConfigValue<boolean>;
+    /**
+     * A function to parse the raw string input into a desired type.
+     * Returns `undefined` if parsing fails.
+     */
+    parser?: ZestConfigValue<InputParser<any>>;
+    /**
+     * A function to validate the parsed value.
+     * Returns `true` for valid, or a string error message for invalid.
+     */
+    validator?: ZestConfigValue<InputValidator<any>>;
 }
 export interface ResolvedZestProps {
     helperTextConfig: HelperTextConfig | undefined;
-    onTextChanged: ((value: string) => void) | undefined;
+    onTextChanged: ((value: any | undefined) => void) | undefined;
     zSize: ZestTextboxSize;
     stretch: boolean;
     showProgressBar: boolean;
     animatedCounter: boolean;
     theme: "light" | "dark" | "system";
     isMultiline: boolean;
+    parser: InputParser<any> | undefined;
+    validator: InputValidator<any> | undefined;
 }

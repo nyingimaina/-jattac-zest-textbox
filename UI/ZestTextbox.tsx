@@ -64,6 +64,7 @@ import { CharacterCounter } from "./components/CharacterCounter";
 import { ProgressBar } from "./components/ProgressBar";
 import { HelperTextDisplay } from "./components/HelperTextDisplay";
 import { useZestTextboxConfig } from "./hooks/useZestTextboxConfig";
+import { useParsedAndValidatedInput } from "./hooks/useParsedAndValidatedInput";
 
 // ... other imports
 
@@ -87,6 +88,8 @@ export const ZestTextbox: React.FC<ZestTextboxProps> = (props) => {
     helperTextConfig,
     onTextChanged,
     isMultiline,
+    parser,
+    validator,
   } = resolvedZestProps;
 
   const [value, setValue] = useState("");
@@ -95,7 +98,23 @@ export const ZestTextbox: React.FC<ZestTextboxProps> = (props) => {
   const isPassword = type === "password";
   const { isPasswordVisible, togglePasswordVisibility } = usePasswordVisibility(isPassword);
   const { currentLength, charPercentage, counterColorClass, showCounter } = useCharacterCounter(value, maxLength, animatedCounter);
-  const helperTextNode = useHelperText(value, helperTextConfig);
+
+  const {
+    parsedValue,
+    isValid,
+    validationMessage,
+  } = useParsedAndValidatedInput({
+    rawValue: value,
+    parser: parser,
+    validator: validator,
+    onParsedAndValidatedChange: onTextChanged,
+  });
+
+  // Prioritize validation message over regular helper text
+  const finalHelperTextNode = validationMessage ? (
+    <span style={{ color: "red" }}>{validationMessage}</span>
+  ) : useHelperText(value, helperTextConfig);
+
 
   const classList = [
     styles.textbox,
@@ -103,6 +122,7 @@ export const ZestTextbox: React.FC<ZestTextboxProps> = (props) => {
     fullWidth ? styles.fullWidth : "",
     className,
     isDark ? styles.dark : "",
+    !isValid ? styles.error : "", // Add error class if not valid
   ]
     .filter(Boolean)
     .join(" ");
@@ -122,7 +142,7 @@ export const ZestTextbox: React.FC<ZestTextboxProps> = (props) => {
     setValue(newValue);
 
     if (onChange) onChange(e as never);
-    if (onTextChanged) onTextChanged(newValue);
+    // onTextChanged is now handled by useParsedAndValidatedInput
   };
 
   const isNumeric = type === "number" || type === "tel";
@@ -150,7 +170,7 @@ export const ZestTextbox: React.FC<ZestTextboxProps> = (props) => {
       )}
 
       <HelperTextDisplay
-        helperTextNode={helperTextNode}
+        helperTextNode={finalHelperTextNode}
         className={helperTextConfig?.className || ''}
       />
 

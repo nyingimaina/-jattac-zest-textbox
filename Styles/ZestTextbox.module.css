@@ -23,6 +23,17 @@
   animation: pulse-light 0.5s 1;
 }
 
+/* === Error State === */
+.error {
+  border-color: #ef4444; /* Red-500 */
+  box-shadow: 0 0 0 0.125rem rgba(239, 68, 68, 0.25); /* Red-500 with 25% opacity */
+}
+
+.error:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 0.125rem rgba(239, 68, 68, 0.35);
+}
+
 /* === Sizes === */
 .sm {
   padding: 0.5rem 0.75rem; /* 8px 12px */
@@ -96,6 +107,16 @@ textarea.textbox {
 
 :global(.dark) .counter {
   color: #9ca3af;
+}
+
+:global(.dark) .error {
+  border-color: #f87171; /* Red-400 for dark mode */
+  box-shadow: 0 0 0 0.125rem rgba(248, 113, 113, 0.35);
+}
+
+:global(.dark) .error:focus {
+  border-color: #f87171;
+  box-shadow: 0 0 0 0.125rem rgba(248, 113, 113, 0.45);
 }
 
 /* === Password Toggle === */
