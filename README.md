@@ -78,11 +78,11 @@ export default App;
 | `zest`      | `ZestProps`                        | `undefined` | An object containing all custom configurations and behaviors specific to the ZestTextbox component. See `ZestProps` interface for details below. |
 | `className` | `string`                           | `""`        | A custom CSS class to apply to the main textbox element.                                                                                 |
 | `maxLength` | `number`                           | `undefined` | The maximum number of characters allowed. Enables the character counter and progress bar.                                                               |
-| `type`      | `HtmlInputType`                    | `'text'`    | The type of the input element. All standard HTML input types are supported. Special handling is applied for `password` and `number`.     |
+| `type`      | `HtmlInputType`                    | `'text'`    | The type of the input element. All standard HTML input types are supported, plus the semantic types "currency" and "percentage". Special handling is applied for `password`, `number`, `currency`, and `percentage`.     |
 
 ### `ZestProps` Interface Details
 
-The `zest` prop is an object that encapsulates all the unique features of `ZestTextbox`. Its properties can accept primitive values, functions, or asynchronous functions (`ZestConfigValue<T>`) for dynamic configuration, especially useful with [Centralized Configuration](#centralized-configuration).
+The `zest` prop is an object that encapsulates all the unique features of `ZestTextbox`. Its properties can accept primitive values, functions that receive the input's `type` for type-aware logic, or asynchronous versions of those functions (`ZestConfigValue<T>`). This is especially powerful for dynamic, app-wide settings with [Centralized Configuration](#centralized-configuration).
 
 ```typescript
 import { ZestTextboxSize, ZestConfigValue, HelperTextConfig, InputParser, InputValidator, HtmlInputType } from 'jattac.libs.web.zest-textbox';
@@ -168,9 +168,11 @@ const CounterExample = () => {
 export default CounterExample;
 ```
 
-### Enhanced Numeric Input
+### Numeric and Semantic Inputs
 
 Set `type="number"` for intelligent filtering that allows only digits, a single decimal point, and a single leading negative sign. The `onTextChanged` callback will now receive a `number | undefined`.
+
+You can also use the semantic types `type="currency"` or `type="percentage"`. These behave identically to `type="number"` by default but provide clearer intent and allow for type-specific logic in global configurations.
 
 ```jsx
 import React from 'react';
@@ -180,22 +182,33 @@ const NumericExample = () => {
   const [age, setAge] = React.useState<number | undefined>(undefined);
   const [price, setPrice] = React.useState<number | undefined>(undefined);
 
+  const currencyFormatter = (val: string) => {
+    const num = parseFloat(val);
+    return isNaN(num) ? '' : `${num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  };
+
   return (
     <div style={{ padding: '2rem', maxWidth: '400px', margin: '0 auto' }}>
-      <h2>Enhanced Numeric Input</h2>
-      <p>Age: {age === undefined ? 'N/A' : age}</p>
+      <h2>Numeric and Semantic Inputs</h2>
+      <p>Age (type="number"): {age === undefined ? 'N/A' : age}</p>
       <ZestTextbox
         type="number"
         placeholder="Enter your age"
         onTextChanged={setAge}
       />
       <br /><br />
-      <p>Price: {price === undefined ? 'N/A' : `$${price.toFixed(2)}`}</p>
+      <p>Price (type="currency"): {price === undefined ? 'N/A' : price}</p>
       <ZestTextbox
-        type="number"
+        type="currency"
         placeholder="Enter a price"
         onTextChanged={setPrice}
         defaultValue="19.99"
+        zest={{
+          helperTextConfig: {
+            formatter: currencyFormatter,
+            templater: (formatted) => `Formatted: ${formatted}`
+          }
+        }}
       />
     </div>
   );
@@ -413,46 +426,27 @@ To maintain consistency and reduce boilerplate, `ZestTextbox` supports centraliz
 ### How it Works
 
 1.  **`ZestTextboxConfigProvider`:** Wrap your application or a part of it with this provider. Pass a `value` prop containing the default `ZestProps` you want to apply.
-2.  **`ZestConfigValue<T>`:** Properties within `ZestProps` can be a primitive value (`T`), a function returning `T` (`() => T`), or an asynchronous function returning a Promise of `T` (`() => Promise<T>`). This provides immense flexibility for dynamic or async defaults.
+2.  **`ZestConfigValue<T>`:** Properties within `ZestProps` can be a primitive value (`T`), a function that receives the `inputType` and returns `T` (`(inputType?: HtmlInputType) => T`), or an asynchronous function that does the same (`(inputType?: HtmlInputType) => Promise<T>`). This provides immense flexibility for creating dynamic, type-aware defaults.
 
 ### Usage Example
 
-Here's how you can set up a global theme and size, and then override it for a specific component. You can also define global default parsers and validators here.
+Here's how you can set up a global theme and size, and then override it for a specific component. The `zSize` prop is configured to return a different size depending on the `inputType`.
 
 ```jsx
 import React from 'react';
 import ZestTextbox, { ZestTextboxConfigProvider, InputParser, InputValidator, HtmlInputType } from 'jattac.libs.web.zest-textbox';
 
-// Global default parser for positive numbers
-const globalPositiveNumberParser: InputParser<number> = (value: string, inputType?: HtmlInputType) => {
-  if (inputType === 'number') {
-    const parsed = parseFloat(value);
-    return isNaN(parsed) || parsed <= 0 ? undefined : parsed;
-  }
-  return undefined;
-};
-
-// Global default validator for positive numbers
-const globalPositiveNumberValidator: InputValidator<number> = (parsedValue: number | undefined, inputType?: HtmlInputType) => {
-  if (inputType === 'number') {
-    if (parsedValue === undefined) {
-      return "Please enter a valid positive number.";
-    }
-  }
-  return true;
-};
-
 const AppWithCentralConfig = () => {
   // Define your global default ZestProps
   const globalDefaultZestProps = {
     theme: "dark", // All textboxes will be dark by default
-    zSize: () => "lg", // All textboxes will be large by default (function example)
+    // Make size dynamic based on the input type
+    zSize: (inputType) => {
+      if (inputType === 'password') return 'sm'; // Small for passwords
+      return 'lg'; // Large for everything else
+    },
     animatedCounter: Promise.resolve(true), // Async example
-    parser: globalPositiveNumberParser, // Apply global positive number parser
-    validator: globalPositiveNumberValidator, // Apply global positive number validator
   };
-
-  const [amount, setAmount] = React.useState<number | undefined>(undefined);
 
   return (
     <ZestTextboxConfigProvider value={globalDefaultZestProps}>
@@ -460,8 +454,9 @@ const AppWithCentralConfig = () => {
         <h1>Centralized Configuration Example</h1>
 
         <h3>Default ZestTextbox (inherits global defaults)</h3>
-        <ZestTextbox placeholder="I'm large, dark, animated, and expect positive numbers!" type="number" onTextChanged={setAmount} />
-        <p>Amount: {amount === undefined ? 'N/A' : amount}</p>
+        <ZestTextbox placeholder="I'm large and dark (default)" />
+        <br /><br />
+        <ZestTextbox placeholder="I'm a small password field" type="password" />
         <br /><br />
 
         <h3>Overridden ZestTextbox (component props take precedence)</h3>
@@ -469,10 +464,6 @@ const AppWithCentralConfig = () => {
           placeholder="I'm light, overriding the global dark theme"
           zest={{ theme: "light" }} // Overrides the global dark theme
         />
-        <br /><br />
-
-        <h3>Another Default ZestTextbox</h3>
-        <ZestTextbox placeholder="I'm also large, dark, animated, and expect positive numbers!" type="number" />
       </div>
     </ZestTextboxConfigProvider>
   );
