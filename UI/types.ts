@@ -26,24 +26,33 @@ export type ZestConfigValue<T> = T | ((inputType?: HtmlInputType) => T) | ((inpu
 export type InputParser<T> = (value: string, inputType?: HtmlInputType) => T | undefined;
 export type InputValidator<T> = (value: T | undefined, inputType?: HtmlInputType) => boolean | string; // Returns boolean for valid, string for error message
 
+// The rich context object for advanced, dynamic configurations.
+export interface ZestContext<T = string> {
+  /** The raw string value from the textbox. */
+  value: string;
+  /** The parsed and validated value. Its type is determined by the active parser. */
+  parsedValue?: T;
+  /** The full set of props passed to the ZestTextbox component instance. */
+  props: ZestTextboxProps<T>;
+}
+
 export interface HelperTextConfig {
   /**
-   * A function to process the raw input value into a new string.
+   * A function to process data into a new string, which is then passed to the templater.
    * Ideal for formatting operations like currency conversion or sanitization.
-   * @param value The raw string value from the textbox.
-   * @returns The processed string to be used by the templater or for default rendering.
+   * @param context A rich object containing the input's value, parsedValue, and props.
+   * @returns The processed string to be used by the templater.
    */
-  formatter?: (value: string) => string;
+  formatter?: (context: ZestContext<any>) => string;
 
   /**
    * An optional function for advanced rendering of the helper text.
-   * It receives the processed string (from `formatter` or the raw value if no formatter is provided)
-   * and should return a ReactNode. If not provided, the processed string
-   * is rendered with default muted styling.
-   * @param formattedValue The processed string.
+   * It receives the processed string (from `formatter`) and the full context object.
+   * @param formattedValue The string returned from the `formatter` function.
+   * @param context A rich object containing the input's value, parsedValue, and props.
    * @returns The ReactNode to be rendered as helper text.
    */
-  templater?: (formattedValue: string) => React.ReactNode;
+  templater?: (formattedValue: string, context: ZestContext<any>) => React.ReactNode;
 
   /**
    * An optional CSS class to apply to the helper text container for custom styling.

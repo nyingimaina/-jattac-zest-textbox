@@ -344,23 +344,24 @@ export default MultilineExample;
 
 ### Helper Text with Formatting
 
-Provide dynamic helper text below the input using `helperTextConfig`. You can format the input value and even provide a custom templater for rich rendering.
+Provide dynamic helper text below the input using `helperTextConfig`. The `formatter` and `templater` functions now receive a rich `context` object, giving you access to the raw `value`, `parsedValue`, and the component's `props`.
 
 ```jsx
 import React from 'react';
-import ZestTextbox from 'jattac.libs.web.zest-textbox';
+import ZestTextbox, { ZestContext } from 'jattac.libs.web.zest-textbox';
 
 const HelperTextExample = () => {
-  const [value, setValue] = React.useState('');
+  const [amount, setAmount] = React.useState<number | undefined>(undefined);
+  const [message, setMessage] = React.useState('');
 
-  const currencyFormatter = (val) => {
-    const num = parseFloat(val);
-    return isNaN(num) ? '' : `$${num.toFixed(2)}`;
+  const currencyFormatter = (context: ZestContext<number>) => {
+    const num = context.parsedValue;
+    return num === undefined ? '' : `${num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   };
 
-  const customTemplater = (formattedValue) => (
-    <span>
-      Formatted: <strong>{formattedValue || 'N/A'}</strong>
+  const messageTemplater = (formattedValue: string, context: ZestContext<string>) => (
+    <span style={{ color: context.value.length > (context.props.maxLength || 0) * 0.8 ? 'orange' : 'green' }}>
+      Length: {context.value.length} / {context.props.maxLength || '∞'}
     </span>
   );
 
@@ -368,27 +369,28 @@ const HelperTextExample = () => {
     <div style={{ padding: '2rem', maxWidth: '400px', margin: '0 auto' }}>
       <h2>Helper Text</h2>
       <ZestTextbox
-        type="number"
+        type="currency"
         placeholder="Enter amount"
-        onTextChanged={setValue}
+        onTextChanged={setAmount}
         zest={{
           helperTextConfig: {
             formatter: currencyFormatter,
-            templater: customTemplater,
+            templater: (formatted, context) => (
+              <span>
+                Formatted: <strong>{formatted || 'N/A'}</strong> (Type: {context.props.type})
+              </span>
+            ),
           },
         }}
       />
       <br /><br />
       <ZestTextbox
-        placeholder="Type something..."
-        onTextChanged={setValue}
+        maxLength={50}
+        placeholder="Type something (max 50 chars)..."
+        onTextChanged={setMessage}
         zest={{
           helperTextConfig: {
-            templater: (val) => (
-              <span style={{ color: val.length > 10 ? 'red' : 'green' }}>
-                Length: {val.length}
-              </span>
-            ),
+            templater: messageTemplater,
           },
         }}
       />
