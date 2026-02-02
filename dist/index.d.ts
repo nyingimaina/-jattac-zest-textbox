@@ -2,8 +2,8 @@ import * as react_jsx_runtime from 'react/jsx-runtime';
 import React, { ReactNode } from 'react';
 
 type ZestTextboxSize = "sm" | "md" | "lg";
-type HtmlInputType = "text" | "email" | "password" | "number" | "tel" | "url" | "search" | "color" | "date" | "datetime-local" | "month" | "time" | "week";
-type ZestConfigValue<T> = T | (() => T) | (() => Promise<T>);
+type HtmlInputType = "text" | "email" | "password" | "number" | "tel" | "url" | "search" | "color" | "date" | "datetime-local" | "month" | "time" | "week" | "currency" | "percentage";
+type ZestConfigValue<T> = T | ((inputType?: HtmlInputType) => T) | ((inputType?: HtmlInputType) => Promise<T>);
 type InputParser<T> = (value: string, inputType?: HtmlInputType) => T | undefined;
 type InputValidator<T> = (value: T | undefined, inputType?: HtmlInputType) => boolean | string;
 interface HelperTextConfig {

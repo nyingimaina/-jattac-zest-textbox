@@ -253,7 +253,7 @@ var useZestTextboxConfig$1 = function () {
 };
 
 var defaultNumberParser = function (value, inputType) {
-    if (inputType !== "number" && inputType !== "tel") {
+    if (inputType !== "number" && inputType !== "tel" && inputType !== "currency" && inputType !== "percentage") {
         // If not a number type, don't parse as number
         return undefined;
     }
@@ -261,7 +261,7 @@ var defaultNumberParser = function (value, inputType) {
     return isNaN(parsed) ? undefined : parsed;
 };
 var defaultNumberValidator = function (value, inputType) {
-    if (inputType !== "number" && inputType !== "tel") {
+    if (inputType !== "number" && inputType !== "tel" && inputType !== "currency" && inputType !== "percentage") {
         // If not a number type, always consider valid for this validator
         return true;
     }
@@ -273,7 +273,7 @@ var defaultNumberValidator = function (value, inputType) {
 // You can add more default parsers/validators here for other types like 'email', 'date', etc.
 
 // Helper function to resolve a ZestConfigValue
-function resolveZestConfigValue(configValue, defaultValue) {
+function resolveZestConfigValue(configValue, defaultValue, inputType) {
     return __awaiter(this, void 0, void 0, function () {
         var result, _a;
         return __generator(this, function (_b) {
@@ -283,7 +283,7 @@ function resolveZestConfigValue(configValue, defaultValue) {
                         return [2 /*return*/, defaultValue];
                     }
                     if (!(typeof configValue === "function")) return [3 /*break*/, 4];
-                    result = configValue();
+                    result = configValue(inputType);
                     if (!(result instanceof Promise)) return [3 /*break*/, 2];
                     return [4 /*yield*/, result];
                 case 1:
@@ -320,7 +320,9 @@ var useZestTextboxConfig = function (componentZestProps, inputType) {
         // Apply context defaults
         currentMergedProps = __assign(__assign({}, currentMergedProps), contextDefaultZestProps); // No longer need cast here
         // Apply type-specific defaults if not already overridden by context
-        if (inputType === "number") {
+        if (inputType === "number" ||
+            inputType === "currency" ||
+            inputType === "percentage") {
             if (currentMergedProps.parser === undefined) {
                 currentMergedProps.parser = defaultNumberParser; // Cast
             }
@@ -341,42 +343,42 @@ var useZestTextboxConfig = function (componentZestProps, inputType) {
                         newResolvedProps = __assign({}, defaultResolvedZestProps);
                         // Resolve each property that can be a ZestConfigValue
                         _a = newResolvedProps;
-                        return [4 /*yield*/, resolveZestConfigValue(mergedZestProps.zSize, defaultResolvedZestProps.zSize)];
+                        return [4 /*yield*/, resolveZestConfigValue(mergedZestProps.zSize, defaultResolvedZestProps.zSize, inputType)];
                     case 1:
                         // Resolve each property that can be a ZestConfigValue
                         _a.zSize = _k.sent();
                         _b = newResolvedProps;
-                        return [4 /*yield*/, resolveZestConfigValue(mergedZestProps.stretch, defaultResolvedZestProps.stretch)];
+                        return [4 /*yield*/, resolveZestConfigValue(mergedZestProps.stretch, defaultResolvedZestProps.stretch, inputType)];
                     case 2:
                         _b.stretch = _k.sent();
                         _c = newResolvedProps;
-                        return [4 /*yield*/, resolveZestConfigValue(mergedZestProps.showProgressBar, defaultResolvedZestProps.showProgressBar)];
+                        return [4 /*yield*/, resolveZestConfigValue(mergedZestProps.showProgressBar, defaultResolvedZestProps.showProgressBar, inputType)];
                     case 3:
                         _c.showProgressBar = _k.sent();
                         _d = newResolvedProps;
-                        return [4 /*yield*/, resolveZestConfigValue(mergedZestProps.animatedCounter, defaultResolvedZestProps.animatedCounter)];
+                        return [4 /*yield*/, resolveZestConfigValue(mergedZestProps.animatedCounter, defaultResolvedZestProps.animatedCounter, inputType)];
                     case 4:
                         _d.animatedCounter = _k.sent();
                         _e = newResolvedProps;
-                        return [4 /*yield*/, resolveZestConfigValue(mergedZestProps.theme, defaultResolvedZestProps.theme)];
+                        return [4 /*yield*/, resolveZestConfigValue(mergedZestProps.theme, defaultResolvedZestProps.theme, inputType)];
                     case 5:
                         _e.theme = _k.sent();
                         _f = newResolvedProps;
-                        return [4 /*yield*/, resolveZestConfigValue(mergedZestProps.isMultiline, defaultResolvedZestProps.isMultiline)];
+                        return [4 /*yield*/, resolveZestConfigValue(mergedZestProps.isMultiline, defaultResolvedZestProps.isMultiline, inputType)];
                     case 6:
                         _f.isMultiline = _k.sent();
                         // onTextChanged is no longer a ZestConfigValue, so it's directly assigned
                         newResolvedProps.onTextChanged = mergedZestProps.onTextChanged;
                         _g = newResolvedProps;
-                        return [4 /*yield*/, resolveZestConfigValue(mergedZestProps.helperTextConfig, defaultResolvedZestProps.helperTextConfig)];
+                        return [4 /*yield*/, resolveZestConfigValue(mergedZestProps.helperTextConfig, defaultResolvedZestProps.helperTextConfig, inputType)];
                     case 7:
                         _g.helperTextConfig = _k.sent();
                         _h = newResolvedProps;
-                        return [4 /*yield*/, resolveZestConfigValue(mergedZestProps.parser, defaultResolvedZestProps.parser)];
+                        return [4 /*yield*/, resolveZestConfigValue(mergedZestProps.parser, defaultResolvedZestProps.parser, inputType)];
                     case 8:
                         _h.parser = _k.sent();
                         _j = newResolvedProps;
-                        return [4 /*yield*/, resolveZestConfigValue(mergedZestProps.validator, defaultResolvedZestProps.validator)];
+                        return [4 /*yield*/, resolveZestConfigValue(mergedZestProps.validator, defaultResolvedZestProps.validator, inputType)];
                     case 9:
                         _j.validator = _k.sent();
                         setResolvedZestProps(newResolvedProps);
@@ -385,7 +387,7 @@ var useZestTextboxConfig = function (componentZestProps, inputType) {
             });
         }); };
         resolveProps();
-    }, [mergedZestProps]); // Re-run effect if merged props change
+    }, [mergedZestProps, inputType]); // Re-run effect if merged props change
     return resolvedZestProps;
 };
 
@@ -400,7 +402,7 @@ var useParsedAndValidatedInput = function (_a) {
         // where default parsers/validators would be injected,
         // then simply pass the raw value and bypass complex logic.
         // This assumes that if parser/validator are undefined, the consumer expects raw string.
-        var isNumericType = inputType === "number" || inputType === "tel";
+        var isNumericType = inputType === "number" || inputType === "tel" || inputType === "currency" || inputType === "percentage";
         if (!parser && !validator && !isNumericType) {
             setParsedValue(rawValue); // Cast raw string to T
             setIsValid(true);
@@ -441,7 +443,7 @@ var useParsedAndValidatedInput = function (_a) {
         if (onParsedAndValidatedChange && currentIsValid) {
             onParsedAndValidatedChange(currentParsedValue);
         }
-    }, [rawValue, inputType, parser, validator, onParsedAndValidatedChange]);
+    }, [rawValue, inputType, parser, validator]);
     return { parsedValue: parsedValue, isValid: isValid, validationMessage: validationMessage };
 };
 
@@ -477,7 +479,7 @@ var ZestTextbox = function (props) {
         .join(" ");
     var handleInputChange = function (e) {
         var newValue = e.target.value;
-        var isNumeric = type === "number" || type === "tel";
+        var isNumeric = type === "number" || type === "tel" || type === "currency" || type === "percentage";
         if (isNumeric) {
             newValue = filterNumericInput(newValue);
         }
@@ -489,7 +491,7 @@ var ZestTextbox = function (props) {
             onChange(e);
         // onTextChanged is now handled by useParsedAndValidatedInput
     };
-    var isNumeric = type === "number" || type === "tel";
+    var isNumeric = type === "number" || type === "tel" || type === "currency" || type === "percentage";
     var inputType = isPassword && isPasswordVisible ? "text" : isNumeric ? "tel" : type;
     var commonProps = __assign({ className: classList, maxLength: maxLength, onChange: handleInputChange, value: value, type: inputType }, rest);
     return (jsxs("div", { className: styles.wrapper, children: [isMultiline ? ( // Use isMultiline from zest

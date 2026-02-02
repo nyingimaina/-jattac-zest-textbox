@@ -16,9 +16,11 @@ export type HtmlInputType =
   | "datetime-local"
   | "month"
   | "time"
-  | "week";
+  | "week"
+  | "currency"
+  | "percentage";
 
-export type ZestConfigValue<T> = T | (() => T) | (() => Promise<T>);
+export type ZestConfigValue<T> = T | ((inputType?: HtmlInputType) => T) | ((inputType?: HtmlInputType) => Promise<T>);
 
 // Define InputParser and InputValidator types
 export type InputParser<T> = (value: string, inputType?: HtmlInputType) => T | undefined;

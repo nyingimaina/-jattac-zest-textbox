@@ -1,7 +1,7 @@
 import React from "react";
 export type ZestTextboxSize = "sm" | "md" | "lg";
-export type HtmlInputType = "text" | "email" | "password" | "number" | "tel" | "url" | "search" | "color" | "date" | "datetime-local" | "month" | "time" | "week";
-export type ZestConfigValue<T> = T | (() => T) | (() => Promise<T>);
+export type HtmlInputType = "text" | "email" | "password" | "number" | "tel" | "url" | "search" | "color" | "date" | "datetime-local" | "month" | "time" | "week" | "currency" | "percentage";
+export type ZestConfigValue<T> = T | ((inputType?: HtmlInputType) => T) | ((inputType?: HtmlInputType) => Promise<T>);
 export type InputParser<T> = (value: string, inputType?: HtmlInputType) => T | undefined;
 export type InputValidator<T> = (value: T | undefined, inputType?: HtmlInputType) => boolean | string;
 export interface HelperTextConfig {

@@ -84,7 +84,7 @@ const ZestTextbox = <T = string>(props: ZestTextboxProps<T>) => {
   ) => {
     let newValue = e.target.value;
 
-    const isNumeric = type === "number" || type === "tel";
+    const isNumeric = type === "number" || type === "tel" || type === "currency" || type === "percentage";
     if (isNumeric) {
       newValue = filterNumericInput(newValue);
     }
@@ -99,7 +99,7 @@ const ZestTextbox = <T = string>(props: ZestTextboxProps<T>) => {
     // onTextChanged is now handled by useParsedAndValidatedInput
   };
 
-  const isNumeric = type === "number" || type === "tel";
+  const isNumeric = type === "number" || type === "tel" || type === "currency" || type === "percentage";
   const inputType = isPassword && isPasswordVisible ? "text" : isNumeric ? "tel" : type;
 
   const commonProps = {

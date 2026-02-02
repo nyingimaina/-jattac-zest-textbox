@@ -1,7 +1,7 @@
 import { InputParser, InputValidator, HtmlInputType } from "../types";
 
 export const defaultNumberParser: InputParser<number> = (value: string, inputType?: HtmlInputType) => {
-  if (inputType !== "number" && inputType !== "tel") {
+  if (inputType !== "number" && inputType !== "tel" && inputType !== "currency" && inputType !== "percentage") {
     // If not a number type, don't parse as number
     return undefined;
   }
@@ -10,7 +10,7 @@ export const defaultNumberParser: InputParser<number> = (value: string, inputTyp
 };
 
 export const defaultNumberValidator: InputValidator<number> = (value: number | undefined, inputType?: HtmlInputType) => {
-  if (inputType !== "number" && inputType !== "tel") {
+  if (inputType !== "number" && inputType !== "tel" && inputType !== "currency" && inputType !== "percentage") {
     // If not a number type, always consider valid for this validator
     return true;
   }

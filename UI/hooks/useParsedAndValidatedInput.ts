@@ -26,7 +26,7 @@ export const useParsedAndValidatedInput = <T>({
     // where default parsers/validators would be injected,
     // then simply pass the raw value and bypass complex logic.
     // This assumes that if parser/validator are undefined, the consumer expects raw string.
-    const isNumericType = inputType === "number" || inputType === "tel";
+    const isNumericType = inputType === "number" || inputType === "tel" || inputType === "currency" || inputType === "percentage";
     if (!parser && !validator && !isNumericType) {
       setParsedValue(rawValue as unknown as T); // Cast raw string to T
       setIsValid(true);
@@ -71,7 +71,7 @@ export const useParsedAndValidatedInput = <T>({
     if (onParsedAndValidatedChange && currentIsValid) {
       onParsedAndValidatedChange(currentParsedValue);
     }
-  }, [rawValue, inputType, parser, validator, onParsedAndValidatedChange]);
+  }, [rawValue, inputType, parser, validator]);
 
   return { parsedValue, isValid, validationMessage };
 };

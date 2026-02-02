@@ -6,13 +6,16 @@ import { defaultNumberParser, defaultNumberValidator } from "../utils/defaultPar
 // Helper function to resolve a ZestConfigValue
 async function resolveZestConfigValue<V>(
   configValue: ZestConfigValue<V> | undefined,
-  defaultValue: V
+  defaultValue: V,
+  inputType?: HtmlInputType
 ): Promise<V> {
   if (configValue === undefined) {
     return defaultValue;
   }
   if (typeof configValue === "function") {
-    const result = (configValue as () => V | Promise<V>)();
+    const result = (configValue as (inputType?: HtmlInputType) => V | Promise<V>)(
+      inputType
+    );
     return result instanceof Promise ? await result : result;
   }
   return configValue;
@@ -45,7 +48,11 @@ export const useZestTextboxConfig = <T = string>(componentZestProps: ZestProps<T
     currentMergedProps = { ...currentMergedProps, ...contextDefaultZestProps }; // No longer need cast here
 
     // Apply type-specific defaults if not already overridden by context
-    if (inputType === "number") {
+    if (
+      inputType === "number" ||
+      inputType === "currency" ||
+      inputType === "percentage"
+    ) {
       if (currentMergedProps.parser === undefined) {
         currentMergedProps.parser = defaultNumberParser as InputParser<T>; // Cast
       }
@@ -67,49 +74,58 @@ export const useZestTextboxConfig = <T = string>(componentZestProps: ZestProps<T
       // Resolve each property that can be a ZestConfigValue
       newResolvedProps.zSize = await resolveZestConfigValue(
         mergedZestProps.zSize,
-        (defaultResolvedZestProps.zSize as ZestTextboxSize)
+        (defaultResolvedZestProps.zSize as ZestTextboxSize),
+        inputType
       );
       newResolvedProps.stretch = await resolveZestConfigValue(
         mergedZestProps.stretch,
-        (defaultResolvedZestProps.stretch as boolean)
+        (defaultResolvedZestProps.stretch as boolean),
+        inputType
       );
       newResolvedProps.showProgressBar = await resolveZestConfigValue(
         mergedZestProps.showProgressBar,
-        (defaultResolvedZestProps.showProgressBar as boolean)
+        (defaultResolvedZestProps.showProgressBar as boolean),
+        inputType
       );
       newResolvedProps.animatedCounter = await resolveZestConfigValue(
         mergedZestProps.animatedCounter,
-        (defaultResolvedZestProps.animatedCounter as boolean)
+        (defaultResolvedZestProps.animatedCounter as boolean),
+        inputType
       );
       newResolvedProps.theme = await resolveZestConfigValue(
         mergedZestProps.theme,
-        (defaultResolvedZestProps.theme as "light" | "dark" | "system")
+        (defaultResolvedZestProps.theme as "light" | "dark" | "system"),
+        inputType
       );
       newResolvedProps.isMultiline = await resolveZestConfigValue(
         mergedZestProps.isMultiline,
-        (defaultResolvedZestProps.isMultiline as boolean)
+        (defaultResolvedZestProps.isMultiline as boolean),
+        inputType
       );
       // onTextChanged is no longer a ZestConfigValue, so it's directly assigned
       newResolvedProps.onTextChanged = mergedZestProps.onTextChanged;
 
       newResolvedProps.helperTextConfig = await resolveZestConfigValue(
         mergedZestProps.helperTextConfig,
-        (defaultResolvedZestProps.helperTextConfig as HelperTextConfig | undefined)
+        (defaultResolvedZestProps.helperTextConfig as HelperTextConfig | undefined),
+        inputType
       );
       newResolvedProps.parser = await resolveZestConfigValue(
         mergedZestProps.parser,
-        (defaultResolvedZestProps.parser as InputParser<T> | undefined)
+        (defaultResolvedZestProps.parser as InputParser<T> | undefined),
+        inputType
       );
       newResolvedProps.validator = await resolveZestConfigValue(
         mergedZestProps.validator,
-        (defaultResolvedZestProps.validator as InputValidator<T> | undefined)
+        (defaultResolvedZestProps.validator as InputValidator<T> | undefined),
+        inputType
       );
 
       setResolvedZestProps(newResolvedProps);
     };
 
     resolveProps();
-  }, [mergedZestProps]); // Re-run effect if merged props change
+  }, [mergedZestProps, inputType]); // Re-run effect if merged props change
 
   return resolvedZestProps;
 };
