@@ -162,5 +162,5 @@ interface ZestTextboxConfigProviderProps<T = string> {
 }
 declare const ZestTextboxConfigProvider: React.FC<ZestTextboxConfigProviderProps<any>>;
 
-export { CharacterCounter, HelperTextDisplay, PasswordToggleButton, ProgressBar, ZestTextbox, ZestTextboxConfigProvider };
+export { CharacterCounter, HelperTextDisplay, PasswordToggleButton, ProgressBar, ZestTextboxConfigProvider, ZestTextbox as default };
 export type { HelperTextConfig, ZestProps, ZestTextboxSize };

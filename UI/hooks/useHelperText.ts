@@ -8,6 +8,8 @@ export const useHelperText = <T>(
   helperTextConfig: HelperTextConfig | undefined
 ) => {
   const [helperTextNode, setHelperTextNode] = useState<ReactNode>(null);
+  const { type, maxLength } = props;
+  const { formatter, templater } = helperTextConfig || {};
 
   useEffect(() => {
     if (!helperTextConfig) {
@@ -17,16 +19,16 @@ export const useHelperText = <T>(
 
     const context: ZestContext<T> = { value, parsedValue, props };
 
-    const formatted = helperTextConfig.formatter
-      ? helperTextConfig.formatter(context)
+    const formatted = formatter
+      ? formatter(context)
       : value; // Fallback to raw value if no formatter
 
-    const finalNode = helperTextConfig.templater
-      ? helperTextConfig.templater(formatted, context)
+    const finalNode = templater
+      ? templater(formatted, context)
       : formatted;
 
     setHelperTextNode(finalNode);
-  }, [value, parsedValue, props, helperTextConfig]);
+  }, [value, parsedValue, type, maxLength, formatter, templater, helperTextConfig]);
 
   return helperTextNode;
 };

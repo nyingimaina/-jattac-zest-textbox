@@ -71,7 +71,7 @@ export const useParsedAndValidatedInput = <T>({
     if (onParsedAndValidatedChange && currentIsValid) {
       onParsedAndValidatedChange(currentParsedValue);
     }
-  }, [rawValue, inputType, parser, validator]);
+  }, [rawValue, inputType, parser, validator, onParsedAndValidatedChange]);
 
   return { parsedValue, isValid, validationMessage };
 };

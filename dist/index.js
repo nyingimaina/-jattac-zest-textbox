@@ -1,5 +1,7 @@
 'use strict';
 
+Object.defineProperty(exports, '__esModule', { value: true });
+
 var jsxRuntime = require('react/jsx-runtime');
 var react = require('react');
 
@@ -189,20 +191,22 @@ var useCharacterCounter = function (value, maxLength, animatedCounter) {
 
 var useHelperText = function (value, parsedValue, props, helperTextConfig) {
     var _a = react.useState(null), helperTextNode = _a[0], setHelperTextNode = _a[1];
+    var type = props.type, maxLength = props.maxLength;
+    var _b = helperTextConfig || {}, formatter = _b.formatter, templater = _b.templater;
     react.useEffect(function () {
         if (!helperTextConfig) {
             setHelperTextNode(null);
             return;
         }
         var context = { value: value, parsedValue: parsedValue, props: props };
-        var formatted = helperTextConfig.formatter
-            ? helperTextConfig.formatter(context)
+        var formatted = formatter
+            ? formatter(context)
             : value; // Fallback to raw value if no formatter
-        var finalNode = helperTextConfig.templater
-            ? helperTextConfig.templater(formatted, context)
+        var finalNode = templater
+            ? templater(formatted, context)
             : formatted;
         setHelperTextNode(finalNode);
-    }, [value, parsedValue, props, helperTextConfig]);
+    }, [value, parsedValue, type, maxLength, formatter, templater, helperTextConfig]);
     return helperTextNode;
 };
 
@@ -446,7 +450,7 @@ var useParsedAndValidatedInput = function (_a) {
         if (onParsedAndValidatedChange && currentIsValid) {
             onParsedAndValidatedChange(currentParsedValue);
         }
-    }, [rawValue, inputType, parser, validator]);
+    }, [rawValue, inputType, parser, validator, onParsedAndValidatedChange]);
     return { parsedValue: parsedValue, isValid: isValid, validationMessage: validationMessage };
 };
 
@@ -480,7 +484,7 @@ var ZestTextbox = function (props) {
     ]
         .filter(Boolean)
         .join(" ");
-    var handleInputChange = function (e) {
+    var handleInputChange = react.useCallback(function (e) {
         var newValue = e.target.value;
         var isNumeric = type === "number" || type === "tel" || type === "currency" || type === "percentage";
         if (isNumeric) {
@@ -493,7 +497,7 @@ var ZestTextbox = function (props) {
         if (onChange)
             onChange(e);
         // onTextChanged is now handled by useParsedAndValidatedInput
-    };
+    }, [type, maxLength, onChange]);
     var isNumeric = type === "number" || type === "tel" || type === "currency" || type === "percentage";
     var inputType = isPassword && isPasswordVisible ? "text" : isNumeric ? "tel" : type;
     var commonProps = __assign({ className: classList, maxLength: maxLength, onChange: handleInputChange, value: value, type: inputType }, rest);
@@ -505,6 +509,6 @@ exports.CharacterCounter = CharacterCounter;
 exports.HelperTextDisplay = HelperTextDisplay;
 exports.PasswordToggleButton = PasswordToggleButton;
 exports.ProgressBar = ProgressBar;
-exports.ZestTextbox = ZestTextbox;
 exports.ZestTextboxConfigProvider = ZestTextboxConfigProvider;
+exports.default = ZestTextbox;
 //# sourceMappingURL=index.js.map

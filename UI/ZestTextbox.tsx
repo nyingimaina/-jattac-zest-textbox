@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import styles from "../Styles/ZestTextbox.module.css";
 import { IconEyeOpen } from "./IconEyeOpen";
 import { IconEyeSlashed } from "./IconEyeSlashed";
@@ -79,25 +79,26 @@ const ZestTextbox = <T = string>(props: ZestTextboxProps<T>) => {
     .filter(Boolean)
     .join(" ");
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    let newValue = e.target.value;
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      let newValue = e.target.value;
 
-    const isNumeric = type === "number" || type === "tel" || type === "currency" || type === "percentage";
-    if (isNumeric) {
-      newValue = filterNumericInput(newValue);
-    }
+      const isNumeric = type === "number" || type === "tel" || type === "currency" || type === "percentage";
+      if (isNumeric) {
+        newValue = filterNumericInput(newValue);
+      }
 
-    if (maxLength !== undefined && newValue.length > maxLength) {
-      return;
-    }
+      if (maxLength !== undefined && newValue.length > maxLength) {
+        return;
+      }
 
-    setValue(newValue);
+      setValue(newValue);
 
-    if (onChange) onChange(e as never);
-    // onTextChanged is now handled by useParsedAndValidatedInput
-  };
+      if (onChange) onChange(e as never);
+      // onTextChanged is now handled by useParsedAndValidatedInput
+    },
+    [type, maxLength, onChange]
+  );
 
   const isNumeric = type === "number" || type === "tel" || type === "currency" || type === "percentage";
   const inputType = isPassword && isPasswordVisible ? "text" : isNumeric ? "tel" : type;

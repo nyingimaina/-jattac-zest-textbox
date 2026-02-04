@@ -1,5 +1,5 @@
 import { jsxs, jsx } from 'react/jsx-runtime';
-import { useState, useEffect, useMemo, createContext, useContext } from 'react';
+import { useState, useEffect, useMemo, createContext, useContext, useCallback } from 'react';
 
 /******************************************************************************
 Copyright (c) Microsoft Corporation.
@@ -187,20 +187,22 @@ var useCharacterCounter = function (value, maxLength, animatedCounter) {
 
 var useHelperText = function (value, parsedValue, props, helperTextConfig) {
     var _a = useState(null), helperTextNode = _a[0], setHelperTextNode = _a[1];
+    var type = props.type, maxLength = props.maxLength;
+    var _b = helperTextConfig || {}, formatter = _b.formatter, templater = _b.templater;
     useEffect(function () {
         if (!helperTextConfig) {
             setHelperTextNode(null);
             return;
         }
         var context = { value: value, parsedValue: parsedValue, props: props };
-        var formatted = helperTextConfig.formatter
-            ? helperTextConfig.formatter(context)
+        var formatted = formatter
+            ? formatter(context)
             : value; // Fallback to raw value if no formatter
-        var finalNode = helperTextConfig.templater
-            ? helperTextConfig.templater(formatted, context)
+        var finalNode = templater
+            ? templater(formatted, context)
             : formatted;
         setHelperTextNode(finalNode);
-    }, [value, parsedValue, props, helperTextConfig]);
+    }, [value, parsedValue, type, maxLength, formatter, templater, helperTextConfig]);
     return helperTextNode;
 };
 
@@ -444,7 +446,7 @@ var useParsedAndValidatedInput = function (_a) {
         if (onParsedAndValidatedChange && currentIsValid) {
             onParsedAndValidatedChange(currentParsedValue);
         }
-    }, [rawValue, inputType, parser, validator]);
+    }, [rawValue, inputType, parser, validator, onParsedAndValidatedChange]);
     return { parsedValue: parsedValue, isValid: isValid, validationMessage: validationMessage };
 };
 
@@ -478,7 +480,7 @@ var ZestTextbox = function (props) {
     ]
         .filter(Boolean)
         .join(" ");
-    var handleInputChange = function (e) {
+    var handleInputChange = useCallback(function (e) {
         var newValue = e.target.value;
         var isNumeric = type === "number" || type === "tel" || type === "currency" || type === "percentage";
         if (isNumeric) {
@@ -491,7 +493,7 @@ var ZestTextbox = function (props) {
         if (onChange)
             onChange(e);
         // onTextChanged is now handled by useParsedAndValidatedInput
-    };
+    }, [type, maxLength, onChange]);
     var isNumeric = type === "number" || type === "tel" || type === "currency" || type === "percentage";
     var inputType = isPassword && isPasswordVisible ? "text" : isNumeric ? "tel" : type;
     var commonProps = __assign({ className: classList, maxLength: maxLength, onChange: handleInputChange, value: value, type: inputType }, rest);
@@ -499,5 +501,5 @@ var ZestTextbox = function (props) {
             jsx("textarea", __assign({}, commonProps))) : (jsx("input", __assign({}, commonProps))), jsx(HelperTextDisplay, { helperTextNode: finalHelperTextNode, className: (helperTextConfig === null || helperTextConfig === void 0 ? void 0 : helperTextConfig.className) || '' }), jsx(CharacterCounter, { showCounter: showCounter, currentLength: currentLength, maxLength: maxLength, counterColorClass: counterColorClass }), jsx(PasswordToggleButton, { isPassword: isPassword, isPasswordVisible: isPasswordVisible, onToggle: togglePasswordVisibility }), jsx(ProgressBar, { showProgressBar: showProgressBar, showCounter: showCounter, charPercentage: charPercentage, counterColorClass: counterColorClass })] }));
 };
 
-export { CharacterCounter, HelperTextDisplay, PasswordToggleButton, ProgressBar, ZestTextbox, ZestTextboxConfigProvider };
+export { CharacterCounter, HelperTextDisplay, PasswordToggleButton, ProgressBar, ZestTextboxConfigProvider, ZestTextbox as default };
 //# sourceMappingURL=index.esm.js.map
