@@ -5,22 +5,37 @@ import { defaultNumberParser, defaultNumberValidator } from "../utils/defaultPar
 
 const ZEST_CONFIG_TIMEOUT = 2000; // 2 seconds
 
-// Helper function to resolve a ZestConfigValue
-async function resolveZestConfigValue<V>(
+// Helper function to resolve a ZestConfigValue. This now ALWAYS returns a promise.
+function resolveZestConfigValue<V>(
   configValue: ZestConfigValue<V> | undefined,
   defaultValue: V,
   inputType?: HtmlInputType
 ): Promise<V> {
-  if (configValue === undefined) {
-    return defaultValue;
-  }
-  if (typeof configValue === "function") {
-    const result = (configValue as (inputType?: HtmlInputType) => V | Promise<V>)(
-      inputType
-    );
-    return result instanceof Promise ? await result : result;
-  }
-  return configValue;
+  // Wrap the entire logic in a promise to handle all cases asynchronously
+  return new Promise(resolve => {
+    if (configValue === undefined) {
+      resolve(defaultValue);
+      return;
+    }
+
+    if (typeof configValue === "function") {
+      try {
+        const result = (configValue as (inputType?: HtmlInputType) => V | Promise<V>)(
+          inputType
+        );
+        // If the result is a promise, chain it; otherwise, resolve with the sync result.
+        // This ensures that even synchronous functions are handled in the promise chain.
+        Promise.resolve(result).then(resolve);
+      } catch (e) {
+        // If a sync function throws an error, we can't recover, but this will be caught by the timeout.
+        // The promise will just never resolve.
+        console.error("ZestTextbox: Synchronous error in config function.", e);
+      }
+    } else {
+      // It's a plain value
+      resolve(configValue);
+    }
+  });
 }
 
 // Timeout wrapper for resolving config values

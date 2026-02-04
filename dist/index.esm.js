@@ -276,30 +276,31 @@ var defaultNumberValidator = function (value, inputType) {
 // You can add more default parsers/validators here for other types like 'email', 'date', etc.
 
 var ZEST_CONFIG_TIMEOUT = 2000; // 2 seconds
-// Helper function to resolve a ZestConfigValue
+// Helper function to resolve a ZestConfigValue. This now ALWAYS returns a promise.
 function resolveZestConfigValue(configValue, defaultValue, inputType) {
-    return __awaiter(this, void 0, void 0, function () {
-        var result, _a;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    if (configValue === undefined) {
-                        return [2 /*return*/, defaultValue];
-                    }
-                    if (!(typeof configValue === "function")) return [3 /*break*/, 4];
-                    result = configValue(inputType);
-                    if (!(result instanceof Promise)) return [3 /*break*/, 2];
-                    return [4 /*yield*/, result];
-                case 1:
-                    _a = _b.sent();
-                    return [3 /*break*/, 3];
-                case 2:
-                    _a = result;
-                    _b.label = 3;
-                case 3: return [2 /*return*/, _a];
-                case 4: return [2 /*return*/, configValue];
+    // Wrap the entire logic in a promise to handle all cases asynchronously
+    return new Promise(function (resolve) {
+        if (configValue === undefined) {
+            resolve(defaultValue);
+            return;
+        }
+        if (typeof configValue === "function") {
+            try {
+                var result = configValue(inputType);
+                // If the result is a promise, chain it; otherwise, resolve with the sync result.
+                // This ensures that even synchronous functions are handled in the promise chain.
+                Promise.resolve(result).then(resolve);
             }
-        });
+            catch (e) {
+                // If a sync function throws an error, we can't recover, but this will be caught by the timeout.
+                // The promise will just never resolve.
+                console.error("ZestTextbox: Synchronous error in config function.", e);
+            }
+        }
+        else {
+            // It's a plain value
+            resolve(configValue);
+        }
     });
 }
 // Timeout wrapper for resolving config values
