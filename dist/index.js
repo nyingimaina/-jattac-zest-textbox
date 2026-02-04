@@ -206,7 +206,7 @@ var useHelperText = function (value, parsedValue, props, helperTextConfig) {
             ? templater(formatted, context)
             : formatted;
         setHelperTextNode(finalNode);
-    }, [value, parsedValue, type, maxLength, formatter, templater, helperTextConfig]);
+    }, [value, parsedValue, type, maxLength, formatter, templater]);
     return helperTextNode;
 };
 
