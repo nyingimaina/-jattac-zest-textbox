@@ -3,6 +3,8 @@ import { ZestProps, ZestConfigValue, ZestTextboxSize, HelperTextConfig, Resolved
 import { useZestTextboxConfig as useZestTextboxContext } from "../contexts/ZestTextboxConfigContext";
 import { defaultNumberParser, defaultNumberValidator } from "../utils/defaultParsersAndValidators"; // Import defaults
 
+const ZEST_CONFIG_TIMEOUT = 2000; // 2 seconds
+
 // Helper function to resolve a ZestConfigValue
 async function resolveZestConfigValue<V>(
   configValue: ZestConfigValue<V> | undefined,
@@ -19,6 +21,27 @@ async function resolveZestConfigValue<V>(
     return result instanceof Promise ? await result : result;
   }
   return configValue;
+}
+
+// Timeout wrapper for resolving config values
+async function resolveWithTimeout<V>(
+  promise: Promise<V>,
+  timeout: number,
+  propName: string,
+  fallback: V
+): Promise<V> {
+  const timeoutPromise = new Promise<V>((_, reject) =>
+    setTimeout(() => reject(new Error(`Timeout for prop '${propName}'`)), timeout)
+  );
+
+  try {
+    return await Promise.race([promise, timeoutPromise]);
+  } catch (error) {
+    console.warn(
+      `ZestTextbox: Configuration for prop '${propName}' timed out after ${timeout}ms and has fallen back to its default value.`
+    );
+    return fallback;
+  }
 }
 
 const defaultResolvedZestProps = { // Removed explicit type here, will be inferred
@@ -70,55 +93,47 @@ export const useZestTextboxConfig = <T = string>(componentZestProps: ZestProps<T
   useEffect(() => {
     const resolveProps = async () => {
       const newResolvedProps: ResolvedZestProps<T> = { ...defaultResolvedZestProps as ResolvedZestProps<T> }; // Initialize with defaults and cast
+      const timeout = ZEST_CONFIG_TIMEOUT;
 
       // Resolve each property that can be a ZestConfigValue
-      newResolvedProps.zSize = await resolveZestConfigValue(
-        mergedZestProps.zSize,
-        (defaultResolvedZestProps.zSize as ZestTextboxSize),
-        inputType
+      newResolvedProps.zSize = await resolveWithTimeout(
+        resolveZestConfigValue(mergedZestProps.zSize, defaultResolvedZestProps.zSize as ZestTextboxSize, inputType),
+        timeout, 'zSize', defaultResolvedZestProps.zSize as ZestTextboxSize
       );
-      newResolvedProps.stretch = await resolveZestConfigValue(
-        mergedZestProps.stretch,
-        (defaultResolvedZestProps.stretch as boolean),
-        inputType
+      newResolvedProps.stretch = await resolveWithTimeout(
+        resolveZestConfigValue(mergedZestProps.stretch, defaultResolvedZestProps.stretch as boolean, inputType),
+        timeout, 'stretch', defaultResolvedZestProps.stretch as boolean
       );
-      newResolvedProps.showProgressBar = await resolveZestConfigValue(
-        mergedZestProps.showProgressBar,
-        (defaultResolvedZestProps.showProgressBar as boolean),
-        inputType
+      newResolvedProps.showProgressBar = await resolveWithTimeout(
+        resolveZestConfigValue(mergedZestProps.showProgressBar, defaultResolvedZestProps.showProgressBar as boolean, inputType),
+        timeout, 'showProgressBar', defaultResolvedZestProps.showProgressBar as boolean
       );
-      newResolvedProps.animatedCounter = await resolveZestConfigValue(
-        mergedZestProps.animatedCounter,
-        (defaultResolvedZestProps.animatedCounter as boolean),
-        inputType
+      newResolvedProps.animatedCounter = await resolveWithTimeout(
+        resolveZestConfigValue(mergedZestProps.animatedCounter, defaultResolvedZestProps.animatedCounter as boolean, inputType),
+        timeout, 'animatedCounter', defaultResolvedZestProps.animatedCounter as boolean
       );
-      newResolvedProps.theme = await resolveZestConfigValue(
-        mergedZestProps.theme,
-        (defaultResolvedZestProps.theme as "light" | "dark" | "system"),
-        inputType
+      newResolvedProps.theme = await resolveWithTimeout(
+        resolveZestConfigValue(mergedZestProps.theme, defaultResolvedZestProps.theme as "light" | "dark" | "system", inputType),
+        timeout, 'theme', defaultResolvedZestProps.theme as "light" | "dark" | "system"
       );
-      newResolvedProps.isMultiline = await resolveZestConfigValue(
-        mergedZestProps.isMultiline,
-        (defaultResolvedZestProps.isMultiline as boolean),
-        inputType
+      newResolvedProps.isMultiline = await resolveWithTimeout(
+        resolveZestConfigValue(mergedZestProps.isMultiline, defaultResolvedZestProps.isMultiline as boolean, inputType),
+        timeout, 'isMultiline', defaultResolvedZestProps.isMultiline as boolean
       );
       // onTextChanged is no longer a ZestConfigValue, so it's directly assigned
       newResolvedProps.onTextChanged = mergedZestProps.onTextChanged;
 
-      newResolvedProps.helperTextConfig = await resolveZestConfigValue(
-        mergedZestProps.helperTextConfig,
-        (defaultResolvedZestProps.helperTextConfig as HelperTextConfig | undefined),
-        inputType
+      newResolvedProps.helperTextConfig = await resolveWithTimeout(
+        resolveZestConfigValue(mergedZestProps.helperTextConfig, defaultResolvedZestProps.helperTextConfig as HelperTextConfig | undefined, inputType),
+        timeout, 'helperTextConfig', defaultResolvedZestProps.helperTextConfig as HelperTextConfig | undefined
       );
-      newResolvedProps.parser = await resolveZestConfigValue(
-        mergedZestProps.parser,
-        (defaultResolvedZestProps.parser as InputParser<T> | undefined),
-        inputType
+      newResolvedProps.parser = await resolveWithTimeout(
+        resolveZestConfigValue(mergedZestProps.parser, defaultResolvedZestProps.parser as InputParser<T> | undefined, inputType),
+        timeout, 'parser', defaultResolvedZestProps.parser as InputParser<T> | undefined
       );
-      newResolvedProps.validator = await resolveZestConfigValue(
-        mergedZestProps.validator,
-        (defaultResolvedZestProps.validator as InputValidator<T> | undefined),
-        inputType
+      newResolvedProps.validator = await resolveWithTimeout(
+        resolveZestConfigValue(mergedZestProps.validator, defaultResolvedZestProps.validator as InputValidator<T> | undefined, inputType),
+        timeout, 'validator', defaultResolvedZestProps.validator as InputValidator<T> | undefined
       );
 
       setResolvedZestProps(newResolvedProps);

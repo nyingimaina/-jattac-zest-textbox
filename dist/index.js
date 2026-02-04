@@ -279,6 +279,7 @@ var defaultNumberValidator = function (value, inputType) {
 };
 // You can add more default parsers/validators here for other types like 'email', 'date', etc.
 
+var ZEST_CONFIG_TIMEOUT = 2000; // 2 seconds
 // Helper function to resolve a ZestConfigValue
 function resolveZestConfigValue(configValue, defaultValue, inputType) {
     return __awaiter(this, void 0, void 0, function () {
@@ -301,6 +302,30 @@ function resolveZestConfigValue(configValue, defaultValue, inputType) {
                     _b.label = 3;
                 case 3: return [2 /*return*/, _a];
                 case 4: return [2 /*return*/, configValue];
+            }
+        });
+    });
+}
+// Timeout wrapper for resolving config values
+function resolveWithTimeout(promise, timeout, propName, fallback) {
+    return __awaiter(this, void 0, void 0, function () {
+        var timeoutPromise;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    timeoutPromise = new Promise(function (_, reject) {
+                        return setTimeout(function () { return reject(new Error("Timeout for prop '".concat(propName, "'"))); }, timeout);
+                    });
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, Promise.race([promise, timeoutPromise])];
+                case 2: return [2 /*return*/, _a.sent()];
+                case 3:
+                    _a.sent();
+                    console.warn("ZestTextbox: Configuration for prop '".concat(propName, "' timed out after ").concat(timeout, "ms and has fallen back to its default value."));
+                    return [2 /*return*/, fallback];
+                case 4: return [2 /*return*/];
             }
         });
     });
@@ -343,49 +368,50 @@ var useZestTextboxConfig = function (componentZestProps, inputType) {
     }, [contextDefaultZestProps, componentZestProps, inputType]); // Added inputType to dependencies
     react.useEffect(function () {
         var resolveProps = function () { return __awaiter(void 0, void 0, void 0, function () {
-            var newResolvedProps, _a, _b, _c, _d, _e, _f, _g, _h, _j;
+            var newResolvedProps, timeout, _a, _b, _c, _d, _e, _f, _g, _h, _j;
             return __generator(this, function (_k) {
                 switch (_k.label) {
                     case 0:
                         newResolvedProps = __assign({}, defaultResolvedZestProps);
+                        timeout = ZEST_CONFIG_TIMEOUT;
                         // Resolve each property that can be a ZestConfigValue
                         _a = newResolvedProps;
-                        return [4 /*yield*/, resolveZestConfigValue(mergedZestProps.zSize, defaultResolvedZestProps.zSize, inputType)];
+                        return [4 /*yield*/, resolveWithTimeout(resolveZestConfigValue(mergedZestProps.zSize, defaultResolvedZestProps.zSize, inputType), timeout, 'zSize', defaultResolvedZestProps.zSize)];
                     case 1:
                         // Resolve each property that can be a ZestConfigValue
                         _a.zSize = _k.sent();
                         _b = newResolvedProps;
-                        return [4 /*yield*/, resolveZestConfigValue(mergedZestProps.stretch, defaultResolvedZestProps.stretch, inputType)];
+                        return [4 /*yield*/, resolveWithTimeout(resolveZestConfigValue(mergedZestProps.stretch, defaultResolvedZestProps.stretch, inputType), timeout, 'stretch', defaultResolvedZestProps.stretch)];
                     case 2:
                         _b.stretch = _k.sent();
                         _c = newResolvedProps;
-                        return [4 /*yield*/, resolveZestConfigValue(mergedZestProps.showProgressBar, defaultResolvedZestProps.showProgressBar, inputType)];
+                        return [4 /*yield*/, resolveWithTimeout(resolveZestConfigValue(mergedZestProps.showProgressBar, defaultResolvedZestProps.showProgressBar, inputType), timeout, 'showProgressBar', defaultResolvedZestProps.showProgressBar)];
                     case 3:
                         _c.showProgressBar = _k.sent();
                         _d = newResolvedProps;
-                        return [4 /*yield*/, resolveZestConfigValue(mergedZestProps.animatedCounter, defaultResolvedZestProps.animatedCounter, inputType)];
+                        return [4 /*yield*/, resolveWithTimeout(resolveZestConfigValue(mergedZestProps.animatedCounter, defaultResolvedZestProps.animatedCounter, inputType), timeout, 'animatedCounter', defaultResolvedZestProps.animatedCounter)];
                     case 4:
                         _d.animatedCounter = _k.sent();
                         _e = newResolvedProps;
-                        return [4 /*yield*/, resolveZestConfigValue(mergedZestProps.theme, defaultResolvedZestProps.theme, inputType)];
+                        return [4 /*yield*/, resolveWithTimeout(resolveZestConfigValue(mergedZestProps.theme, defaultResolvedZestProps.theme, inputType), timeout, 'theme', defaultResolvedZestProps.theme)];
                     case 5:
                         _e.theme = _k.sent();
                         _f = newResolvedProps;
-                        return [4 /*yield*/, resolveZestConfigValue(mergedZestProps.isMultiline, defaultResolvedZestProps.isMultiline, inputType)];
+                        return [4 /*yield*/, resolveWithTimeout(resolveZestConfigValue(mergedZestProps.isMultiline, defaultResolvedZestProps.isMultiline, inputType), timeout, 'isMultiline', defaultResolvedZestProps.isMultiline)];
                     case 6:
                         _f.isMultiline = _k.sent();
                         // onTextChanged is no longer a ZestConfigValue, so it's directly assigned
                         newResolvedProps.onTextChanged = mergedZestProps.onTextChanged;
                         _g = newResolvedProps;
-                        return [4 /*yield*/, resolveZestConfigValue(mergedZestProps.helperTextConfig, defaultResolvedZestProps.helperTextConfig, inputType)];
+                        return [4 /*yield*/, resolveWithTimeout(resolveZestConfigValue(mergedZestProps.helperTextConfig, defaultResolvedZestProps.helperTextConfig, inputType), timeout, 'helperTextConfig', defaultResolvedZestProps.helperTextConfig)];
                     case 7:
                         _g.helperTextConfig = _k.sent();
                         _h = newResolvedProps;
-                        return [4 /*yield*/, resolveZestConfigValue(mergedZestProps.parser, defaultResolvedZestProps.parser, inputType)];
+                        return [4 /*yield*/, resolveWithTimeout(resolveZestConfigValue(mergedZestProps.parser, defaultResolvedZestProps.parser, inputType), timeout, 'parser', defaultResolvedZestProps.parser)];
                     case 8:
                         _h.parser = _k.sent();
                         _j = newResolvedProps;
-                        return [4 /*yield*/, resolveZestConfigValue(mergedZestProps.validator, defaultResolvedZestProps.validator, inputType)];
+                        return [4 /*yield*/, resolveWithTimeout(resolveZestConfigValue(mergedZestProps.validator, defaultResolvedZestProps.validator, inputType), timeout, 'validator', defaultResolvedZestProps.validator)];
                     case 9:
                         _j.validator = _k.sent();
                         setResolvedZestProps(newResolvedProps);
