@@ -14,7 +14,6 @@ export const HelperTextDisplay: React.FC<HelperTextDisplayProps> = ({
 
   return (
     <div
-      key={String(helperTextNode)} // Force re-mount to trigger animation
       className={`${styles.helperText} ${className || ""}`}
     >
       {helperTextNode}

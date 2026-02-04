@@ -239,7 +239,7 @@ var HelperTextDisplay = function (_a) {
     var helperTextNode = _a.helperTextNode, className = _a.className;
     if (!helperTextNode)
         return null;
-    return (jsxRuntime.jsx("div", { className: "".concat(styles.helperText, " ").concat(className || ""), children: helperTextNode }, String(helperTextNode)));
+    return (jsxRuntime.jsx("div", { className: "".concat(styles.helperText, " ").concat(className || ""), children: helperTextNode }));
 };
 
 // Create the context with a default empty object
