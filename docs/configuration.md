@@ -119,3 +119,67 @@ The resolution order for `ZestProps` is crucial for understanding how final beha
 1.  **Component-level `zest` prop:** Explicit props passed directly to a `ZestTextbox` instance always take the highest priority, overriding any values set by providers or internal defaults.
 2.  **`ZestTextboxConfigProvider` `value` prop:** Defaults provided by the nearest `ZestTextboxConfigProvider` come next. These values will be applied if the component-level `zest` prop does not specify a particular property. When a `ZestConfigValue<T>` is a function or an asynchronous function, it is evaluated at this stage, with the `inputType` of the specific `ZestTextbox` instance.
 3.  **Hardcoded internal defaults:** If a specific `zest` property is not defined at the component level *and* not provided by any `ZestTextboxConfigProvider`, the component falls back to its own internal hardcoded default values for that property.
+
+## Advanced Usage and Recipes
+
+### Nesting Providers
+
+You can nest `ZestTextboxConfigProvider` instances to create more specific configurations for different parts of your application. The nearest provider's configuration will be used.
+
+```jsx
+const App = () => {
+  const generalConfig = { theme: 'light' };
+  const sidebarConfig = { theme: 'dark', zSize: 'sm' };
+
+  return (
+    <ZestTextboxConfigProvider value={generalConfig}>
+      {/* Textboxes here will be light theme */}
+      <div className="sidebar">
+        <ZestTextboxConfigProvider value={sidebarConfig}>
+          {/* Textboxes here will be dark theme and small size */}
+          <ZestTextbox placeholder="Search..." />
+        </ZestTextboxConfigProvider>
+      </div>
+    </ZestTextboxConfigProvider>
+  );
+};
+```
+
+### Globally Required Fields
+
+You can enforce that certain input types are always required by providing a global validator.
+
+```typescript
+const globalConfig = {
+  validator: (value, inputType) => {
+    // Make email and text fields required
+    if ((inputType === 'email' || inputType === 'text') && !value) {
+      return 'This field is required.';
+    }
+    return true; // Pass for all other conditions
+  }
+};
+```
+
+### Asynchronous Default Values
+
+You can fetch default values for textboxes asynchronously. This is useful for pre-filling forms with user data.
+
+```typescript
+const userSettingsConfig = {
+  // `parser` can be an async function that returns the actual parser function.
+  // This is a bit advanced, but shows the flexibility.
+  parser: async (inputType) => {
+    if (inputType === 'username') {
+      const response = await fetch('/api/user/default-username');
+      const data = await response.json();
+      const defaultValue = data.username;
+      
+      // Return a parser that injects the default value if the input is empty
+      return (value) => value || defaultValue;
+    }
+    // Return a default parser for other types
+    return (value) => value;
+  }
+};
+```
