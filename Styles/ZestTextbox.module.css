@@ -283,7 +283,7 @@ textarea.textbox {
 }
 
 .helperText.reserved {
-  margin-top: 0.25rem; /* 4px */
+  margin-top: 0.125rem; /* 2px - reduced spacing */
   min-height: 1.25rem; /* Approx height for one line of text (14px font + padding) */
   animation: fade-slide-in 0.3s ease-out forwards;
 }
@@ -294,7 +294,7 @@ textarea.textbox {
 
 .helperText.absolute {
   position: absolute;
-  bottom: -1.75rem; /* Adjust as needed to position below the input, considering text size */
+  bottom: -1.25rem; /* Adjust as needed for closer positioning */
   left: 0;
   right: 0; /* Stretch across the input width */
   width: 100%;
