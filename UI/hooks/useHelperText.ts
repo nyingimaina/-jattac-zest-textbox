@@ -27,7 +27,7 @@ export const useHelperText = <T>(
       ? templater(formatted, context)
       : formatted;
 
-    setHelperTextNode(finalNode);
+    setHelperTextNode(finalNode === "" ? null : finalNode);
   }, [value, parsedValue, type, maxLength, formatter, templater]);
 
   return helperTextNode;
