@@ -91,6 +91,15 @@ interface ZestProps<T = string> {
      * Returns `true` for valid, or a string error message for invalid.
      */
     validator?: ZestConfigValue<InputValidator<T>>;
+    /**
+     * Controls the positioning of the helper text, influencing DOM layout.
+     * - 'reserved': Always reserves space for the helper text, preventing layout shifts.
+     *               Helper text is invisible when empty. (Recommended for stable layouts)
+     * - 'absolute': Positions the helper text absolutely, allowing it to "float" without affecting
+     *               the surrounding layout. Can cause overlap if not managed carefully by the consumer.
+     * @default 'absolute'
+     */
+    helperTextPositioning?: ZestConfigValue<"reserved" | "absolute">;
 }
 type SharedProps<T> = {
     /**
@@ -153,6 +162,7 @@ declare const ProgressBar: React.FC<ProgressBarProps>;
 interface HelperTextDisplayProps {
     helperTextNode: ReactNode;
     className?: string;
+    positioning?: "reserved" | "absolute";
 }
 declare const HelperTextDisplay: React.FC<HelperTextDisplayProps>;
 

@@ -1,6 +1,6 @@
 {
   "name": "jattac.libs.web.zest-textbox",
-  "version": "0.4.5",
+  "version": "0.4.8",
   "description": "A delightful, feature-rich, and highly customizable React textbox component. Packed with features like automatic theme detection, password visibility toggle, character counters, and engaging animations.",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",

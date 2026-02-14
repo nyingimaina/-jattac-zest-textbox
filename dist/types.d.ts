@@ -89,6 +89,15 @@ export interface ZestProps<T = string> {
      * Returns `true` for valid, or a string error message for invalid.
      */
     validator?: ZestConfigValue<InputValidator<T>>;
+    /**
+     * Controls the positioning of the helper text, influencing DOM layout.
+     * - 'reserved': Always reserves space for the helper text, preventing layout shifts.
+     *               Helper text is invisible when empty. (Recommended for stable layouts)
+     * - 'absolute': Positions the helper text absolutely, allowing it to "float" without affecting
+     *               the surrounding layout. Can cause overlap if not managed carefully by the consumer.
+     * @default 'absolute'
+     */
+    helperTextPositioning?: ZestConfigValue<"reserved" | "absolute">;
 }
 export interface ResolvedZestProps<T = string> {
     helperTextConfig: HelperTextConfig | undefined;
@@ -101,6 +110,7 @@ export interface ResolvedZestProps<T = string> {
     isMultiline: boolean;
     parser: InputParser<T> | undefined;
     validator: InputValidator<T> | undefined;
+    helperTextPositioning: "reserved" | "absolute";
 }
 type SharedProps<T> = {
     /**

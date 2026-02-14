@@ -111,8 +111,8 @@ function styleInject(css, ref) {
   }
 }
 
-var css_248z = "/* === Base Textbox Styles (input & textarea) === */\r\n.ZestTextbox-module_textbox__0M5Wq {\r\n  font-family: \"Segoe UI\", Roboto, sans-serif;\r\n  font-weight: 500;\r\n  line-height: 1.25;\r\n  border: 1px solid #ccc;\r\n  border-radius: 0.5rem; /* 8px */\r\n  color: #111827;\r\n  background-color: #ffffff;\r\n  transition: border-color 0.2s ease, box-shadow 0.2s ease;\r\n  display: inline-block;\r\n  width: auto;\r\n  box-sizing: border-box;\r\n  resize: none;\r\n  font-size: 1rem; /* 16px */\r\n  padding-bottom: 0.5rem; /* Reduced padding to make space for progress bar */\r\n}\r\n\r\n.ZestTextbox-module_textbox__0M5Wq:focus {\r\n  outline: none;\r\n  border-color: #8B5CF6;\r\n  box-shadow: 0 0 0 0.125rem rgba(139, 92, 246, 0.25); /* 2px */\r\n  animation: ZestTextbox-module_pulse-light__CKfhA 0.5s 1;\r\n}\r\n\r\n/* === Error State === */\r\n.ZestTextbox-module_error__5RoCP {\r\n  border-color: #ef4444; /* Red-500 */\r\n  box-shadow: 0 0 0 0.125rem rgba(239, 68, 68, 0.25); /* Red-500 with 25% opacity */\r\n}\r\n\r\n.ZestTextbox-module_error__5RoCP:focus {\r\n  border-color: #ef4444;\r\n  box-shadow: 0 0 0 0.125rem rgba(239, 68, 68, 0.35);\r\n}\r\n\r\n/* === Sizes === */\r\n.ZestTextbox-module_sm__yyxXO {\r\n  padding: 0.5rem 0.75rem; /* 8px 12px */\r\n  font-size: 0.875rem; /* 14px */\r\n}\r\n\r\n.ZestTextbox-module_md__fvL10 {\r\n  padding: 0.625rem 0.875rem; /* 10px 14px */\r\n  font-size: 1rem; /* 16px */\r\n}\r\n\r\n.ZestTextbox-module_lg__fU93- {\r\n  padding: 0.75rem 1rem; /* 12px 16px */\r\n  font-size: 1.125rem; /* 18px */\r\n}\r\n\r\n/* === Full Width === */\r\n.ZestTextbox-module_fullWidth__xn4fT {\r\n  width: 100%;\r\n}\r\n\r\n/* === Disabled State === */\r\n.ZestTextbox-module_textbox__0M5Wq:disabled {\r\n  background-color: #f3f4f6;\r\n  color: #9ca3af;\r\n  cursor: not-allowed;\r\n  pointer-events: none;\r\n  border-color: #d1d5db;\r\n}\r\n\r\n/* === Multiline (textarea) specific enhancements === */\r\ntextarea.ZestTextbox-module_textbox__0M5Wq {\r\n  min-height: 6.25rem; /* 100px */\r\n  line-height: 1.5;\r\n  resize: vertical;\r\n}\r\n\r\n.ZestTextbox-module_wrapper__0ok2A {\r\n  position: relative;\r\n  display: inline-block;\r\n}\r\n\r\n.ZestTextbox-module_counter__waqIT {\r\n  position: absolute;\r\n  right: 0.625rem; /* 10px */\r\n  bottom: 0.375rem; /* 6px */\r\n  font-size: 0.75rem;\r\n  color: #6b7280;\r\n  pointer-events: none;\r\n  user-select: none;\r\n}\r\n\r\n/* === Dark Mode Support === */\r\n.dark .ZestTextbox-module_textbox__0M5Wq {\r\n  background-color: #1f2937;\r\n  border-color: #374151;\r\n  color: #f3f4f6;\r\n}\r\n\r\n.dark .ZestTextbox-module_textbox__0M5Wq:focus {\r\n  border-color: #A78BFA;\r\n  box-shadow: 0 0 0 0.125rem rgba(167, 139, 250, 0.35); /* 2px */\r\n  animation: ZestTextbox-module_pulse-dark__L9PYJ 0.5s 1;\r\n}\r\n\r\n.dark .ZestTextbox-module_textbox__0M5Wq:disabled {\r\n  background-color: #374151;\r\n  color: #9ca3af;\r\n  border-color: #4b5563;\r\n}\r\n\r\n.dark .ZestTextbox-module_counter__waqIT {\r\n  color: #9ca3af;\r\n}\r\n\r\n.dark .ZestTextbox-module_error__5RoCP {\r\n  border-color: #f87171; /* Red-400 for dark mode */\r\n  box-shadow: 0 0 0 0.125rem rgba(248, 113, 113, 0.35);\r\n}\r\n\r\n.dark .ZestTextbox-module_error__5RoCP:focus {\r\n  border-color: #f87171;\r\n  box-shadow: 0 0 0 0.125rem rgba(248, 113, 113, 0.45);\r\n}\r\n\r\n/* === Password Toggle === */\r\n.ZestTextbox-module_passwordToggle__I2s4O {\r\n  position: absolute;\r\n  right: 0.625rem; /* 10px */\r\n  top: 50%;\r\n  transform: translateY(-50%);\r\n  cursor: pointer;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  color: #6b7280;\r\n}\r\n\r\n.ZestTextbox-module_eyeIcon__rKiBL {\r\n  width: 1.25em;\r\n  height: 1.25em;\r\n  transition: transform 0.2s ease-in-out;\r\n}\r\n\r\n.ZestTextbox-module_rotate__Ajx19 {\r\n  transform: rotate(180deg);\r\n}\r\n\r\n.ZestTextbox-module_tooltip__etRdj {\r\n  position: absolute;\r\n  right: 100%;\r\n  top: 50%;\r\n  transform: translateY(-50%);\r\n  background-color: #333;\r\n  color: #fff;\r\n  padding: 0.25rem 0.5rem; /* 4px 8px */\r\n  border-radius: 0.25rem; /* 4px */\r\n  font-size: 0.75rem;\r\n  white-space: nowrap;\r\n  margin-right: 0.5rem; /* 8px */\r\n  opacity: 0;\r\n  visibility: hidden;\r\n  transition: opacity 0.2s ease, visibility 0.2s ease;\r\n}\r\n\r\n.ZestTextbox-module_passwordToggle__I2s4O:hover .ZestTextbox-module_tooltip__etRdj {\r\n  opacity: 1;\r\n  visibility: visible;\r\n}\r\n\r\n.dark .ZestTextbox-module_passwordToggle__I2s4O {\r\n  color: #9ca3af;\r\n}\r\n\r\n.dark .ZestTextbox-module_tooltip__etRdj {\r\n  background-color: #4b5563;\r\n  color: #f3f4f6;\r\n}\r\n\r\n/* === Progress Bar === */\r\n.ZestTextbox-module_progressBarContainer__0qFKf {\r\n  position: absolute;\r\n  bottom: 0;\r\n  left: 0;\r\n  right: 0;\r\n  height: 0.1875rem; /* 3px */\r\n  background-color: #e5e7eb;\r\n  border-bottom-left-radius: 0.5rem; /* 8px */\r\n  border-bottom-right-radius: 0.5rem; /* 8px */\r\n  overflow: hidden;\r\n}\r\n\r\n.ZestTextbox-module_progressBar__vwttj {\r\n  height: 100%;\r\n  background-color: #8B5CF6;\r\n  transition: width 0.2s ease, background-color 0.3s ease;\r\n}\r\n\r\n/* === Animated Counter Colors === */\r\n.ZestTextbox-module_counterYellow__uYGfs {\r\n  color: #A78BFA;\r\n}\r\n\r\n.ZestTextbox-module_counterOrange__b9baX {\r\n  color: #8B5CF6;\r\n}\r\n\r\n.dark .ZestTextbox-module_progressBarContainer__0qFKf {\r\n  background-color: #374151;\r\n}\r\n\r\n.dark .ZestTextbox-module_progressBar__vwttj {\r\n  background-color: #A78BFA;\r\n}\r\n\r\n.dark .ZestTextbox-module_counterYellow__uYGfs {\r\n  color: #C4B5FD;\r\n}\r\n\r\n.dark .ZestTextbox-module_counterOrange__b9baX {\r\n  color: #A78BFA;\r\n}\r\n\r\n@keyframes ZestTextbox-module_pulse-light__CKfhA {\r\n  0% {\r\n    box-shadow: 0 0 0 0.125rem rgba(139, 92, 246, 0.25); /* 2px */\r\n  }\r\n  50% {\r\n    box-shadow: 0 0 0 0.25rem rgba(139, 92, 246, 0.35); /* 4px */\r\n  }\r\n  100% {\r\n    box-shadow: 0 0 0 0.125rem rgba(139, 92, 246, 0.25); /* 2px */\r\n  }\r\n}\r\n\r\n@keyframes ZestTextbox-module_pulse-dark__L9PYJ {\r\n  0% {\r\n    box-shadow: 0 0 0 0.125rem rgba(167, 139, 250, 0.35); /* 2px */\r\n  }\r\n  50% {\r\n    box-shadow: 0 0 0 0.25rem rgba(167, 139, 250, 0.45); /* 4px */\r\n  }\r\n  100% {\r\n    box-shadow: 0 0 0 0.125rem rgba(167, 139, 250, 0.35); /* 2px */\r\n  }\r\n}\r\n\r\n/* === Media Queries for Responsive Design === */\r\n@media (min-width: 48rem) { /* 768px */\r\n  /* Tablet */\r\n  .ZestTextbox-module_sm__yyxXO {\r\n    font-size: 0.875rem; /* 14px */\r\n  }\r\n  .ZestTextbox-module_md__fvL10 {\r\n    font-size: 1rem; /* 16px */\r\n  }\r\n  .ZestTextbox-module_lg__fU93- {\r\n    font-size: 1.125rem; /* 18px */\r\n  }\r\n}\r\n\r\n@media (min-width: 64rem) { /* 1024px */\r\n  /* Desktop */\r\n  .ZestTextbox-module_sm__yyxXO {\r\n    padding: 0.375rem 0.625rem; /* 6px 10px */\r\n    font-size: 0.875rem; /* 14px */\r\n  }\r\n  .ZestTextbox-module_md__fvL10 {\r\n    padding: 0.625rem 0.875rem; /* 10px 14px */\r\n    font-size: 1rem; /* 16px */\r\n  }\r\n  .ZestTextbox-module_lg__fU93- {\r\n    padding: 0.75rem 1rem; /* 12px 16px */\r\n    font-size: 1.125rem; /* 18px */\r\n  }\r\n}\r\n\r\n/* === Helper Text === */\r\n.ZestTextbox-module_helperText__4twSg {\r\n  font-size: 0.875rem; /* 14px */\r\n  color: #6b7280;\r\n  margin-top: 0.25rem; /* 4px */\r\n  animation: ZestTextbox-module_fade-slide-in__re-Ln 0.3s ease-out forwards;\r\n}\r\n\r\n.dark .ZestTextbox-module_helperText__4twSg {\r\n  color: #9ca3af;\r\n}\r\n\r\n@keyframes ZestTextbox-module_fade-slide-in__re-Ln {\r\n  from {\r\n    opacity: 0;\r\n    transform: translateY(5px);\r\n  }\r\n  to {\r\n    opacity: 1;\r\n    transform: translateY(0);\r\n  }\r\n}";
-var styles = {"textbox":"ZestTextbox-module_textbox__0M5Wq","pulse-light":"ZestTextbox-module_pulse-light__CKfhA","error":"ZestTextbox-module_error__5RoCP","sm":"ZestTextbox-module_sm__yyxXO","md":"ZestTextbox-module_md__fvL10","lg":"ZestTextbox-module_lg__fU93-","fullWidth":"ZestTextbox-module_fullWidth__xn4fT","wrapper":"ZestTextbox-module_wrapper__0ok2A","counter":"ZestTextbox-module_counter__waqIT","pulse-dark":"ZestTextbox-module_pulse-dark__L9PYJ","passwordToggle":"ZestTextbox-module_passwordToggle__I2s4O","eyeIcon":"ZestTextbox-module_eyeIcon__rKiBL","rotate":"ZestTextbox-module_rotate__Ajx19","tooltip":"ZestTextbox-module_tooltip__etRdj","progressBarContainer":"ZestTextbox-module_progressBarContainer__0qFKf","progressBar":"ZestTextbox-module_progressBar__vwttj","counterYellow":"ZestTextbox-module_counterYellow__uYGfs","counterOrange":"ZestTextbox-module_counterOrange__b9baX","helperText":"ZestTextbox-module_helperText__4twSg","fade-slide-in":"ZestTextbox-module_fade-slide-in__re-Ln"};
+var css_248z = "/* === Base Textbox Styles (input & textarea) === */\r\n.ZestTextbox-module_textbox__0M5Wq {\r\n  font-family: \"Segoe UI\", Roboto, sans-serif;\r\n  font-weight: 500;\r\n  line-height: 1.25;\r\n  border: 1px solid #ccc;\r\n  border-radius: 0.5rem; /* 8px */\r\n  color: #111827;\r\n  background-color: #ffffff;\r\n  transition: border-color 0.2s ease, box-shadow 0.2s ease;\r\n  display: inline-block;\r\n  width: auto;\r\n  box-sizing: border-box;\r\n  resize: none;\r\n  font-size: 1rem; /* 16px */\r\n  padding-bottom: 0.5rem; /* Reduced padding to make space for progress bar */\r\n}\r\n\r\n.ZestTextbox-module_textbox__0M5Wq:focus {\r\n  outline: none;\r\n  border-color: #8B5CF6;\r\n  box-shadow: 0 0 0 0.125rem rgba(139, 92, 246, 0.25); /* 2px */\r\n  animation: ZestTextbox-module_pulse-light__CKfhA 0.5s 1;\r\n}\r\n\r\n/* === Error State === */\r\n.ZestTextbox-module_error__5RoCP {\r\n  border-color: #ef4444; /* Red-500 */\r\n  box-shadow: 0 0 0 0.125rem rgba(239, 68, 68, 0.25); /* Red-500 with 25% opacity */\r\n}\r\n\r\n.ZestTextbox-module_error__5RoCP:focus {\r\n  border-color: #ef4444;\r\n  box-shadow: 0 0 0 0.125rem rgba(239, 68, 68, 0.35);\r\n}\r\n\r\n/* === Sizes === */\r\n.ZestTextbox-module_sm__yyxXO {\r\n  padding: 0.5rem 0.75rem; /* 8px 12px */\r\n  font-size: 0.875rem; /* 14px */\r\n}\r\n\r\n.ZestTextbox-module_md__fvL10 {\r\n  padding: 0.625rem 0.875rem; /* 10px 14px */\r\n  font-size: 1rem; /* 16px */\r\n}\r\n\r\n.ZestTextbox-module_lg__fU93- {\r\n  padding: 0.75rem 1rem; /* 12px 16px */\r\n  font-size: 1.125rem; /* 18px */\r\n}\r\n\r\n/* === Full Width === */\r\n.ZestTextbox-module_fullWidth__xn4fT {\r\n  width: 100%;\r\n}\r\n\r\n/* === Disabled State === */\r\n.ZestTextbox-module_textbox__0M5Wq:disabled {\r\n  background-color: #f3f4f6;\r\n  color: #9ca3af;\r\n  cursor: not-allowed;\r\n  pointer-events: none;\r\n  border-color: #d1d5db;\r\n}\r\n\r\n/* === Multiline (textarea) specific enhancements === */\r\ntextarea.ZestTextbox-module_textbox__0M5Wq {\r\n  min-height: 6.25rem; /* 100px */\r\n  line-height: 1.5;\r\n  resize: vertical;\r\n}\r\n\r\n.ZestTextbox-module_wrapper__0ok2A {\r\n  position: relative;\r\n  display: inline-block;\r\n}\r\n\r\n.ZestTextbox-module_counter__waqIT {\r\n  position: absolute;\r\n  right: 0.625rem; /* 10px */\r\n  bottom: 0.375rem; /* 6px */\r\n  font-size: 0.75rem;\r\n  color: #6b7280;\r\n  pointer-events: none;\r\n  user-select: none;\r\n}\r\n\r\n/* === Dark Mode Support === */\r\n.dark .ZestTextbox-module_textbox__0M5Wq {\r\n  background-color: #1f2937;\r\n  border-color: #374151;\r\n  color: #f3f4f6;\r\n}\r\n\r\n.dark .ZestTextbox-module_textbox__0M5Wq:focus {\r\n  border-color: #A78BFA;\r\n  box-shadow: 0 0 0 0.125rem rgba(167, 139, 250, 0.35); /* 2px */\r\n  animation: ZestTextbox-module_pulse-dark__L9PYJ 0.5s 1;\r\n}\r\n\r\n.dark .ZestTextbox-module_textbox__0M5Wq:disabled {\r\n  background-color: #374151;\r\n  color: #9ca3af;\r\n  border-color: #4b5563;\r\n}\r\n\r\n.dark .ZestTextbox-module_counter__waqIT {\r\n  color: #9ca3af;\r\n}\r\n\r\n.dark .ZestTextbox-module_error__5RoCP {\r\n  border-color: #f87171; /* Red-400 for dark mode */\r\n  box-shadow: 0 0 0 0.125rem rgba(248, 113, 113, 0.35);\r\n}\r\n\r\n.dark .ZestTextbox-module_error__5RoCP:focus {\r\n  border-color: #f87171;\r\n  box-shadow: 0 0 0 0.125rem rgba(248, 113, 113, 0.45);\r\n}\r\n\r\n/* === Password Toggle === */\r\n.ZestTextbox-module_passwordToggle__I2s4O {\r\n  position: absolute;\r\n  right: 0.625rem; /* 10px */\r\n  top: 50%;\r\n  transform: translateY(-50%);\r\n  cursor: pointer;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  color: #6b7280;\r\n}\r\n\r\n.ZestTextbox-module_eyeIcon__rKiBL {\r\n  width: 1.25em;\r\n  height: 1.25em;\r\n  transition: transform 0.2s ease-in-out;\r\n}\r\n\r\n.ZestTextbox-module_rotate__Ajx19 {\r\n  transform: rotate(180deg);\r\n}\r\n\r\n.ZestTextbox-module_tooltip__etRdj {\r\n  position: absolute;\r\n  right: 100%;\r\n  top: 50%;\r\n  transform: translateY(-50%);\r\n  background-color: #333;\r\n  color: #fff;\r\n  padding: 0.25rem 0.5rem; /* 4px 8px */\r\n  border-radius: 0.25rem; /* 4px */\r\n  font-size: 0.75rem;\r\n  white-space: nowrap;\r\n  margin-right: 0.5rem; /* 8px */\r\n  opacity: 0;\r\n  visibility: hidden;\r\n  transition: opacity 0.2s ease, visibility 0.2s ease;\r\n}\r\n\r\n.ZestTextbox-module_passwordToggle__I2s4O:hover .ZestTextbox-module_tooltip__etRdj {\r\n  opacity: 1;\r\n  visibility: visible;\r\n}\r\n\r\n.dark .ZestTextbox-module_passwordToggle__I2s4O {\r\n  color: #9ca3af;\r\n}\r\n\r\n.dark .ZestTextbox-module_tooltip__etRdj {\r\n  background-color: #4b5563;\r\n  color: #f3f4f6;\r\n}\r\n\r\n/* === Progress Bar === */\r\n.ZestTextbox-module_progressBarContainer__0qFKf {\r\n  position: absolute;\r\n  bottom: 0;\r\n  left: 0;\r\n  right: 0;\r\n  height: 0.1875rem; /* 3px */\r\n  background-color: #e5e7eb;\r\n  border-bottom-left-radius: 0.5rem; /* 8px */\r\n  border-bottom-right-radius: 0.5rem; /* 8px */\r\n  overflow: hidden;\r\n}\r\n\r\n.ZestTextbox-module_progressBar__vwttj {\r\n  height: 100%;\r\n  background-color: #8B5CF6;\r\n  transition: width 0.2s ease, background-color 0.3s ease;\r\n}\r\n\r\n/* === Animated Counter Colors === */\r\n.ZestTextbox-module_counterYellow__uYGfs {\r\n  color: #A78BFA;\r\n}\r\n\r\n.ZestTextbox-module_counterOrange__b9baX {\r\n  color: #8B5CF6;\r\n}\r\n\r\n.dark .ZestTextbox-module_progressBarContainer__0qFKf {\r\n  background-color: #374151;\r\n}\r\n\r\n.dark .ZestTextbox-module_progressBar__vwttj {\r\n  background-color: #A78BFA;\r\n}\r\n\r\n.dark .ZestTextbox-module_counterYellow__uYGfs {\r\n  color: #C4B5FD;\r\n}\r\n\r\n.dark .ZestTextbox-module_counterOrange__b9baX {\r\n  color: #A78BFA;\r\n}\r\n\r\n@keyframes ZestTextbox-module_pulse-light__CKfhA {\r\n  0% {\r\n    box-shadow: 0 0 0 0.125rem rgba(139, 92, 246, 0.25); /* 2px */\r\n  }\r\n  50% {\r\n    box-shadow: 0 0 0 0.25rem rgba(139, 92, 246, 0.35); /* 4px */\r\n  }\r\n  100% {\r\n    box-shadow: 0 0 0 0.125rem rgba(139, 92, 246, 0.25); /* 2px */\r\n  }\r\n}\r\n\r\n@keyframes ZestTextbox-module_pulse-dark__L9PYJ {\r\n  0% {\r\n    box-shadow: 0 0 0 0.125rem rgba(167, 139, 250, 0.35); /* 2px */\r\n  }\r\n  50% {\r\n    box-shadow: 0 0 0 0.25rem rgba(167, 139, 250, 0.45); /* 4px */\r\n  }\r\n  100% {\r\n    box-shadow: 0 0 0 0.125rem rgba(167, 139, 250, 0.35); /* 2px */\r\n  }\r\n}\r\n\r\n/* === Media Queries for Responsive Design === */\r\n@media (min-width: 48rem) { /* 768px */\r\n  /* Tablet */\r\n  .ZestTextbox-module_sm__yyxXO {\r\n    font-size: 0.875rem; /* 14px */\r\n  }\r\n  .ZestTextbox-module_md__fvL10 {\r\n    font-size: 1rem; /* 16px */\r\n  }\r\n  .ZestTextbox-module_lg__fU93- {\r\n    font-size: 1.125rem; /* 18px */\r\n  }\r\n}\r\n\r\n@media (min-width: 64rem) { /* 1024px */\r\n  /* Desktop */\r\n  .ZestTextbox-module_sm__yyxXO {\r\n    padding: 0.375rem 0.625rem; /* 6px 10px */\r\n    font-size: 0.875rem; /* 14px */\r\n  }\r\n  .ZestTextbox-module_md__fvL10 {\r\n    padding: 0.625rem 0.875rem; /* 10px 14px */\r\n    font-size: 1rem; /* 16px */\r\n  }\r\n  .ZestTextbox-module_lg__fU93- {\r\n    padding: 0.75rem 1rem; /* 12px 16px */\r\n    font-size: 1.125rem; /* 18px */\r\n  }\r\n}\r\n\r\n/* === Helper Text === */\r\n.ZestTextbox-module_helperText__4twSg {\r\n  font-size: 0.875rem; /* 14px */\r\n  color: #6b7280;\r\n  /* Common styles, position-specific overrides below */\r\n}\r\n\r\n.dark .ZestTextbox-module_helperText__4twSg {\r\n  color: #9ca3af;\r\n}\r\n\r\n.ZestTextbox-module_helperText__4twSg.ZestTextbox-module_reserved__O9ADn {\r\n  margin-top: 0.125rem; /* 2px - reduced spacing */\r\n  min-height: 1.25rem; /* Approx height for one line of text (14px font + padding) */\r\n  animation: ZestTextbox-module_fade-slide-in__re-Ln 0.3s ease-out forwards;\r\n}\r\n\r\n.ZestTextbox-module_helperText__4twSg.ZestTextbox-module_reserved__O9ADn.ZestTextbox-module_empty__-yizW {\r\n  visibility: hidden; /* Hide content but preserve space */\r\n}\r\n\r\n.ZestTextbox-module_helperText__4twSg.ZestTextbox-module_absolute__JVOHo {\r\n  position: absolute;\r\n  bottom: -1.25rem; /* Adjust as needed for closer positioning */\r\n  left: 0;\r\n  right: 0; /* Stretch across the input width */\r\n  width: 100%;\r\n  animation: ZestTextbox-module_fade-in__Rhn6I 0.3s ease-out forwards; /* Simpler fade for absolute */\r\n  z-index: 1; /* Ensure it appears above other elements if needed */\r\n  padding-left: 0.875rem; /* Match input left padding */\r\n  padding-right: 0.875rem; /* Match input right padding */\r\n  box-sizing: border-box; /* Include padding in the width calculation */\r\n}\r\n\r\n@keyframes ZestTextbox-module_fade-slide-in__re-Ln { /* For reserved text */\r\n  from {\r\n    opacity: 0;\r\n    transform: translateY(5px);\r\n  }\r\n  to {\r\n    opacity: 1;\r\n    transform: translateY(0);\r\n  }\r\n}\r\n\r\n@keyframes ZestTextbox-module_fade-in__Rhn6I { /* For absolute text */\r\n  from {\r\n    opacity: 0;\r\n  }\r\n  to {\r\n    opacity: 1;\r\n  }\r\n}";
+var styles = {"textbox":"ZestTextbox-module_textbox__0M5Wq","pulse-light":"ZestTextbox-module_pulse-light__CKfhA","error":"ZestTextbox-module_error__5RoCP","sm":"ZestTextbox-module_sm__yyxXO","md":"ZestTextbox-module_md__fvL10","lg":"ZestTextbox-module_lg__fU93-","fullWidth":"ZestTextbox-module_fullWidth__xn4fT","wrapper":"ZestTextbox-module_wrapper__0ok2A","counter":"ZestTextbox-module_counter__waqIT","pulse-dark":"ZestTextbox-module_pulse-dark__L9PYJ","passwordToggle":"ZestTextbox-module_passwordToggle__I2s4O","eyeIcon":"ZestTextbox-module_eyeIcon__rKiBL","rotate":"ZestTextbox-module_rotate__Ajx19","tooltip":"ZestTextbox-module_tooltip__etRdj","progressBarContainer":"ZestTextbox-module_progressBarContainer__0qFKf","progressBar":"ZestTextbox-module_progressBar__vwttj","counterYellow":"ZestTextbox-module_counterYellow__uYGfs","counterOrange":"ZestTextbox-module_counterOrange__b9baX","helperText":"ZestTextbox-module_helperText__4twSg","reserved":"ZestTextbox-module_reserved__O9ADn","fade-slide-in":"ZestTextbox-module_fade-slide-in__re-Ln","empty":"ZestTextbox-module_empty__-yizW","absolute":"ZestTextbox-module_absolute__JVOHo","fade-in":"ZestTextbox-module_fade-in__Rhn6I"};
 styleInject(css_248z);
 
 var filterNumericInput = function (value) {
@@ -134,6 +134,26 @@ var filterNumericInput = function (value) {
     }
     return newValue;
 };
+
+var defaultNumberParser = function (value, inputType) {
+    if (inputType !== "number" && inputType !== "tel" && inputType !== "currency" && inputType !== "percentage") {
+        // If not a number type, don't parse as number
+        return undefined;
+    }
+    var parsed = parseFloat(value);
+    return isNaN(parsed) ? undefined : parsed;
+};
+var defaultNumberValidator = function (value, inputType) {
+    if (inputType !== "number" && inputType !== "tel" && inputType !== "currency" && inputType !== "percentage") {
+        // If not a number type, always consider valid for this validator
+        return true;
+    }
+    if (value === undefined) {
+        return "Invalid number format.";
+    }
+    return true;
+};
+// You can add more default parsers/validators here for other types like 'email', 'date', etc.
 
 var useThemeDetector = function (theme) {
     if (theme === void 0) { theme = "system"; }
@@ -232,10 +252,16 @@ var ProgressBar = function (_a) {
 };
 
 var HelperTextDisplay = function (_a) {
-    var helperTextNode = _a.helperTextNode, className = _a.className;
-    if (!helperTextNode)
-        return null;
-    return (jsx("div", { className: "".concat(styles.helperText, " ").concat(className || ""), children: helperTextNode }));
+    var helperTextNode = _a.helperTextNode, className = _a.className, _b = _a.positioning, positioning = _b === void 0 ? "absolute" : _b;
+    if (!helperTextNode) {
+        // If no helper text, but positioning is 'reserved', render an empty div
+        // to maintain space and prevent layout shifts.
+        if (positioning === "reserved") {
+            return (jsx("div", { className: "".concat(styles.helperText, " ").concat(styles.reservedSpace, " ").concat(className || "") }));
+        }
+        return null; // For 'absolute' positioning, return null if no text
+    }
+    return (jsx("div", { className: "".concat(styles.helperText, " ").concat(className || "", " ").concat(styles[positioning]), children: helperTextNode }));
 };
 
 // Create the context with a default empty object
@@ -254,26 +280,6 @@ var useZestTextboxConfig$1 = function () {
     }
     return context; // Cast to generic T
 };
-
-var defaultNumberParser = function (value, inputType) {
-    if (inputType !== "number" && inputType !== "tel" && inputType !== "currency" && inputType !== "percentage") {
-        // If not a number type, don't parse as number
-        return undefined;
-    }
-    var parsed = parseFloat(value);
-    return isNaN(parsed) ? undefined : parsed;
-};
-var defaultNumberValidator = function (value, inputType) {
-    if (inputType !== "number" && inputType !== "tel" && inputType !== "currency" && inputType !== "percentage") {
-        // If not a number type, always consider valid for this validator
-        return true;
-    }
-    if (value === undefined) {
-        return "Invalid number format.";
-    }
-    return true;
-};
-// You can add more default parsers/validators here for other types like 'email', 'date', etc.
 
 var ZEST_CONFIG_TIMEOUT = 2000; // 2 seconds
 // Helper function to resolve a ZestConfigValue. This now ALWAYS returns a promise.
@@ -338,6 +344,7 @@ var defaultResolvedZestProps = {
     helperTextConfig: undefined,
     parser: undefined,
     validator: undefined,
+    helperTextPositioning: "absolute", // Added default
 };
 var useZestTextboxConfig = function (componentZestProps, inputType) {
     var contextDefaultZestProps = useZestTextboxConfig$1().defaultZestProps; // Pass generic T
@@ -365,9 +372,9 @@ var useZestTextboxConfig = function (componentZestProps, inputType) {
     }, [contextDefaultZestProps, componentZestProps, inputType]); // Added inputType to dependencies
     useEffect(function () {
         var resolveProps = function () { return __awaiter(void 0, void 0, void 0, function () {
-            var newResolvedProps, timeout, _a, _b, _c, _d, _e, _f, _g, _h, _j;
-            return __generator(this, function (_k) {
-                switch (_k.label) {
+            var newResolvedProps, timeout, _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+            return __generator(this, function (_l) {
+                switch (_l.label) {
                     case 0:
                         newResolvedProps = __assign({}, defaultResolvedZestProps);
                         timeout = ZEST_CONFIG_TIMEOUT;
@@ -376,41 +383,47 @@ var useZestTextboxConfig = function (componentZestProps, inputType) {
                         return [4 /*yield*/, resolveWithTimeout(resolveZestConfigValue(mergedZestProps.zSize, defaultResolvedZestProps.zSize, inputType), timeout, 'zSize', defaultResolvedZestProps.zSize)];
                     case 1:
                         // Resolve each property that can be a ZestConfigValue
-                        _a.zSize = _k.sent();
+                        _a.zSize = _l.sent();
                         _b = newResolvedProps;
                         return [4 /*yield*/, resolveWithTimeout(resolveZestConfigValue(mergedZestProps.stretch, defaultResolvedZestProps.stretch, inputType), timeout, 'stretch', defaultResolvedZestProps.stretch)];
                     case 2:
-                        _b.stretch = _k.sent();
+                        _b.stretch = _l.sent();
                         _c = newResolvedProps;
                         return [4 /*yield*/, resolveWithTimeout(resolveZestConfigValue(mergedZestProps.showProgressBar, defaultResolvedZestProps.showProgressBar, inputType), timeout, 'showProgressBar', defaultResolvedZestProps.showProgressBar)];
                     case 3:
-                        _c.showProgressBar = _k.sent();
+                        _c.showProgressBar = _l.sent();
                         _d = newResolvedProps;
                         return [4 /*yield*/, resolveWithTimeout(resolveZestConfigValue(mergedZestProps.animatedCounter, defaultResolvedZestProps.animatedCounter, inputType), timeout, 'animatedCounter', defaultResolvedZestProps.animatedCounter)];
                     case 4:
-                        _d.animatedCounter = _k.sent();
+                        _d.animatedCounter = _l.sent();
                         _e = newResolvedProps;
                         return [4 /*yield*/, resolveWithTimeout(resolveZestConfigValue(mergedZestProps.theme, defaultResolvedZestProps.theme, inputType), timeout, 'theme', defaultResolvedZestProps.theme)];
                     case 5:
-                        _e.theme = _k.sent();
+                        _e.theme = _l.sent();
                         _f = newResolvedProps;
                         return [4 /*yield*/, resolveWithTimeout(resolveZestConfigValue(mergedZestProps.isMultiline, defaultResolvedZestProps.isMultiline, inputType), timeout, 'isMultiline', defaultResolvedZestProps.isMultiline)];
                     case 6:
-                        _f.isMultiline = _k.sent();
+                        _f.isMultiline = _l.sent();
                         // onTextChanged is no longer a ZestConfigValue, so it's directly assigned
                         newResolvedProps.onTextChanged = mergedZestProps.onTextChanged;
                         _g = newResolvedProps;
                         return [4 /*yield*/, resolveWithTimeout(resolveZestConfigValue(mergedZestProps.helperTextConfig, defaultResolvedZestProps.helperTextConfig, inputType), timeout, 'helperTextConfig', defaultResolvedZestProps.helperTextConfig)];
                     case 7:
-                        _g.helperTextConfig = _k.sent();
+                        _g.helperTextConfig = _l.sent();
                         _h = newResolvedProps;
                         return [4 /*yield*/, resolveWithTimeout(resolveZestConfigValue(mergedZestProps.parser, defaultResolvedZestProps.parser, inputType), timeout, 'parser', defaultResolvedZestProps.parser)];
                     case 8:
-                        _h.parser = _k.sent();
+                        _h.parser = _l.sent();
                         _j = newResolvedProps;
                         return [4 /*yield*/, resolveWithTimeout(resolveZestConfigValue(mergedZestProps.validator, defaultResolvedZestProps.validator, inputType), timeout, 'validator', defaultResolvedZestProps.validator)];
                     case 9:
-                        _j.validator = _k.sent();
+                        _j.validator = _l.sent();
+                        // ADD THIS NEW PROPERTY RESOLUTION
+                        _k = newResolvedProps;
+                        return [4 /*yield*/, resolveWithTimeout(resolveZestConfigValue(mergedZestProps.helperTextPositioning, defaultResolvedZestProps.helperTextPositioning, inputType), timeout, 'helperTextPositioning', defaultResolvedZestProps.helperTextPositioning)];
+                    case 10:
+                        // ADD THIS NEW PROPERTY RESOLUTION
+                        _k.helperTextPositioning = _l.sent();
                         setResolvedZestProps(newResolvedProps);
                         return [2 /*return*/];
                 }
@@ -482,17 +495,20 @@ var ZestTextbox = function (props) {
     var _a = props.className, className = _a === void 0 ? "" : _a, maxLength = props.maxLength, onChange = props.onChange, type = props.type, zest = props.zest, // Destructure the new zest prop
     rest = __rest(props, ["className", "maxLength", "onChange", "type", "zest"]);
     var resolvedZestProps = useZestTextboxConfig(zest, type);
-    var zSize = resolvedZestProps.zSize, fullWidth = resolvedZestProps.stretch, showProgressBar = resolvedZestProps.showProgressBar, animatedCounter = resolvedZestProps.animatedCounter, theme = resolvedZestProps.theme, helperTextConfig = resolvedZestProps.helperTextConfig, onTextChanged = resolvedZestProps.onTextChanged, isMultiline = resolvedZestProps.isMultiline, parser = resolvedZestProps.parser, validator = resolvedZestProps.validator;
+    var zSize = resolvedZestProps.zSize, fullWidth = resolvedZestProps.stretch, showProgressBar = resolvedZestProps.showProgressBar, animatedCounter = resolvedZestProps.animatedCounter, theme = resolvedZestProps.theme, helperTextConfig = resolvedZestProps.helperTextConfig, onTextChanged = resolvedZestProps.onTextChanged, isMultiline = resolvedZestProps.isMultiline, parser = resolvedZestProps.parser, validator = resolvedZestProps.validator, helperTextPositioning = resolvedZestProps.helperTextPositioning;
     var _b = useState(""), value = _b[0], setValue = _b[1];
     var isDark = useThemeDetector(theme);
     var isPassword = type === "password";
     var _c = usePasswordVisibility(isPassword), isPasswordVisible = _c.isPasswordVisible, togglePasswordVisibility = _c.togglePasswordVisibility;
     var _d = useCharacterCounter(value, maxLength, animatedCounter), currentLength = _d.currentLength, charPercentage = _d.charPercentage, counterColorClass = _d.counterColorClass, showCounter = _d.showCounter;
+    var isNumericInputType = type === "number" || type === "currency" || type === "percentage";
+    var parserToUse = isNumericInputType && !parser ? defaultNumberParser : parser;
+    var validatorToUse = isNumericInputType && !validator ? defaultNumberValidator : validator;
     var _e = useParsedAndValidatedInput({
         rawValue: value,
         inputType: type, // Pass the type prop here
-        parser: parser,
-        validator: validator,
+        parser: parserToUse,
+        validator: validatorToUse,
         onParsedAndValidatedChange: onTextChanged,
     }), parsedValue = _e.parsedValue, isValid = _e.isValid, validationMessage = _e.validationMessage;
     // Prioritize validation message over regular helper text
@@ -521,11 +537,10 @@ var ZestTextbox = function (props) {
             onChange(e);
         // onTextChanged is now handled by useParsedAndValidatedInput
     }, [type, maxLength, onChange]);
-    var isNumeric = type === "number" || type === "tel" || type === "currency" || type === "percentage";
-    var inputType = isPassword && isPasswordVisible ? "text" : isNumeric ? "tel" : type;
+    var inputType = isPassword && isPasswordVisible ? "text" : isNumericInputType ? "tel" : type; // Use isNumericInputType here
     var commonProps = __assign({ className: classList, maxLength: maxLength, onChange: handleInputChange, value: value, type: inputType }, rest);
     return (jsxs("div", { className: styles.wrapper, children: [isMultiline ? ( // Use isMultiline from zest
-            jsx("textarea", __assign({}, commonProps))) : (jsx("input", __assign({}, commonProps))), jsx(HelperTextDisplay, { helperTextNode: finalHelperTextNode, className: (helperTextConfig === null || helperTextConfig === void 0 ? void 0 : helperTextConfig.className) || '' }), jsx(CharacterCounter, { showCounter: showCounter, currentLength: currentLength, maxLength: maxLength, counterColorClass: counterColorClass }), jsx(PasswordToggleButton, { isPassword: isPassword, isPasswordVisible: isPasswordVisible, onToggle: togglePasswordVisibility }), jsx(ProgressBar, { showProgressBar: showProgressBar, showCounter: showCounter, charPercentage: charPercentage, counterColorClass: counterColorClass })] }));
+            jsx("textarea", __assign({}, commonProps))) : (jsx("input", __assign({}, commonProps))), jsx(HelperTextDisplay, { helperTextNode: finalHelperTextNode, className: (helperTextConfig === null || helperTextConfig === void 0 ? void 0 : helperTextConfig.className) || '', positioning: helperTextPositioning }), jsx(CharacterCounter, { showCounter: showCounter, currentLength: currentLength, maxLength: maxLength, counterColorClass: counterColorClass }), jsx(PasswordToggleButton, { isPassword: isPassword, isPasswordVisible: isPasswordVisible, onToggle: togglePasswordVisibility }), jsx(ProgressBar, { showProgressBar: showProgressBar, showCounter: showCounter, charPercentage: charPercentage, counterColorClass: counterColorClass })] }));
 };
 
 export { CharacterCounter, HelperTextDisplay, PasswordToggleButton, ProgressBar, ZestTextboxConfigProvider, ZestTextbox as default };
