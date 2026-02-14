@@ -1,0 +1,121 @@
+# Centralized Configuration
+
+To maintain consistency, reduce boilerplate, and enable dynamic, type-aware behaviors, `ZestTextbox` offers a powerful centralized configuration system using React Context. This allows you to define default `ZestProps` that will apply to all `ZestTextbox` instances within the provider's scope. Component-level `zest` props will always take precedence over these global defaults.
+
+## Understanding `ZestConfigValue<T>`
+
+The flexibility of centralized configuration comes from the `ZestConfigValue<T>` type. For any property within `ZestProps`, you can provide a value in one of three ways:
+
+1.  **A direct value (`T`):** A simple, static value.
+    ```typescript
+    theme: "dark" // All textboxes will be dark
+    ```
+2.  **A function `((inputType?: HtmlInputType) => T)`:** A function that receives the `inputType` of the `ZestTextbox` instance. This enables dynamic defaults based on the input's type.
+    ```typescript
+    zSize: (inputType) => {
+      if (inputType === 'password') return 'sm'; // Small for passwords
+      return 'lg'; // Large for everything else
+    }
+    ```
+3.  **An asynchronous function `((inputType?: HtmlInputType) => Promise<T>)`:** Similar to the function above, but returns a Promise. Useful if a configuration value needs to be fetched or computed asynchronously.
+    ```typescript
+    animatedCounter: Promise.resolve(true) // Async example (e.g., could fetch from an API)
+    ```
+
+## Usage with `ZestTextboxConfigProvider`
+
+Wrap your application or a part of it with the `ZestTextboxConfigProvider`. Pass a `value` prop containing the default `ZestProps` you want to apply.
+
+```jsx
+import React from 'react';
+import ZestTextbox, {
+  ZestTextboxConfigProvider,
+  HtmlInputType,
+  HelperTextConfig,
+  ZestContext,
+  InputParser,
+  InputValidator
+} from 'jattac.libs.web.zest-textbox';
+
+const AppWithCentralConfig = () => {
+
+  const globalDefaultZestProps = {
+    // Global theme and stretching
+    theme: "system",
+    stretch: true,
+
+    // Make size dynamic based on the input type
+    zSize: (inputType?: HtmlInputType) => {
+      if (inputType === 'password') return 'sm'; // Small for passwords
+      return 'md'; // Medium for everything else
+    },
+
+    // Example: Global helper text for numeric inputs (comma-separated, max 2 decimal places)
+    helperTextConfig: (inputType?: HtmlInputType): HelperTextConfig => {
+      if (inputType === 'number' || inputType === 'currency' || inputType === 'percentage') {
+        return {
+          formatter: (context: ZestContext<number>): string => {
+            const num = context.parsedValue;
+            if (num === undefined || isNaN(num)) {
+              return '';
+            }
+            return num.toLocaleString('en-US', {
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 2,
+            });
+          },
+          templater: (formattedValue: string): React.ReactNode => {
+            return formattedValue ? <span>Formatted: <strong>{formattedValue}</strong></span> : null;
+          }
+        };
+      }
+      return {}; // Always return an object
+    },
+
+    // Example: Global email validator
+    validator: (value: string | undefined, inputType?: HtmlInputType): boolean | string => {
+      if (inputType === 'email' && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        return 'Please enter a valid email address.';
+      }
+      return true;
+    },
+
+    // Async example (e.g., if animatedCounter was a feature flag from an API)
+    animatedCounter: Promise.resolve(true),
+  };
+
+  return (
+    <ZestTextboxConfigProvider value={globalDefaultZestProps}>
+      <div style={{ padding: '2rem', maxWidth: '600px', margin: '0 auto' }}>
+        <h1>Centralized Configuration Example</h1>
+
+        <h3>Textboxes inheriting global defaults:</h3>
+        <ZestTextbox placeholder="Normal input (medium, system theme, stretched)" />
+        <br /><br />
+        <ZestTextbox type="password" placeholder="Password (small, system theme, stretched)" />
+        <br /><br />
+        <ZestTextbox type="number" placeholder="Numeric with global helper text" />
+        <br /><br />
+        <ZestTextbox type="email" placeholder="Email with global validator" />
+        <br /><br />
+
+        <h3>Textbox with component-level override:</h3>
+        <ZestTextbox
+          placeholder="I'm large and light, overriding global defaults"
+          zest={{ theme: "light", zSize: "lg" }} // Overrides global theme and size
+        />
+      </div>
+    </ZestTextboxConfigProvider>
+  );
+};
+
+export default AppWithCentralConfig;
+```
+
+## Prioritization Rules
+
+The resolution order for `ZestProps` is crucial for understanding how final behaviors are determined:
+
+1.  **Component-level `zest` prop:** Explicit props passed directly to a `ZestTextbox` instance always take the highest priority, overriding any values set by providers or internal defaults.
+2.  **`ZestTextboxConfigProvider` `value` prop:** Defaults provided by the nearest `ZestTextboxConfigProvider` come next. These values will be applied if the component-level `zest` prop does not specify a particular property. When a `ZestConfigValue<T>` is a function or an asynchronous function, it is evaluated at this stage, with the `inputType` of the specific `ZestTextbox` instance.
+3.  **Hardcoded internal defaults:** If a specific `zest` property is not defined at the component level *and* not provided by any `ZestTextboxConfigProvider`, the component falls back to its own internal hardcoded default values for that property.
