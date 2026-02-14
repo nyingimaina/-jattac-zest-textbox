@@ -103,16 +103,16 @@ interface ZestProps {
 
 | Property          | Type (`ZestConfigValue<T>`)                               | Default     | Description                                                                                                                              |
 | ----------------- | --------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `helperTextConfig`| `ZestConfigValue<HelperTextConfig>`                       | `undefined` | Configuration for dynamic helper text displayed below the input. Can be an object, a function returning an object, or a promise of an object. |
-| `onTextChanged`   | `<T>(value: T | undefined) => void`                     | `undefined` | A callback function that is invoked whenever the textbox's value changes. Provides the *parsed and validated* value. `T` is the type returned by the `parser`.                                 |
-| `zSize`           | `ZestConfigValue<"sm" | "md" | "lg">`                   | `'md'`      | Sets the size of the textbox, affecting padding and font size.                                                                           |
-| `stretch`         | `ZestConfigValue<boolean>`                                | `false`     | If `true`, the component will stretch to the full width of its container.                                                                |
-| `showProgressBar` | `ZestConfigValue<boolean>`                                | `false`     | If `true`, a progress bar indicating character count vs. `maxLength` will be displayed. Requires `maxLength` to be set.                  |
-| `animatedCounter` | `ZestConfigValue<boolean>`                                | `false`     | If `true`, the character counter will change color as it approaches the `maxLength`. Requires `maxLength` to be set.                     |
-| `theme`           | `ZestConfigValue<"light" | "dark" | "system">`           | `'system'`  | Controls the component's color scheme. `'system'` automatically detects the OS/browser preference.                                       |
-| `isMultiline`     | `ZestConfigValue<boolean>`                                | `false`     | If `true`, the component will render as a `<textarea>`. If `false` or undefined, it renders as an `<input>`.                           |
-| `parser`          | `ZestConfigValue<InputParser<any>>`                       | `undefined` | A function to parse the raw string input into a desired type. Receives `(value: string, inputType?: HtmlInputType)`. Returns `undefined` if parsing fails. Default parsers are provided for `type="number"`. |
-| `validator`       | `ZestConfigValue<InputValidator<any>>`                    | `undefined` | A function to validate the parsed value. Receives `(value: T | undefined, inputType?: HtmlInputType)`. Returns `true` for valid, or a string error message for invalid. Default validators are provided for `type="number"`. |
+| `helperTextConfig`| `ZestConfigValue<HelperTextConfig>`                       | `undefined` | Configuration for dynamic helper text displayed below the input. Accepts a static `HelperTextConfig` object, a function that returns `HelperTextConfig` (optionally based on `inputType`), or an async function returning a `Promise<HelperTextConfig>`. |
+| `onTextChanged`   | `<T>(value: T | undefined) => void`                     | `undefined` | A callback function that is invoked whenever the textbox's value changes. Provides the *parsed and validated* value. Accepts a static function, a function returning a callback (optionally based on `inputType`), or an async function returning a `Promise` of a callback. `T` is the type returned by the `parser`.                                 |
+| `zSize`           | `ZestConfigValue<"sm" | "md" | "lg">`                   | `'md'`      | Sets the size of the textbox, affecting padding and font size. Accepts a static size value (`"sm"` | `"md"` | `"lg"`), a function that returns a size based on `inputType`, or an async function returning a `Promise` of a size.                                                                           |
+| `stretch`         | `ZestConfigValue<boolean>`                                | `false`     | If `true`, the component will stretch to the full width of its container. Accepts a static boolean, a function that returns a boolean based on `inputType`, or an async function returning a `Promise` of a boolean.                                                                |
+| `showProgressBar` | `ZestConfigValue<boolean>`                                | `false`     | If `true`, a progress bar indicating character count vs. `maxLength` will be displayed. Requires `maxLength` to be set. Accepts a static boolean, a function that returns a boolean based on `inputType`, or an async function returning a `Promise` of a boolean.                  |
+| `animatedCounter` | `ZestConfigValue<boolean>`                                | `false`     | If `true`, the character counter will change color as it approaches the `maxLength`. Requires `maxLength` to be set. Accepts a static boolean, a function that returns a boolean based on `inputType`, or an async function returning a `Promise` of a boolean.                     |
+| `theme`           | `ZestConfigValue<"light" | "dark" | "system">`           | `'system'`  | Controls the component's color scheme. `'system'` automatically detects the OS/browser preference. Accepts a static theme value (`"light"` | `"dark"` | `"system"`), a function that returns a theme based on `inputType`, or an async function returning a `Promise` of a theme.                                       |
+| `isMultiline`     | `ZestConfigValue<boolean>`                                | `false`     | If `true`, the component will render as a `<textarea>`. If `false` or `undefined`, it renders as an `<input>`. Accepts a static boolean, a function that returns a boolean based on `inputType`, or an async function returning a `Promise` of a boolean.                           |
+| `parser`          | `ZestConfigValue<InputParser<any>>`                       | `undefined` | A function to parse the raw string input into a desired type. Receives `(value: string, inputType?: HtmlInputType)`. Returns `undefined` if parsing fails. Default parsers are provided for `type="number"`. Accepts a static `InputParser` function, a function that returns an `InputParser` based on `inputType`, or an async function returning a `Promise` of an `InputParser`. |
+| `validator`       | `ZestConfigValue<InputValidator<any>>`                    | `undefined` | A function to validate the parsed value. Receives `(value: T | undefined, inputType?: HtmlInputType)`. Returns `true` for valid, or a string error message for invalid. Default validators are provided for `type="number"`. Accepts a static `InputValidator` function, a function that returns an `InputValidator` based on `inputType`, or an async function returning a `Promise` of an `InputValidator`. |
 
 ## Feature Examples
 
@@ -155,10 +155,10 @@ const CounterExample = () => {
         maxLength={100}
         placeholder="What's on your mind? (max 100 chars)"
         value={text}
-        onTextChanged={setText}
         zest={{
           showProgressBar: true,
           animatedCounter: true,
+          onTextChanged: setText,
         }}
       />
     </div>
@@ -194,16 +194,16 @@ const NumericExample = () => {
       <ZestTextbox
         type="number"
         placeholder="Enter your age"
-        onTextChanged={setAge}
+        zest={{ onTextChanged: setAge }}
       />
       <br /><br />
       <p>Price (type="currency"): {price === undefined ? 'N/A' : price}</p>
       <ZestTextbox
         type="currency"
         placeholder="Enter a price"
-        onTextChanged={setPrice}
         defaultValue="19.99"
         zest={{
+          onTextChanged: setPrice,
           helperTextConfig: {
             formatter: currencyFormatter,
             templater: (formatted) => `Formatted: ${formatted}`
@@ -257,8 +257,8 @@ const CustomNumericParserValidatorExample = () => {
       <ZestTextbox
         type="number"
         placeholder="Enter positive quantity"
-        onTextChanged={setQuantity}
         zest={{
+          onTextChanged: setQuantity,
           parser: positiveIntegerParser,
           validator: positiveIntegerValidator,
         }}
@@ -371,8 +371,8 @@ const HelperTextExample = () => {
       <ZestTextbox
         type="currency"
         placeholder="Enter amount"
-        onTextChanged={setAmount}
         zest={{
+          onTextChanged: setAmount,
           helperTextConfig: {
             formatter: currencyFormatter,
             templater: (formatted, context) => (
@@ -387,8 +387,8 @@ const HelperTextExample = () => {
       <ZestTextbox
         maxLength={50}
         placeholder="Type something (max 50 chars)..."
-        onTextChanged={setMessage}
         zest={{
+          onTextChanged: setMessage,
           helperTextConfig: {
             templater: messageTemplater,
           },
@@ -423,31 +423,88 @@ export default StretchExample;
 
 ## Centralized Configuration
 
-To maintain consistency and reduce boilerplate, `ZestTextbox` supports centralized configuration using React Context. This allows you to define default `ZestProps` for all `ZestTextbox` instances within a provider's scope. Component-level `zest` props will always override these global defaults.
+To maintain consistency, reduce boilerplate, and enable dynamic, type-aware behaviors, `ZestTextbox` offers a powerful centralized configuration system using React Context. This allows you to define default `ZestProps` that will apply to all `ZestTextbox` instances within the provider's scope. Component-level `zest` props will always take precedence over these global defaults.
 
-### How it Works
+### Understanding `ZestConfigValue<T>`
 
-1.  **`ZestTextboxConfigProvider`:** Wrap your application or a part of it with this provider. Pass a `value` prop containing the default `ZestProps` you want to apply.
-2.  **`ZestConfigValue<T>`:** Properties within `ZestProps` can be a primitive value (`T`), a function that receives the `inputType` and returns `T` (`(inputType?: HtmlInputType) => T`), or an asynchronous function that does the same (`(inputType?: HtmlInputType) => Promise<T>`). This provides immense flexibility for creating dynamic, type-aware defaults.
+The flexibility of centralized configuration comes from the `ZestConfigValue<T>` type. For any property within `ZestProps`, you can provide a value in one of three ways:
 
-### Usage Example
-
-Here's how you can set up a global theme and size, and then override it for a specific component. The `zSize` prop is configured to return a different size depending on the `inputType`.
-
-```jsx
-import React from 'react';
-import ZestTextbox, { ZestTextboxConfigProvider, InputParser, InputValidator, HtmlInputType } from 'jattac.libs.web.zest-textbox';
-
-const AppWithCentralConfig = () => {
-  // Define your global default ZestProps
-  const globalDefaultZestProps = {
-    theme: "dark", // All textboxes will be dark by default
-    // Make size dynamic based on the input type
+1.  **A direct value (`T`):** A simple, static value.
+    ```typescript
+    theme: "dark" // All textboxes will be dark
+    ```
+2.  **A function `((inputType?: HtmlInputType) => T)`:** A function that receives the `inputType` of the `ZestTextbox` instance. This enables dynamic defaults based on the input's type.
+    ```typescript
     zSize: (inputType) => {
       if (inputType === 'password') return 'sm'; // Small for passwords
       return 'lg'; // Large for everything else
+    }
+    ```
+3.  **An asynchronous function `((inputType?: HtmlInputType) => Promise<T>)`:** Similar to the function above, but returns a Promise. Useful if a configuration value needs to be fetched or computed asynchronously.
+    ```typescript
+    animatedCounter: Promise.resolve(true) // Async example (e.g., could fetch from an API)
+    ```
+
+### Usage with `ZestTextboxConfigProvider`
+
+Wrap your application or a part of it with the `ZestTextboxConfigProvider`. Pass a `value` prop containing the default `ZestProps` you want to apply.
+
+```jsx
+import React from 'react';
+import ZestTextbox, {
+  ZestTextboxConfigProvider,
+  HtmlInputType,
+  HelperTextConfig,
+  ZestContext,
+  InputParser,
+  InputValidator
+} from 'jattac.libs.web.zest-textbox';
+
+const AppWithCentralConfig = () => {
+
+  const globalDefaultZestProps = {
+    // Global theme and stretching
+    theme: "system",
+    stretch: true,
+
+    // Make size dynamic based on the input type
+    zSize: (inputType?: HtmlInputType) => {
+      if (inputType === 'password') return 'sm'; // Small for passwords
+      return 'md'; // Medium for everything else
     },
-    animatedCounter: Promise.resolve(true), // Async example
+
+    // Example: Global helper text for numeric inputs (comma-separated, max 2 decimal places)
+    helperTextConfig: (inputType?: HtmlInputType): HelperTextConfig => {
+      if (inputType === 'number' || inputType === 'currency' || inputType === 'percentage') {
+        return {
+          formatter: (context: ZestContext<number>): string => {
+            const num = context.parsedValue;
+            if (num === undefined || isNaN(num)) {
+              return '';
+            }
+            return num.toLocaleString('en-US', {
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 2,
+            });
+          },
+          templater: (formattedValue: string): React.ReactNode => {
+            return formattedValue ? <span>Formatted: <strong>{formattedValue}</strong></span> : null;
+          }
+        };
+      }
+      return {}; // Always return an object
+    },
+
+    // Example: Global email validator
+    validator: (value: string | undefined, inputType?: HtmlInputType): boolean | string => {
+      if (inputType === 'email' && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        return 'Please enter a valid email address.';
+      }
+      return true;
+    },
+
+    // Async example (e.g., if animatedCounter was a feature flag from an API)
+    animatedCounter: Promise.resolve(true),
   };
 
   return (
@@ -455,16 +512,20 @@ const AppWithCentralConfig = () => {
       <div style={{ padding: '2rem', maxWidth: '600px', margin: '0 auto' }}>
         <h1>Centralized Configuration Example</h1>
 
-        <h3>Default ZestTextbox (inherits global defaults)</h3>
-        <ZestTextbox placeholder="I'm large and dark (default)" />
+        <h3>Textboxes inheriting global defaults:</h3>
+        <ZestTextbox placeholder="Normal input (medium, system theme, stretched)" />
         <br /><br />
-        <ZestTextbox placeholder="I'm a small password field" type="password" />
+        <ZestTextbox type="password" placeholder="Password (small, system theme, stretched)" />
+        <br /><br />
+        <ZestTextbox type="number" placeholder="Numeric with global helper text" />
+        <br /><br />
+        <ZestTextbox type="email" placeholder="Email with global validator" />
         <br /><br />
 
-        <h3>Overridden ZestTextbox (component props take precedence)</h3>
+        <h3>Textbox with component-level override:</h3>
         <ZestTextbox
-          placeholder="I'm light, overriding the global dark theme"
-          zest={{ theme: "light" }} // Overrides the global dark theme
+          placeholder="I'm large and light, overriding global defaults"
+          zest={{ theme: "light", zSize: "lg" }} // Overrides global theme and size
         />
       </div>
     </ZestTextboxConfigProvider>
@@ -476,11 +537,11 @@ export default AppWithCentralConfig;
 
 ### Prioritization Rules
 
-The resolution order for `ZestProps` is as follows:
+The resolution order for `ZestProps` is crucial for understanding how final behaviors are determined:
 
-1.  **Component-level `zest` prop:** Explicit props passed directly to a `ZestTextbox` instance have the highest priority.
-2.  **`ZestTextboxConfigProvider` `value` prop:** Defaults provided by the nearest `ZestTextboxConfigProvider` come next.
-3.  **Hardcoded internal defaults:** If no `zest` prop is provided on the component and no provider is found (or a specific property isn't defined in the provider), internal hardcoded defaults are used.
+1.  **Component-level `zest` prop:** Explicit props passed directly to a `ZestTextbox` instance always take the highest priority, overriding any values set by providers or internal defaults.
+2.  **`ZestTextboxConfigProvider` `value` prop:** Defaults provided by the nearest `ZestTextboxConfigProvider` come next. These values will be applied if the component-level `zest` prop does not specify a particular property. When a `ZestConfigValue<T>` is a function or an asynchronous function, it is evaluated at this stage, with the `inputType` of the specific `ZestTextbox` instance.
+3.  **Hardcoded internal defaults:** If a specific `zest` property is not defined at the component level *and* not provided by any `ZestTextboxConfigProvider`, the component falls back to its own internal hardcoded default values for that property.
 
 ## Internal Architecture
 
