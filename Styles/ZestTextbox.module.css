@@ -275,15 +275,37 @@ textarea.textbox {
 .helperText {
   font-size: 0.875rem; /* 14px */
   color: #6b7280;
-  margin-top: 0.25rem; /* 4px */
-  animation: fade-slide-in 0.3s ease-out forwards;
+  /* Common styles, position-specific overrides below */
 }
 
 :global(.dark) .helperText {
   color: #9ca3af;
 }
 
-@keyframes fade-slide-in {
+.helperText.reserved {
+  margin-top: 0.25rem; /* 4px */
+  min-height: 1.25rem; /* Approx height for one line of text (14px font + padding) */
+  animation: fade-slide-in 0.3s ease-out forwards;
+}
+
+.helperText.reserved.empty {
+  visibility: hidden; /* Hide content but preserve space */
+}
+
+.helperText.absolute {
+  position: absolute;
+  bottom: -1.75rem; /* Adjust as needed to position below the input, considering text size */
+  left: 0;
+  right: 0; /* Stretch across the input width */
+  width: 100%;
+  animation: fade-in 0.3s ease-out forwards; /* Simpler fade for absolute */
+  z-index: 1; /* Ensure it appears above other elements if needed */
+  padding-left: 0.875rem; /* Match input left padding */
+  padding-right: 0.875rem; /* Match input right padding */
+  box-sizing: border-box; /* Include padding in the width calculation */
+}
+
+@keyframes fade-slide-in { /* For reserved text */
   from {
     opacity: 0;
     transform: translateY(5px);
@@ -291,5 +313,14 @@ textarea.textbox {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes fade-in { /* For absolute text */
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }

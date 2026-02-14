@@ -70,6 +70,7 @@ const defaultResolvedZestProps = { // Removed explicit type here, will be inferr
   helperTextConfig: undefined,
   parser: undefined,
   validator: undefined,
+  helperTextPositioning: "absolute", // Added default
 };
 
 export const useZestTextboxConfig = <T = string>(componentZestProps: ZestProps<T> | undefined, inputType?: HtmlInputType) => { // Made generic
@@ -149,6 +150,12 @@ export const useZestTextboxConfig = <T = string>(componentZestProps: ZestProps<T
       newResolvedProps.validator = await resolveWithTimeout(
         resolveZestConfigValue(mergedZestProps.validator, defaultResolvedZestProps.validator as InputValidator<T> | undefined, inputType),
         timeout, 'validator', defaultResolvedZestProps.validator as InputValidator<T> | undefined
+      );
+
+      // ADD THIS NEW PROPERTY RESOLUTION
+      newResolvedProps.helperTextPositioning = await resolveWithTimeout(
+        resolveZestConfigValue(mergedZestProps.helperTextPositioning, defaultResolvedZestProps.helperTextPositioning as "reserved" | "absolute", inputType),
+        timeout, 'helperTextPositioning', defaultResolvedZestProps.helperTextPositioning as "reserved" | "absolute"
       );
 
       setResolvedZestProps(newResolvedProps);

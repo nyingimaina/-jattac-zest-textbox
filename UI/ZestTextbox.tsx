@@ -3,9 +3,10 @@ import styles from "../Styles/ZestTextbox.module.css";
 import { IconEyeOpen } from "./IconEyeOpen";
 import { IconEyeSlashed } from "./IconEyeSlashed";
 
-import { ZestTextboxSize, HelperTextConfig, ZestProps, HtmlInputType, ZestTextboxProps } from "./types";
+import { ZestTextboxSize, HelperTextConfig, ZestProps, HtmlInputType, ZestTextboxProps, InputParser, InputValidator } from "./types";
 
 import { filterNumericInput } from "./utils/numericInputFilter";
+import { defaultNumberParser, defaultNumberValidator } from "./utils/defaultParsersAndValidators";
 import { useThemeDetector } from "./hooks/useThemeDetector";
 import { usePasswordVisibility } from "./hooks/usePasswordVisibility";
 import { useCharacterCounter } from "./hooks/useCharacterCounter";
@@ -41,6 +42,7 @@ const ZestTextbox = <T = string>(props: ZestTextboxProps<T>) => {
     isMultiline,
     parser,
     validator,
+    helperTextPositioning,
   } = resolvedZestProps;
 
   const [value, setValue] = useState("");
@@ -50,6 +52,11 @@ const ZestTextbox = <T = string>(props: ZestTextboxProps<T>) => {
   const { isPasswordVisible, togglePasswordVisibility } = usePasswordVisibility(isPassword);
   const { currentLength, charPercentage, counterColorClass, showCounter } = useCharacterCounter(value, maxLength, animatedCounter);
 
+  const isNumericInputType = type === "number" || type === "currency" || type === "percentage";
+
+  const parserToUse = isNumericInputType && !parser ? (defaultNumberParser as InputParser<T>) : parser;
+  const validatorToUse = isNumericInputType && !validator ? (defaultNumberValidator as InputValidator<T>) : validator;
+
   const {
     parsedValue,
     isValid,
@@ -57,8 +64,8 @@ const ZestTextbox = <T = string>(props: ZestTextboxProps<T>) => {
   } = useParsedAndValidatedInput({
     rawValue: value,
     inputType: type, // Pass the type prop here
-    parser: parser,
-    validator: validator,
+    parser: parserToUse,
+    validator: validatorToUse,
     onParsedAndValidatedChange: onTextChanged,
   });
 
@@ -100,8 +107,7 @@ const ZestTextbox = <T = string>(props: ZestTextboxProps<T>) => {
     [type, maxLength, onChange]
   );
 
-  const isNumeric = type === "number" || type === "tel" || type === "currency" || type === "percentage";
-  const inputType = isPassword && isPasswordVisible ? "text" : isNumeric ? "tel" : type;
+  const inputType = isPassword && isPasswordVisible ? "text" : isNumericInputType ? "tel" : type; // Use isNumericInputType here
 
   const commonProps = {
     className: classList,
@@ -127,6 +133,7 @@ const ZestTextbox = <T = string>(props: ZestTextboxProps<T>) => {
       <HelperTextDisplay
         helperTextNode={finalHelperTextNode}
         className={helperTextConfig?.className || ''}
+        positioning={helperTextPositioning}
       />
 
       <CharacterCounter

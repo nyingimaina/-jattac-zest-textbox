@@ -116,6 +116,15 @@ export interface ZestProps<T = string> { // Made ZestProps generic
    * Returns `true` for valid, or a string error message for invalid.
    */
   validator?: ZestConfigValue<InputValidator<T>>; // Validator is now generic over T
+  /**
+   * Controls the positioning of the helper text, influencing DOM layout.
+   * - 'reserved': Always reserves space for the helper text, preventing layout shifts.
+   *               Helper text is invisible when empty. (Recommended for stable layouts)
+   * - 'absolute': Positions the helper text absolutely, allowing it to "float" without affecting
+   *               the surrounding layout. Can cause overlap if not managed carefully by the consumer.
+   * @default 'absolute'
+   */
+  helperTextPositioning?: ZestConfigValue<"reserved" | "absolute">;
 }
 
 // Resolved ZestProps type, where all ZestConfigValue types are resolved to their base types
@@ -130,6 +139,7 @@ export interface ResolvedZestProps<T = string> { // Made ResolvedZestProps gener
   isMultiline: boolean;
   parser: InputParser<T> | undefined; // Parser is now generic over T
   validator: InputValidator<T> | undefined; // Validator is now generic over T
+  helperTextPositioning: "reserved" | "absolute"; // New property
 }
 
 type SharedProps<T> = { // Made SharedProps generic
