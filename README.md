@@ -113,6 +113,7 @@ interface ZestProps {
 | `isMultiline`     | `ZestConfigValue<boolean>`                                | `false`     | If `true`, the component will render as a `<textarea>`. If `false` or `undefined`, it renders as an `<input>`. Accepts a static boolean, a function that returns a boolean based on `inputType`, or an async function returning a `Promise` of a boolean.                           |
 | `parser`          | `ZestConfigValue<InputParser<any>>`                       | `undefined` | A function to parse the raw string input into a desired type. Receives `(value: string, inputType?: HtmlInputType)`. Returns `undefined` if parsing fails. Default parsers are provided for `type="number"`. Accepts a static `InputParser` function, a function that returns an `InputParser` based on `inputType`, or an async function returning a `Promise` of an `InputParser`. |
 | `validator`       | `ZestConfigValue<InputValidator<any>>`                    | `undefined` | A function to validate the parsed value. Receives `(value: T | undefined, inputType?: HtmlInputType)`. Returns `true` for valid, or a string error message for invalid. Default validators are provided for `type="number"`. Accepts a static `InputValidator` function, a function that returns an `InputValidator` based on `inputType`, or an async function returning a `Promise` of an `InputValidator`. |
+| `helperTextPositioning`| `ZestConfigValue<"reserved" | "absolute">`            | `'absolute'`| Controls the positioning of the helper text, influencing DOM layout. Accepts a static value (`"reserved"` or `"absolute"`), a function that returns a position based on `inputType`, or an async function returning a `Promise` of a position. `'absolute'` can cause overlap with elements below if not managed by the consumer. |
 
 ## Feature Examples
 
@@ -419,6 +420,63 @@ const StretchExample = () => {
 };
 
 export default StretchExample;
+```
+
+### Helper Text Positioning
+
+Control how helper text affects the layout using the `helperTextPositioning` prop.
+
+```jsx
+import React from 'react';
+import ZestTextbox from 'jattac.libs.web.zest-textbox';
+
+const HelperTextPositioningExample = () => {
+  const [textReserved, setTextReserved] = React.useState('');
+  const [textAbsolute, setTextAbsolute] = React.useState('');
+
+  return (
+    <div style={{ padding: '2rem', maxWidth: '400px', margin: '0 auto', border: '1px dashed #ccc' }}>
+      <h2>Helper Text Positioning</h2>
+
+      <h3>Reserved Space (prevents layout shift)</h3>
+      <ZestTextbox
+        maxLength={30}
+        placeholder="Type here (reserved space)"
+        zest={{
+          onTextChanged: setTextReserved,
+          helperTextPositioning: "reserved",
+          helperTextConfig: {
+            templater: () => (
+              <span>This helper text reserves space.</span>
+            ),
+          },
+        }}
+      />
+      <p style={{ marginTop: '2rem' }}>Content below the reserved textbox.</p> {/* This content won't jump */}
+
+      <br /><br />
+
+      <h3>Absolute Positioning (may cause overlap)</h3>
+      <ZestTextbox
+        maxLength={30}
+        placeholder="Type here (absolute position)"
+        zest={{
+          onTextChanged: setTextAbsolute,
+          helperTextPositioning: "absolute", // Default, but explicit here
+          helperTextConfig: {
+            templater: () => (
+              <span>This helper text floats.</span>
+            ),
+          },
+        }}
+      />
+      <p style={{ marginTop: '0.5rem' }}>Content below the absolute textbox.</p> {/* This content might be overlapped */}
+
+    </div>
+  );
+};
+
+export default HelperTextPositioningExample;
 ```
 
 ## Centralized Configuration
