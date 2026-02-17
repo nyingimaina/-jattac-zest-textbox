@@ -1,5 +1,5 @@
 <!-- docs/development.md -->
-[⬅️ Previous: Configuration Guide](./configuration.md) | [Next: Upgrade Path ➡️](./breaking-changes.md)
+[⬅️ Previous: Configuration Guide](./configuration.md) | [Next: Best Practices ➡️](./best-practices.md)
 
 # 🤝 Contributor's Guide
 
@@ -78,4 +78,4 @@ When contributing to the project, please adhere to the following:
 
 ---
 
-[⬅️ Previous: Configuration Guide](./configuration.md) | [Next: Upgrade Path ➡️](./breaking-changes.md)
+[⬅️ Previous: Configuration Guide](./configuration.md) | [Next: Best Practices ➡️](./best-practices.md)

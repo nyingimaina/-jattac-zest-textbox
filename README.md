@@ -56,6 +56,7 @@ Dive deeper into `ZestTextbox` to unleash its full potential. Our documentation 
 *   [API Reference](./docs/api.md) - Detailed documentation for all props and types.
 *   [Centralized Configuration](./docs/configuration.md) - Learn how to configure ZestTextbox globally.
 *   [Development & Contributing](./docs/development.md) - How to contribute to the project.
+*   [Best Practices & Developer Insights](./docs/best-practices.md) - Essential tips for performance and stability.
 *   [Breaking Changes](./docs/breaking-changes.md) - Information about upgrading to new versions.
 *   [License](./docs/license.md) - Project licensing information.
 <!-- DOCUMENTATION_TOC_END -->

@@ -39,6 +39,8 @@ The flexibility of centralized configuration comes from the `ZestConfigValue<T>`
 
 Wrap your application or a part of it with the `ZestTextboxConfigProvider`. Pass a `value` prop containing the default `ZestProps` you want to apply.
 
+**Important Note on Memoization:** When defining functions (e.g., as part of `helperTextConfig`, `parser`, or `validator`) within the `value` prop of `ZestTextboxConfigProvider`, ensure these functions are memoized (e.g., using `useCallback` in functional components or defining as class methods/properties) if the provider itself might re-render. Unmemoized functions passed as part of the `value` prop will cause `ZestTextbox` instances within its scope to re-render unnecessarily. See [Best Practices: Memoizing Function Props](./best-practices.md) for a detailed explanation and examples.
+
 ```jsx
 import React from 'react';
 import ZestTextbox, {

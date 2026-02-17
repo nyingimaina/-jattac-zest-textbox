@@ -66,4 +66,4 @@ const NewComponent = () => {
 
 ---
 
-[⬅️ Previous: Contributor's Guide](./development.md) | [Next: README.md (Back to Top) ➡️](../README.md)
+[⬅️ Previous: Best Practices](./best-practices.md) | [Next: README.md (Back to Top) ➡️](../README.md)
