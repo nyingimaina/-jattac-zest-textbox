@@ -15,6 +15,9 @@ export const useThemeDetector = (theme: ZestProps['theme'] = "system") => {
     }
 
     // System theme
+    if (typeof window === 'undefined') {
+      return;
+    }
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     const handleChange = () => setIsDark(mediaQuery.matches);
 
