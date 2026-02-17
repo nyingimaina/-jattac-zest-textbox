@@ -46,16 +46,19 @@ const App = () => {
 export default App;
 ```
 
-## Next Steps
+## Next Steps: Documentation Overview
 
-Dive deeper into `ZestTextbox` to unleash its full potential:
+Dive deeper into `ZestTextbox` to unleash its full potential. Our documentation is structured to guide you from basic usage to advanced customization.
 
-*   **📖 The Cookbook: Step-by-Step Examples** - Your primary guide to building amazing things with ZestTextbox.
-*   **✨ Features Showcase** - A quick overview of what ZestTextbox can do.
-*   **📋 API Reference** - Detailed documentation for all props and types.
-*   **⚙️ Centralized Configuration** - Learn how to configure ZestTextbox globally.
-*   **🤝 Development & Contributing** - How to contribute to the project.
-*   **⚠️ Breaking Changes** - Information about upgrading to new versions.
+<!-- DOCUMENTATION_TOC_START -->
+*   [The Cookbook: Step-by-Step Examples](./docs/examples.md) - Your primary guide to building amazing things with ZestTextbox.
+*   [Features Showcase](./docs/features.md) - A quick overview of what ZestTextbox can do.
+*   [API Reference](./docs/api.md) - Detailed documentation for all props and types.
+*   [Centralized Configuration](./docs/configuration.md) - Learn how to configure ZestTextbox globally.
+*   [Development & Contributing](./docs/development.md) - How to contribute to the project.
+*   [Breaking Changes](./docs/breaking-changes.md) - Information about upgrading to new versions.
+*   [License](./docs/license.md) - Project licensing information.
+<!-- DOCUMENTATION_TOC_END -->
 
 ---
 
