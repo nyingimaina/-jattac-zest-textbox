@@ -183,6 +183,94 @@ If your components or custom hooks have client-side-only logic that directly acc
 
 ---
 
+## Integrating with Next.js App Router: Global Configuration
+
+Configuring `ZestTextbox` globally using `ZestTextboxConfigProvider` in a Next.js App Router environment requires careful placement due to the distinction between Server Components and Client Components. Context Providers are inherently client-side, as they typically involve state management that cannot be executed on the server.
+
+**The Strategy:**
+
+To ensure your `ZestTextboxConfigProvider` is accessible throughout your application while respecting Next.js's rendering model, you need to:
+
+1.  **Create a dedicated Client Component** to wrap your context providers. This component will be marked with the `"use client"` directive.
+2.  **Import this Client Component** into your root `layout.tsx`.
+
+**Implementation Steps:**
+
+### Step 1: Create a `providers.tsx` (or similar) Client Component
+
+Create a file (e.g., `app/providers.tsx` or `src/app/providers.tsx`) that will contain your `ZestTextboxConfigProvider`.
+
+```tsx
+// app/providers.tsx or src/app/providers.tsx
+"use client"; // This directive is crucial! It marks this as a Client Component.
+
+import React from 'react';
+import { ZestTextboxConfigProvider } from 'jattac.libs.web.zest-textbox';
+// Import other client-side context providers if you have them
+
+// Define your global ZestTextbox configuration here.
+// Remember to memoize any function definitions within `globalZestConfig`
+// to prevent unnecessary re-renders.
+const globalZestConfig = {
+  // Example: Default theme for all ZestTextboxes
+  theme: "system",
+  // Example: All textboxes stretch by default
+  stretch: true,
+  // Example: Custom parser for a specific inputType used globally
+  parser: (value, inputType) => {
+    if (inputType === 'custom-id') {
+      // Your custom parsing logic here
+      return value.toUpperCase();
+    }
+    return value;
+  },
+  // ... other global ZestProps
+};
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  return (
+    <ZestTextboxConfigProvider value={globalZestConfig}>
+      {children}
+    </ZestTextboxConfigProvider>
+  );
+}
+```
+
+### Step 2: Import `Providers` into your Root `layout.tsx`
+
+Your root `layout.tsx` (e.g., `app/layout.tsx`) is a Server Component by default. You will import the `Providers` Client Component and use it to wrap your application's `children`.
+
+```tsx
+// app/layout.tsx or src/app/layout.tsx
+import './globals.css'; // Your global styles
+
+// Import your client-side providers wrapper
+import { Providers } from './providers'; // Adjust path as needed
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body>
+        {/* Wrap your application content with the Providers component */}
+        <Providers>
+          {children}
+        </Providers>
+      </body>
+    </html>
+  );
+}
+```
+
+**Why this works:**
+
+This pattern allows your `layout.tsx` to remain a Server Component, benefiting from SSR, while correctly offloading the client-side context provider to a Client Component (`providers.tsx`). This ensures `ZestTextboxConfigProvider` initializes in the appropriate environment, making its global configuration available to all client components within your application without causing SSR errors.
+
+---
+
 ## General Component Optimization Tips
 
 *   **`React.memo` (for consumer components):** If your parent component re-renders frequently and passes the same props to `ZestTextbox` (or any other child component), wrap your parent component or intermediate components with `React.memo` to prevent unnecessary re-renders of the child. `ZestTextbox` internally leverages memoization where appropriate, but outer components benefit from this too.
