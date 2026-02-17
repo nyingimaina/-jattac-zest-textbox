@@ -164,16 +164,19 @@ type SharedProps<T> = { // Made SharedProps generic
    * @default 'text'
    */
   type?: HtmlInputType;
+  /**
+   * Standard React `onChange` event handler.
+   * The event object will be typed as a union of `HTMLInputElement` and `HTMLTextAreaElement` change events.
+   * Note that `ZestTextbox` also provides a type-safe `onTextChanged` callback within `ZestProps` for handling parsed and validated values.
+   * If both `onChange` and `zest.onTextChanged` are provided, both will be triggered.
+   */
+  onChange?: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
 };
 
 type InputOnlyProps<T> = SharedProps<T> & // Made InputOnlyProps generic
-  Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "onChange"> & {
-    onChange?: React.ChangeEventHandler<HTMLInputElement>;
-  };
+  Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "onChange">;
 
 type TextareaOnlyProps<T> = SharedProps<T> & // Made TextareaOnlyProps generic
-  Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, "onChange"> & {
-    onChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
-  };
+  Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, "onChange">;
 
 export type ZestTextboxProps<T = string> = InputOnlyProps<T> | TextareaOnlyProps<T>; // Made ZestTextboxProps generic
