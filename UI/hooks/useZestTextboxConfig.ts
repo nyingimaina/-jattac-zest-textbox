@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { ZestProps, ZestConfigValue, ZestTextboxSize, HelperTextConfig, ResolvedZestProps, InputParser, InputValidator, HtmlInputType } from "../types";
 import { useZestTextboxConfig as useZestTextboxContext } from "../contexts/ZestTextboxConfigContext";
 import { defaultNumberParser, defaultNumberValidator } from "../utils/defaultParsersAndValidators"; // Import defaults
+import { deepEqual } from "../utils/deepEqual"; // Import deepEqual utility
 
 const ZEST_CONFIG_TIMEOUT = 2000; // 2 seconds
 
@@ -158,7 +159,10 @@ export const useZestTextboxConfig = <T = string>(componentZestProps: ZestProps<T
         timeout, 'helperTextPositioning', defaultResolvedZestProps.helperTextPositioning as "reserved" | "absolute"
       );
 
-      setResolvedZestProps(newResolvedProps);
+      // Only update state if the resolved props are actually different
+      if (!deepEqual(newResolvedProps, resolvedZestProps)) {
+        setResolvedZestProps(newResolvedProps);
+      }
     };
 
     resolveProps();
