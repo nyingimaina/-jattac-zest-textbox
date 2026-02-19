@@ -70,9 +70,10 @@ const ZestTextbox = <T = string>(props: ZestTextboxProps<T>) => {
   });
 
   // Prioritize validation message over regular helper text
+  const helperTextNode = useHelperText(value, parsedValue, props, helperTextConfig);
   const finalHelperTextNode = validationMessage ? (
     <span style={{ color: "red" }}>{validationMessage}</span>
-  ) : useHelperText(value, parsedValue, props, helperTextConfig);
+  ) : helperTextNode;
 
 
   const classList = [
