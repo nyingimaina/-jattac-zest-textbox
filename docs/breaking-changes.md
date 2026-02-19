@@ -66,4 +66,38 @@ const NewComponent = () => {
 
 ---
 
+## Version 0.4.18 - Stable and Complete `onTextChanged` Behavior
+
+**Description:**
+The `onTextChanged` callback has been significantly improved for stability and completeness. It now:
+1.  **Stops infinite re-render loops:** Internally stabilized using `useRef`; it no longer triggers effects when the function reference changes.
+2.  **Reports invalid states:** Fires with `undefined` when the input fails validation. Previously, it would simply stop firing, making it difficult for parents to track invalid states.
+3.  **Includes a Value-Change Guard:** Only fires when the *parsed* value actually changes (using deep equality).
+4.  **Skips initial mount:** The callback no longer fires immediately upon component mounting, only on subsequent user-initiated or external value changes.
+
+**Migration Guide:**
+
+If your logic relied on `onTextChanged` *only* firing for valid inputs, you should now add a check for `undefined`:
+
+```jsx
+// Before Version 0.4.18
+const handleTextChanged = (parsedValue) => {
+  // Only called when valid
+  setMyState(parsedValue);
+};
+
+// After Version 0.4.18
+const handleTextChanged = (parsedValue) => {
+  if (parsedValue === undefined) {
+    // Input is invalid! Handle appropriately (e.g., disable submit)
+    setIsValid(false);
+    return;
+  }
+  setIsValid(true);
+  setMyState(parsedValue);
+};
+```
+
+---
+
 [⬅️ Previous: Best Practices](./best-practices.md) | [Next: README.md (Back to Top) ➡️](../README.md)

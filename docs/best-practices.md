@@ -25,7 +25,9 @@ In `ZestTextbox`'s case, properties within the `zest` prop such as `onTextChange
 
 **The Solution: Memoize Your Function Props**
 
-You must ensure that any function you pass to `ZestTextbox`'s `zest` prop (or any other function-type prop if added in the future) has a stable reference across renders.
+You must ensure that any function you pass to `ZestTextbox`'s `zest` prop (or any other function-type prop if added in the future) has a stable reference across renders. 
+
+> **Note:** As of v0.4.18, `onTextChanged` is internally stabilized using `useRef`. This means passing an unmemoized function to `onTextChanged` will no longer cause infinite re-render loops or performance degradation. However, memoizing it (and all other function props) is still considered a best practice for optimal performance and to avoid unnecessary internal state reconciliations.
 
 ### For Functional Components (Recommended for new development)
 
