@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { InputParser, InputValidator, HtmlInputType } from "../types";
+import { deepEqual } from "../utils/deepEqual";
 
 interface UseParsedAndValidatedInputArgs<T> {
   rawValue: string;
@@ -20,6 +21,16 @@ export const useParsedAndValidatedInput = <T>({
   const [isValid, setIsValid] = useState(true);
   const [validationMessage, setValidationMessage] = useState<string | undefined>(undefined);
 
+  // Stability Ref: ensure we always use the latest callback without re-triggering effects
+  const callbackRef = useRef(onParsedAndValidatedChange);
+  useEffect(() => {
+    callbackRef.current = onParsedAndValidatedChange;
+  }, [onParsedAndValidatedChange]);
+
+  // Value-Change Guard: ensure we only notify the parent when the *parsed* value actually changes
+  const lastReportedValueRef = useRef<T | undefined>(undefined);
+  const isFirstRender = useRef(true);
+
   useEffect(() => {
     // --- OPTION 2 IMPLEMENTATION ---
     // If no custom parser or validator is provided, and it's not a number type
@@ -31,9 +42,6 @@ export const useParsedAndValidatedInput = <T>({
       setParsedValue(rawValue as unknown as T); // Cast raw string to T
       setIsValid(true);
       setValidationMessage(undefined);
-      if (onParsedAndValidatedChange) {
-        onParsedAndValidatedChange(rawValue as unknown as T); // Pass raw string as T
-      }
       return; // Bypass the rest of the useEffect logic
     }
     // --- END OPTION 2 IMPLEMENTATION ---
@@ -68,10 +76,26 @@ export const useParsedAndValidatedInput = <T>({
     setIsValid(currentIsValid);
     setValidationMessage(currentValidationMessage);
 
-    if (onParsedAndValidatedChange && currentIsValid) {
-      onParsedAndValidatedChange(currentParsedValue);
+  }, [rawValue, inputType, parser, validator]);
+
+  // Separate Effect for notifying the parent. This ensures stability and avoids render cycle issues.
+  useEffect(() => {
+    // If the input is invalid, we report 'undefined' so the consumer knows the current state is invalid.
+    const valueToReport = isValid ? parsedValue : undefined;
+
+    // Skip the first render to avoid firing immediately on mount (unless specifically needed)
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      lastReportedValueRef.current = valueToReport;
+      return;
     }
-  }, [rawValue, inputType, parser, validator, onParsedAndValidatedChange]);
+
+    // Only fire if the value is actually different from the last one we reported
+    if (!deepEqual(valueToReport, lastReportedValueRef.current)) {
+      callbackRef.current?.(valueToReport);
+      lastReportedValueRef.current = valueToReport;
+    }
+  }, [parsedValue, isValid]);
 
   return { parsedValue, isValid, validationMessage };
 };
