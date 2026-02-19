@@ -1,9 +1,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import styles from "../Styles/ZestTextbox.module.css";
-import { IconEyeOpen } from "./IconEyeOpen";
-import { IconEyeSlashed } from "./IconEyeSlashed";
 
-import { ZestTextboxSize, HelperTextConfig, ZestProps, HtmlInputType, ZestTextboxProps, InputParser, InputValidator } from "./types";
+import { ZestTextboxProps, InputParser, InputValidator } from "./types";
 
 import { filterNumericInput } from "./utils/numericInputFilter";
 import { defaultNumberParser, defaultNumberValidator } from "./utils/defaultParsersAndValidators";
@@ -11,14 +9,9 @@ import { useThemeDetector } from "./hooks/useThemeDetector";
 import { usePasswordVisibility } from "./hooks/usePasswordVisibility";
 import { useCharacterCounter } from "./hooks/useCharacterCounter";
 import { useHelperText } from "./hooks/useHelperText";
-import { PasswordToggleButton } from "./components/PasswordToggleButton";
-import { CharacterCounter } from "./components/CharacterCounter";
-import { ProgressBar } from "./components/ProgressBar";
-import { HelperTextDisplay } from "./components/HelperTextDisplay";
 import { useZestTextboxConfig } from "./hooks/useZestTextboxConfig";
 import { useParsedAndValidatedInput } from "./hooks/useParsedAndValidatedInput";
-
-// ... other imports
+import { ZestTextboxLayout } from "./components/ZestTextboxLayout";
 
 const ZestTextbox = <T = string>(props: ZestTextboxProps<T>) => {
   const {
@@ -128,43 +121,22 @@ const ZestTextbox = <T = string>(props: ZestTextboxProps<T>) => {
   };
 
   return (
-    <div className={styles.wrapper}>
-      {isMultiline ? ( // Use isMultiline from zest
-        <textarea
-          {...(commonProps as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
-        />
-      ) : (
-        <input
-          {...(commonProps as React.InputHTMLAttributes<HTMLInputElement>)}
-        />
-      )}
-
-      <HelperTextDisplay
-        helperTextNode={finalHelperTextNode}
-        className={helperTextConfig?.className || ''}
-        positioning={helperTextPositioning}
-      />
-
-      <CharacterCounter
-        showCounter={showCounter}
-        currentLength={currentLength}
-        maxLength={maxLength}
-        counterColorClass={counterColorClass}
-      />
-
-      <PasswordToggleButton
-        isPassword={isPassword}
-        isPasswordVisible={isPasswordVisible}
-        onToggle={togglePasswordVisibility}
-      />
-
-      <ProgressBar
-        showProgressBar={showProgressBar}
-        showCounter={showCounter}
-        charPercentage={charPercentage}
-        counterColorClass={counterColorClass}
-      />
-    </div>
+    <ZestTextboxLayout
+      isMultiline={isMultiline}
+      commonProps={commonProps}
+      finalHelperTextNode={finalHelperTextNode}
+      helperTextConfig={helperTextConfig}
+      helperTextPositioning={helperTextPositioning}
+      showCounter={showCounter}
+      currentLength={currentLength}
+      maxLength={maxLength}
+      counterColorClass={counterColorClass}
+      isPassword={isPassword}
+      isPasswordVisible={isPasswordVisible}
+      togglePasswordVisibility={togglePasswordVisibility}
+      showProgressBar={showProgressBar}
+      charPercentage={charPercentage}
+    />
   );
 };
 
