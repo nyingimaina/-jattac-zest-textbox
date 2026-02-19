@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import styles from "../Styles/ZestTextbox.module.css";
 import { IconEyeOpen } from "./IconEyeOpen";
 import { IconEyeSlashed } from "./IconEyeSlashed";
@@ -27,10 +27,12 @@ const ZestTextbox = <T = string>(props: ZestTextboxProps<T>) => {
     onChange,
     type,
     zest, // Destructure the new zest prop
+    value: propsValue,
+    defaultValue,
     ...rest
-  } = props;
+  } = props as any;
 
-  const resolvedZestProps = useZestTextboxConfig(zest, type);
+  const resolvedZestProps = useZestTextboxConfig<T>(zest, type);
   const {
     zSize,
     stretch: fullWidth,
@@ -45,7 +47,13 @@ const ZestTextbox = <T = string>(props: ZestTextboxProps<T>) => {
     helperTextPositioning,
   } = resolvedZestProps;
 
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState(propsValue ?? defaultValue ?? "");
+
+  useEffect(() => {
+    if (propsValue !== undefined) {
+      setValue(propsValue);
+    }
+  }, [propsValue]);
 
   const isDark = useThemeDetector(theme);
   const isPassword = type === "password";
@@ -54,14 +62,14 @@ const ZestTextbox = <T = string>(props: ZestTextboxProps<T>) => {
 
   const isNumericInputType = type === "number" || type === "currency" || type === "percentage";
 
-  const parserToUse = isNumericInputType && !parser ? (defaultNumberParser as InputParser<T>) : parser;
-  const validatorToUse = isNumericInputType && !validator ? (defaultNumberValidator as InputValidator<T>) : validator;
+  const parserToUse = isNumericInputType && !parser ? (defaultNumberParser as unknown as InputParser<T>) : parser;
+  const validatorToUse = isNumericInputType && !validator ? (defaultNumberValidator as unknown as InputValidator<T>) : validator;
 
   const {
     parsedValue,
     isValid,
     validationMessage,
-  } = useParsedAndValidatedInput({
+  } = useParsedAndValidatedInput<T>({
     rawValue: value,
     inputType: type, // Pass the type prop here
     parser: parserToUse,
@@ -70,7 +78,7 @@ const ZestTextbox = <T = string>(props: ZestTextboxProps<T>) => {
   });
 
   // Prioritize validation message over regular helper text
-  const helperTextNode = useHelperText(value, parsedValue, props, helperTextConfig);
+  const helperTextNode = useHelperText<T>(value, parsedValue, props, helperTextConfig);
   const finalHelperTextNode = validationMessage ? (
     <span style={{ color: "red" }}>{validationMessage}</span>
   ) : helperTextNode;
