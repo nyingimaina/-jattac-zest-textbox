@@ -12,7 +12,7 @@ export const useHelperText = <T>(
   const { formatter, templater } = helperTextConfig || {};
 
   useEffect(() => {
-    if (!helperTextConfig) {
+    if (!helperTextConfig || (!formatter && !templater)) {
       setHelperTextNode(null);
       return;
     }
