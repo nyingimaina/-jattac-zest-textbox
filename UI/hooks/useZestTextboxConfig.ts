@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { ZestProps, ZestConfigValue, ZestTextboxSize, HelperTextConfig, ResolvedZestProps, InputParser, InputValidator, HtmlInputType } from "../types";
+import { ZestProps, ZestConfigValue, ZestTextboxSize, HelperTextConfig, ResolvedZestProps, InputParser, InputValidator, HtmlInputType, CasingBehaviour } from "../types";
 import { useZestTextboxConfig as useZestTextboxContext } from "../contexts/ZestTextboxConfigContext";
 import { defaultNumberParser, defaultNumberValidator } from "../utils/defaultParsersAndValidators"; // Import defaults
 import { deepEqual } from "../utils/deepEqual"; // Import deepEqual utility
@@ -72,6 +72,7 @@ const defaultResolvedZestProps = { // Removed explicit type here, will be inferr
   parser: undefined,
   validator: undefined,
   helperTextPositioning: "absolute", // Added default
+  casingBehaviour: undefined,
 };
 
 export const useZestTextboxConfig = <T = string>(componentZestProps: ZestProps<T> | undefined, inputType?: HtmlInputType) => { // Made generic
@@ -157,6 +158,10 @@ export const useZestTextboxConfig = <T = string>(componentZestProps: ZestProps<T
       newResolvedProps.helperTextPositioning = await resolveWithTimeout(
         resolveZestConfigValue(mergedZestProps.helperTextPositioning, defaultResolvedZestProps.helperTextPositioning as "reserved" | "absolute", inputType),
         timeout, 'helperTextPositioning', defaultResolvedZestProps.helperTextPositioning as "reserved" | "absolute"
+      );
+      newResolvedProps.casingBehaviour = await resolveWithTimeout(
+        resolveZestConfigValue(mergedZestProps.casingBehaviour, undefined, inputType),
+        timeout, 'casingBehaviour', undefined as CasingBehaviour | undefined
       );
 
       // Only update state if the resolved props are actually different

@@ -17,6 +17,7 @@ A delightful, feature-rich, and highly customizable React textbox component. Bui
 *   **Visual Progress Bar:** An intuitive progress indicator that can be linked to character limits or other input metrics.
 *   **Theme Awareness:** Seamlessly integrates with system themes (light/dark) or allows for explicit theme control.
 *   **Responsive Sizing & Layout:** Control the size and stretching behavior of the component to fit various design needs.
+*   **Live Casing Behaviour:** Automatically enforce a casing style (`UpperCase`, `LowerCase`, `TitleCase`, `SentenceCase`, `PascalCase`, `SnakeCase`) on every keystroke — zero boilerplate required.
 
 ## Installation
 

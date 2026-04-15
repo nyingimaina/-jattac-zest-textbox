@@ -62,6 +62,7 @@ interface ZestProps<T = string> {
   parser?: ZestConfigValue<InputParser<T>>;
   validator?: ZestConfigValue<InputValidator<T>>;
   helperTextPositioning?: ZestConfigValue<"reserved" | "absolute">;
+  casingBehaviour?: ZestConfigValue<CasingBehaviour>;
 }
 ```
 
@@ -78,6 +79,7 @@ interface ZestProps<T = string> {
 | `parser`                 | `ZestConfigValue<InputParser<T>>`                               | `undefined`  | **Use Case:** A function to transform the raw string `value` into a desired type `T` (e.g., `string` to `number`, `string` to `Date`). Returns `undefined` if parsing fails. Default parsers are automatically provided for `type="number"`, `"currency"`, and `"percentage"` if no custom parser is supplied. Accepts a static `InputParser` function, a function that returns an `InputParser` based on `inputType`, or an async function returning a `Promise` of an `InputParser`.                                                                                                                                                                                                                 |
 | `validator`              | `ZestConfigValue<InputValidator<T>>`                            | `undefined`  | **Use Case:** A function to perform custom validation logic on the *parsed* value of type `T` (e.g., checking for a minimum value, a specific pattern). Returns `true` for valid input, or a `string` containing an error message for invalid input. Default validators are automatically provided for `type="number"`, `"currency"`, and `"percentage"` if no custom validator is supplied. Accepts a static `InputValidator` function, a function that returns an `InputValidator` based on `inputType`, or an async function returning a `Promise` of an `InputValidator`.                                                                                                                                               |
 | `helperTextPositioning`  | `ZestConfigValue<"reserved" \| "absolute">`                     | `'absolute'` | **Use Case:** Controls how helper text influences the document flow. <br/> - `'reserved'`: Always reserves space for the helper text, preventing layout shifts when helper text appears or disappears. (Recommended for stable layouts). <br/> - `'absolute'`: Positions the helper text absolutely, allowing it to "float" without affecting the surrounding layout. Can cause overlap if not managed carefully by the consumer. Accepts a static value (`"reserved"` or `"absolute"`), a function that returns a position based on `inputType`, or an async function returning a `Promise` of a position.                                                                                                           |
+| `casingBehaviour`        | `ZestConfigValue<CasingBehaviour>`                              | `undefined`  | **Use Case:** Automatically enforce a casing style on every keystroke. Applied live to the raw string before it is committed to state. Accepts a static `CasingBehaviour` value, a function returning one based on `inputType`, or an async function. <br/><br/> **Available values:** <br/> - `"UpperCase"` — All characters uppercased. E.g. `hello` → `HELLO`. Great for codes, licence plates. <br/> - `"LowerCase"` — All characters lowercased. E.g. `Hello` → `hello`. Useful for emails, slugs. <br/> - `"SentenceCase"` — Capitalizes after sentence boundaries (`. ! ? \n`). E.g. `hello. world` → `Hello. World`. Best for bios, descriptions. <br/> - `"TitleCase"` — Capitalizes the first letter of every word, preserving spaces. E.g. `hello world` → `Hello World`. Good for names, titles. <br/> - `"PascalCase"` — Capitalizes first letter of every word and **removes spaces**. E.g. `hello world` → `HelloWorld`. For identifier/class-name inputs. ⚠️ Spaces are deleted live. <br/> - `"SnakeCase"` — Lowercases everything and **replaces spaces with underscores**. E.g. `Hello World` → `hello_world`. For slug/variable-name inputs. ⚠️ Spaces become `_` live. |
 
 ---
 
@@ -193,6 +195,31 @@ interface ZestContext<T = string> {
 *   `value: string`: The current raw string value from the textbox.
 *   `parsedValue?: T`: The result of the active `parser` function, or `undefined` if parsing failed or no parser is active. `T` is the generic type passed to `ZestTextboxProps`.
 *   `props: ZestTextboxProps<T>`: The full set of resolved props (including both standard HTML and `ZestProps`) currently applied to the `ZestTextbox` instance.
+
+---
+
+### `CasingBehaviour`
+
+Controls how text entered by the user is automatically cased on every keystroke.
+
+```typescript
+type CasingBehaviour =
+  | "UpperCase"
+  | "LowerCase"
+  | "SentenceCase"
+  | "TitleCase"
+  | "PascalCase"
+  | "SnakeCase";
+```
+
+| Value           | Behaviour                                                                                                      | Example input → output          | Best for                             |
+|-----------------|----------------------------------------------------------------------------------------------------------------|---------------------------------|--------------------------------------|
+| `"UpperCase"`   | All characters converted to uppercase.                                                                         | `hello world` → `HELLO WORLD`   | Codes, licence plates, identifiers   |
+| `"LowerCase"`   | All characters converted to lowercase.                                                                         | `Hello World` → `hello world`   | Emails, slug-style fields            |
+| `"SentenceCase"`| First letter of each sentence capitalized (after `. ! ? \n`). Mid-sentence characters left as typed.          | `hello. world` → `Hello. World` | Bios, descriptions, multi-line areas |
+| `"TitleCase"`   | First letter of every word capitalized. Spaces preserved.                                                      | `hello world` → `Hello World`   | Names, headings, product titles      |
+| `"PascalCase"`  | First letter of every word capitalized, **spaces removed**. ⚠️ Spaces are deleted live as the user types.     | `hello world` → `HelloWorld`    | Class names, component name inputs   |
+| `"SnakeCase"`   | All characters lowercased, **spaces replaced with underscores**. ⚠️ Spaces become `_` live as the user types. | `Hello World` → `hello_world`   | Slugs, variable names, DB keys       |
 
 ---
 

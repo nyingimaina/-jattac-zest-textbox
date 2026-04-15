@@ -146,6 +146,35 @@ const myValidator: InputValidator<number> = (value) => value > 0 || "Must be pos
 
 ---
 
+### Live Casing Behaviour
+
+**Value Proposition:** Eliminate boilerplate casing transforms in `onChange` handlers. Set a single `casingBehaviour` prop and the component automatically enforces the chosen style on every keystroke — from simple `UpperCase` and `LowerCase` to `TitleCase`, `SentenceCase`, `PascalCase`, and `SnakeCase` for identifier inputs.
+
+```jsx
+// Enforce Title Case for a name field
+<ZestTextbox
+  placeholder="Enter your full name"
+  zest={{ casingBehaviour: "TitleCase" }}
+/>
+
+// Auto-uppercase for a licence plate field
+<ZestTextbox
+  placeholder="e.g. ABC 123"
+  zest={{ casingBehaviour: "UpperCase" }}
+/>
+
+// PascalCase for a component name identifier input
+// ⚠️ Spaces are removed live — best for developer tool / identifier fields
+<ZestTextbox
+  placeholder="e.g. MyComponent"
+  zest={{ casingBehaviour: "PascalCase" }}
+/>
+```
+
+[Learn more in the API Reference: casingBehaviour](./api.md#casingbehaviour)
+
+---
+
 ### Multiline Textarea Support
 
 **Value Proposition:** Effortlessly switch between single-line input fields and multi-line text areas, accommodating diverse content entry needs without changing components.

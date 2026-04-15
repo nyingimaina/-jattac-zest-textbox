@@ -60,6 +60,39 @@ export interface HelperTextConfig {
   className?: string;
 }
 
+/**
+ * Controls how the text entered by the user is automatically cased on every keystroke.
+ *
+ * - `"UpperCase"` — Converts all characters to uppercase. E.g. `hello world` → `HELLO WORLD`.
+ *   Ideal for codes, licence plates, or identifiers.
+ *
+ * - `"LowerCase"` — Converts all characters to lowercase. E.g. `Hello World` → `hello world`.
+ *   Useful for email addresses or slug-style fields.
+ *
+ * - `"SentenceCase"` — Capitalizes the first letter of each sentence (after `.` `!` `?` or a
+ *   newline). Mid-sentence characters are left as typed. E.g. `hello. world` → `Hello. World`.
+ *   Best for description or bio fields.
+ *
+ * - `"TitleCase"` — Capitalizes the first letter of every word while preserving spaces.
+ *   E.g. `hello world` → `Hello World`. Good for names, headings, or product titles.
+ *
+ * - `"PascalCase"` — Removes all spaces and capitalizes the first letter of every word.
+ *   E.g. `hello world` → `HelloWorld`. Intended for developer identifier inputs (class names,
+ *   component names). NOTE: spaces are deleted as the user types — this is intentional but
+ *   may be surprising in general-purpose fields.
+ *
+ * - `"SnakeCase"` — Lowercases all characters and replaces spaces with underscores.
+ *   E.g. `Hello World` → `hello_world`. Intended for slug, variable-name, or database-key
+ *   inputs. NOTE: spaces become underscores on each keystroke — intentional for identifier fields.
+ */
+export type CasingBehaviour =
+  | "UpperCase"
+  | "LowerCase"
+  | "SentenceCase"
+  | "TitleCase"
+  | "PascalCase"
+  | "SnakeCase";
+
 export interface ZestProps<T = string> { // Made ZestProps generic
   /**
    * An object to configure the dynamic helper text displayed below the input.
@@ -125,6 +158,14 @@ export interface ZestProps<T = string> { // Made ZestProps generic
    * @default 'absolute'
    */
   helperTextPositioning?: ZestConfigValue<"reserved" | "absolute">;
+  /**
+   * Automatically transforms the text as the user types, enforcing a specific casing style.
+   * Applied live on every keystroke before the value is committed to state.
+   * Note: `PascalCase` and `SnakeCase` perform structural transforms (removing/replacing spaces)
+   * and are best suited for identifier or slug-style input fields.
+   * @see CasingBehaviour
+   */
+  casingBehaviour?: ZestConfigValue<CasingBehaviour>;
 }
 
 // Resolved ZestProps type, where all ZestConfigValue types are resolved to their base types
@@ -140,6 +181,7 @@ export interface ResolvedZestProps<T = string> { // Made ResolvedZestProps gener
   parser: InputParser<T> | undefined; // Parser is now generic over T
   validator: InputValidator<T> | undefined; // Validator is now generic over T
   helperTextPositioning: "reserved" | "absolute"; // New property
+  casingBehaviour: CasingBehaviour | undefined;
 }
 
 type SharedProps<T> = { // Made SharedProps generic

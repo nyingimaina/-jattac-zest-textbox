@@ -1,9 +1,10 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import styles from "../Styles/ZestTextbox.module.css";
 
 import { ZestTextboxProps, InputParser, InputValidator } from "./types";
 
 import { filterNumericInput } from "./utils/numericInputFilter";
+import { applyCasing, adjustedCursorPos } from "./utils/casingUtils";
 import { defaultNumberParser, defaultNumberValidator } from "./utils/defaultParsersAndValidators";
 import { useThemeDetector } from "./hooks/useThemeDetector";
 import { usePasswordVisibility } from "./hooks/usePasswordVisibility";
@@ -38,6 +39,7 @@ const ZestTextbox = <T = string>(props: ZestTextboxProps<T>) => {
     parser,
     validator,
     helperTextPositioning,
+    casingBehaviour,
   } = resolvedZestProps;
 
   const [value, setValue] = useState(propsValue ?? defaultValue ?? "");
@@ -88,6 +90,21 @@ const ZestTextbox = <T = string>(props: ZestTextboxProps<T>) => {
     .filter(Boolean)
     .join(" ");
 
+  const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
+  const pendingCursorRef = useRef<number | null>(null);
+
+  // After a PascalCase transform (which removes spaces and shortens the string),
+  // restore the cursor to the correct position once React has re-rendered.
+  useEffect(() => {
+    if (pendingCursorRef.current !== null && inputRef.current) {
+      const pos = pendingCursorRef.current;
+      pendingCursorRef.current = null;
+      requestAnimationFrame(() => {
+        inputRef.current?.setSelectionRange(pos, pos);
+      });
+    }
+  });
+
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       let newValue = e.target.value;
@@ -95,6 +112,16 @@ const ZestTextbox = <T = string>(props: ZestTextboxProps<T>) => {
       const isNumeric = type === "number" || type === "tel" || type === "currency" || type === "percentage";
       if (isNumeric) {
         newValue = filterNumericInput(newValue);
+      }
+
+      if (casingBehaviour) {
+        const cursorPos = e.target.selectionStart ?? newValue.length;
+        const transformed = applyCasing(newValue, casingBehaviour);
+        if (casingBehaviour === "PascalCase" && transformed !== newValue) {
+          // PascalCase removes spaces, shortening the string — compute new cursor position.
+          pendingCursorRef.current = adjustedCursorPos(newValue, cursorPos);
+        }
+        newValue = transformed;
       }
 
       if (maxLength !== undefined && newValue.length > maxLength) {
@@ -106,12 +133,13 @@ const ZestTextbox = <T = string>(props: ZestTextboxProps<T>) => {
       if (onChange) onChange(e as never);
       // onTextChanged is now handled by useParsedAndValidatedInput
     },
-    [type, maxLength, onChange]
+    [type, maxLength, onChange, casingBehaviour]
   );
 
   const inputType = isPassword && isPasswordVisible ? "text" : isNumericInputType ? "tel" : type; // Use isNumericInputType here
 
   const commonProps = {
+    ref: inputRef,
     className: classList,
     maxLength,
     onChange: handleInputChange,
