@@ -130,7 +130,11 @@ const ZestTextbox = <T = string>(props: ZestTextboxProps<T>) => {
 
       setValue(newValue);
 
-      if (onChange) onChange(e as never);
+      if (onChange) {
+        // Manually update the event target's value to reflect the transformation
+        e.target.value = newValue;
+        onChange(e as never);
+      }
       // onTextChanged is now handled by useParsedAndValidatedInput
     },
     [type, maxLength, onChange, casingBehaviour]
