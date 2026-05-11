@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(Get-ChildItem -Path \"D:\\\\work\\\\nyingi\\\\code\\\\systems\\\\Jattac.Libs.Web.ZestTextbox\" -Recurse -Name)",
+      "Bash(Select-Object -First 50)"
     ]
   }
 }
