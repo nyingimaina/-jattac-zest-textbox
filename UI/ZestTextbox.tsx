@@ -168,6 +168,7 @@ const ZestTextbox = <T = string>(props: ZestTextboxProps<T>) => {
       togglePasswordVisibility={togglePasswordVisibility}
       showProgressBar={showProgressBar}
       charPercentage={charPercentage}
+      fullWidth={fullWidth}
     />
   );
 };

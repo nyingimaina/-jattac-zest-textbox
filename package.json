@@ -1,6 +1,6 @@
 {
   "name": "jattac.libs.web.zest-textbox",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "A delightful, feature-rich, and highly customizable React textbox component. Packed with features like automatic theme detection, password visibility toggle, character counters, and engaging animations.",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -15,7 +15,7 @@
   "scripts": {
     "build": "rollup -c && rollup -c rollup.config.dts.js",
     "postbuild": "rimraf dist/ZestTextbox.d.ts dist/IconEyeOpen.d.ts dist/IconEyeSlashed.d.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --config jest.config.cjs"
   },
   "keywords": [
     "react",
@@ -49,13 +49,20 @@
   ],
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.6",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/jest": "^30.0.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^30.4.2",
+    "jest-environment-jsdom": "^30.4.1",
     "postcss": "^8.4.38",
     "rimraf": "^6.0.1",
     "rollup": "^4.13.0",
     "rollup-plugin-dts": "^6.2.3",
     "rollup-plugin-postcss": "^4.0.2",
+    "ts-jest": "^29.4.11",
     "typescript": "^5.4.2"
   },
   "dependencies": {

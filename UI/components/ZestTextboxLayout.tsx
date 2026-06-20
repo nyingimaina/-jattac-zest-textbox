@@ -21,6 +21,7 @@ interface ZestTextboxLayoutProps {
   togglePasswordVisibility: () => void;
   showProgressBar: boolean;
   charPercentage: number;
+  fullWidth?: boolean;
 }
 
 export const ZestTextboxLayout: React.FC<ZestTextboxLayoutProps> = ({
@@ -38,9 +39,11 @@ export const ZestTextboxLayout: React.FC<ZestTextboxLayoutProps> = ({
   togglePasswordVisibility,
   showProgressBar,
   charPercentage,
+  fullWidth,
 }) => {
+  const wrapperClass = [styles.wrapper, fullWidth ? styles.fullWidth : ''].filter(Boolean).join(' ');
   return (
-    <div className={styles.wrapper}>
+    <div className={wrapperClass}>
       {isMultiline ? (
         <textarea
           {...(commonProps as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
